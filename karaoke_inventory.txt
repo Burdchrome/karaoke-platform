@@ -1,0 +1,188 @@
+﻿Karaoke library inventory
+Scan started: 05/15/2026 17:20:01
+Root: E:\karaoke
+
+=== TOTALS ===
+Total files: 130209
+Total size:  338.07 GB
+
+=== FILES BY EXTENSION ===
+.mp3          62285 files     218.62 GB
+.cdg          62194 files      95.28 GB
+.zip           3477 files      19.97 GB
+.jpg           1447 files       2.86 GB
+.txt            513 files          0 GB
+.avs             69 files          0 GB
+.3g2             58 files       0.02 GB
+.wav             26 files       0.71 GB
+.lnk             25 files          0 GB
+.wma             20 files       0.05 GB
+.dll             16 files          0 GB
+.avi             10 files       0.19 GB
+.xls              7 files       0.01 GB
+.mp4              6 files       0.34 GB
+.png              5 files          0 GB
+.dpf              5 files          0 GB
+.dka              5 files          0 GB
+.ini              3 files          0 GB
+.bat              3 files          0 GB
+.xml              3 files          0 GB
+.db               3 files          0 GB
+.exe              2 files          0 GB
+.html             2 files          0 GB
+.ds_store         2 files          0 GB
+.rtf              2 files          0 GB
+.flare            1 files          0 GB
+.font             1 files          0 GB
+.envmap           1 files          0 GB
+.cfg              1 files          0 GB
+.trail            1 files          0 GB
+.visfeed          1 files          0 GB
+.ape              1 files          0 GB
+.logo             1 files          0 GB
+.morph            1 files          0 GB
+.symbol           1 files          0 GB
+.m3u              1 files          0 GB
+.pic              1 files          0 GB
+.bm               1 files          0 GB
+(no ext)          1 files          0 GB
+.doc              1 files          0 GB
+.q1               1 files          0 GB
+.announce         1 files          0 GB
+.blob             1 files          0 GB
+.dat              1 files          0 GB
+.htm              1 files          0 GB
+.cdb              1 files          0 GB
+
+=== PAIRING (CDG + MP3 with matching basename in same folder) ===
+Paired songs:           62142
+MP3 without CDG (audio-only): 143
+CDG without MP3 (graphics-only): 52
+
+=== SAMPLE: first 20 MP3 orphans ===
+E:\karaoke\New Folder\04-the_black_eyed_peas-rock_that_body.mp3
+E:\karaoke\old stuff\Sound Effects\Scary Music & Sound Effects\18 Supernatural.mp3
+E:\karaoke\ALL KARAOKE MUSIC\Falling In Reverse - The Drug In Me Is You\Falling In Reverse - Don't Mess With Ouija Boards.mp3
+E:\karaoke\New Folder\bucks stuff\CD&G\one  pair of Hands\One Pair of Hands_Backtrack.mp3
+E:\karaoke\ALL KARAOKE MUSIC\Falling In Reverse - The Drug In Me Is You\Falling In Reverse - Raised By Wolves.mp3
+E:\karaoke\Little_Liar.mp3
+E:\karaoke\old stuff\Sound Effects\Ultimate Sound Effects Volume 3\Door Close.mp3
+E:\karaoke\New Folder\17 Beautiful.mp3
+E:\karaoke\ALL KARAOKE MUSIC\CD&G\Hey Little Girl\Karaoke - Hey Little Girl - Elvis.mp3
+E:\karaoke\old stuff\WINAMP_FILES\Winamp\demo.mp3
+E:\karaoke\New Folder\bucks stuff\one  pair of Hands\One Pair of Hands_Backtrack.mp3
+E:\karaoke\old stuff\Sound Effects\Scary Music & Sound Effects\02 Theme From Halloween.mp3
+E:\karaoke\old stuff\Sound Effects\Ultimate Sound Effects Volume 3\Ratchet.mp3
+E:\karaoke\old stuff\Sound Effects\Ultimate Sound Effects Volume 3\Undoing Velcro.mp3
+E:\karaoke\ALL KARAOKE MUSIC\Falling In Reverse - The Drug In Me Is You\Falling In Reverse - Good Girls Bad Guys.mp3
+E:\karaoke\old stuff\Sound Effects\Ultimate Sound Effects Volume 3\Sawing.mp3
+E:\karaoke\old stuff\Sound Effects\Ultimate Sound Effects Volume 3\Conga Beat.mp3
+E:\karaoke\old stuff\Sound Effects\Ultimate Sound Effects Volume 3\Motorcycle Fly-By.mp3
+E:\karaoke\old stuff\Pop Hits Monthly\PHM\PHM0609-P\Cheyenne Kimball - Hanging On.mp3
+E:\karaoke\old stuff\DK Karaoke\DK3063 - Complete\DK3063-06 - Jackson, Michael - Bad.mp3
+
+=== SAMPLE: first 20 CDG orphans ===
+E:\karaoke\old stuff\new stuff\03_09\Scissor Sisters and The Darkness-00 - Scissor Sisters - Take Your Mama.cdg
+E:\karaoke\old stuff\Pop Hits Monthly\PHM\PHM0609-P\karakoe01.cdg
+E:\karaoke\SC8713-08 - Guns 'N' Roses - Paradise City.cdg
+E:\karaoke\old stuff\New Karaoke Tunes\S, Robin - Show Me Love.cdg
+E:\karaoke\Sc_8176-03_-_Tutone,_Tommy_-_867-5309_Jenny.cdg
+E:\karaoke\SK529-01 - N Sync - Giddy Up.cdg
+E:\karaoke\old stuff\Pop Hits Monthly\PHM\PHM0609-P\karakoe06.cdg
+E:\karaoke\old stuff\Pop Hits Monthly\PHM\PHM0609-P\karakoe07.cdg
+E:\karaoke\old stuff\new stuff\03_09\Scissor Sisters and The Darkness-00 - Darkness, The - Givin Up.cdg
+E:\karaoke\old stuff\Top Hits\THMS0303 - Complete\THMS0303-12 - McBrayer, Jody - To Ever Live Without Me.cdg
+E:\karaoke\old stuff\DK Karaoke\DK003 - Complete\DK003-15 - divorce.cdg
+E:\karaoke\old stuff\Pop Hits Monthly\PHM\PHM0609-P\karakoe04.cdg
+E:\karaoke\New Folder\M24551 - Bound To You - Christina Aguilera.cdg
+E:\karaoke\old stuff\Pop Hits Monthly\PHM\PHM0609-P\karakoe09.cdg
+E:\karaoke\old stuff\New Karaoke Tunes\Bellamy Brothers, The - For All The Wrong Reasons.cdg
+E:\karaoke\SK526-12 - Rod Stewart & Eric Clapton - Tears In Heaven.cdg
+E:\karaoke\old stuff\New Karaoke Tunes\Atomic Kitten - Tide Is High, The .cdg
+E:\karaoke\Cake - Let Me Go.cdg
+E:\karaoke\THD0001-09 - Celine Dion & Paul Anka - It's Hard To Say Goodbye.cdg
+E:\karaoke\old stuff\new stuff\03_09\Scissor Sisters and The Darkness-00 - Scissor Sisters - Music is the Victim.cdg
+
+=== TOP-LEVEL SUBFOLDERS ===
+       0 files   EZA06-11_Monkees - Take A Giant Step
+       0 files   EZA06-12_Monkees - What Am I Doin' Hanging Round
+       0 files   Mm6084-03 strange
+       0 files   Mm6084-07 why can't he be you
+       0 files   Mm6084-08 you're stronger than me
+       0 files   Mm6084-11 the eyes of a child
+       0 files   MM6096-02 i belong to you-Toni Braxton
+       0 files   MM6096-10 Good enough-Sarah McLachlan
+       0 files   MM6096-14 tomorrow's girls-Donald Fagen
+    5059 files   New Folder
+   55630 files   old stuff
+      36 files   Sunfly-Hits-313-(SF313)
+       0 files   3243 - 06 - Offspring - Want You Bad
+    4583 files   ALL KARAOKE MUSIC
+
+=== ZIP FILES (3477 total) ===
+E:\karaoke\NSC3022-02 - Garth Brooks - Where The Stars And Stripes And The Eagle Fly.zip
+E:\karaoke\SC2197-01 - Ednita - Quen Te Robo Corazon.zip
+E:\karaoke\SC7520-11 - Mary Wells - My Guy.zip
+E:\karaoke\SC8668-11 - Harry Chapin - Wold.zip
+E:\karaoke\SCL2194-03 - Juan Luis Guerra - Palomita Blanca.zip
+E:\karaoke\SD4506-12 - Better Than Ezra - A Lifetime.zip
+E:\karaoke\SD4606-08 - Mario Vasquez - Gallery.zip
+E:\karaoke\SDK105-01 - Standard - All Through The Night.zip
+E:\karaoke\SDK201-05 - Standard - Colors.zip
+E:\karaoke\SDK201-10 - Standard - I Know A Little Pussy.zip
+E:\karaoke\SDK202-03 - Standard - Nine Hundred Miles.zip
+E:\karaoke\SDK203-02 - Standard - Billy Boy.zip
+E:\karaoke\SDK203-05 - Standard - Crawdad Song.zip
+E:\karaoke\SDK203-12 - Standard - It Ain't Gonna Rain No More.zip
+E:\karaoke\SDK204-06 - Standard - Bird's Song.zip
+E:\karaoke\SDK204-11 - Standard - Ground Hog.zip
+E:\karaoke\SDK205-10 - Standard - World Turned Upside Down.zip
+E:\karaoke\SDK207-12 - Standard - This Little Light Of Mine.zip
+E:\karaoke\SDK301-02 - Standard - Aye Aye Aye Aye The Limerick Song.zip
+E:\karaoke\SDK301-08 - Standard - Git Along Little Dogies.zip
+E:\karaoke\SDK302-08 - Standard - Mademoiselle From Armentieres.zip
+E:\karaoke\SDK302-11 - Standard - Vive La Compagne.zip
+E:\karaoke\SDK303-08 - Standard - Midnight Special.zip
+E:\karaoke\SDK304-12 - Standard - Wish You A Happy Birthday.zip
+E:\karaoke\SDK306-02 - Traditional - God Rest Ye Merry Gentlemen.zip
+E:\karaoke\SFG014-12 - Queen - Innuendo.zip
+E:\karaoke\SK524-12 - Bette Midler - Night And Day.zip
+E:\karaoke\TT067-17 - Neil Diamond - I Believe In Happy Endings.zip
+E:\karaoke\A_Great_Big_World_feat._Christina_Aguilera_-_Say_Something_-_M28305.ZIP
+E:\karaoke\Adele_Lovesong(MP3+CDG_Karaoke)_114492.zip
+... (3447 more)
+
+=== NON-AUDIO/CDG FILES (first 30) ===
+.wav  E:\karaoke\SK526-12 - Rod Stewart & Eric Clapton - Tears In Heaven.wav
+.lnk  E:\karaoke\Expansion (D) - Shortcut.lnk
+.mp4  E:\karaoke\Karaoke I Get Off - Halestorm .mp4
+.mp4  E:\karaoke\Karaoke I Miss The Misery - Halestorm .mp4
+.mp4  E:\karaoke\Karaoke Love Bites (So Do I) - Halestorm .mp4
+.mp4  E:\karaoke\Karaoke Mz. Hyde - Halestorm .mp4
+.mp4  E:\karaoke\Karaoke Rock Show - Halestorm .mp4
+.mp4  E:\karaoke\Taylor_Swift_Blank_Space(Video_Karaoke_with_a_colored_background)_10002502.mp4
+.lnk  E:\karaoke\Tyler Childers - Feathered Indians - 60301.cdg - Shortcut.lnk
+.lnk  E:\karaoke\A Star is Born - Always Remember Us This Way - 56466 - Shortcut.lnk
+.lnk  E:\karaoke\A Star is Born - Always Remember Us This Way - 56466.cdg - Shortcut.lnk
+.lnk  E:\karaoke\Bad_Bunny_Titi_me_pregunto(MP3+CDG_Karaoke)_10619978 - Shortcut.lnk
+.lnk  E:\karaoke\Demi Lovato - Get Back - 21312 - Shortcut.lnk
+.lnk  E:\karaoke\Demi Lovato - Get Back - 21312.cdg - Shortcut.lnk
+.lnk  E:\karaoke\Demi Lovato - Here We Go Again - 23616 - Shortcut.lnk
+.lnk  E:\karaoke\Demi Lovato - Here We Go Again - 23616.cdg - Shortcut.lnk
+.lnk  E:\karaoke\Grouplove - Tongue Tied - 41845 - Shortcut.lnk
+.lnk  E:\karaoke\Grouplove - Tongue Tied - 41845.cdg - Shortcut.lnk
+.lnk  E:\karaoke\Lizzo_About_Damn_Time(MP3+CDG_Karaoke)_10608499 - Shortcut.lnk
+.lnk  E:\karaoke\Mac Miller - The Spins - 67781 - Shortcut.lnk
+.lnk  E:\karaoke\Mac Miller - The Spins - 67781.cdg - Shortcut.lnk
+.lnk  E:\karaoke\Nicki Minaj - Only - 56148 - Shortcut.lnk
+.lnk  E:\karaoke\Nicki Minaj - Only - 56148.cdg - Shortcut.lnk
+.lnk  E:\karaoke\SanDiskSecureAccessV3.01_win - Shortcut.lnk
+.lnk  E:\karaoke\Shawn Mendes - Stitches - 49342 - Shortcut.lnk
+.lnk  E:\karaoke\Shawn Mendes - Stitches - 49342.cdg - Shortcut.lnk
+.lnk  E:\karaoke\Sia - Alive - 49926 - Shortcut.lnk
+.lnk  E:\karaoke\Sia - Alive - 49926.cdg - Shortcut.lnk
+.lnk  E:\karaoke\Tyler Childers - Feathered Indians - 60301 - Shortcut.lnk
+.xml  E:\karaoke\New Folder\WMPInfo.xml
+
+Scan finished: 05/15/2026 17:21:13
+Elapsed: 1.2 minutes

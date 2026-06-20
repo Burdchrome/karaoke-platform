@@ -1,0 +1,20 @@
+{
+  "name": "karaoke-app",
+  "version": "0.1.0",
+  "description": "Local karaoke server for Shooter's DJ gigs — serves CDG+MP3 pairs from E:\\karaoke to any browser on the local Wi-Fi.",
+  "type": "module",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "nodemon server/index.js"
+  },
+  "dependencies": {
+    "cdgraphics": "^7.0.0",
+    "express": "^4.19.2",
+    "sortablejs": "^1.15.7",
+    "winston": "^3.13.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}
