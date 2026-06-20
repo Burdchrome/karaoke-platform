@@ -1,0 +1,684 @@
+/* ============================================================
+   Karaoke List — visual system v3
+   "Scrappy / graffiti / home-grown." Photos of The Brewery as the
+   actual background (collage), marker-handwritten wordmark, spray-
+   paint accents, readable UI in the middle so the room doesn't
+   eat the content.
+   ============================================================ */
+
+:root {
+  /* ---- palette ---- */
+  --bg:           #0a0807;
+  --surface:      #16120d;
+  --surface-2:    #1f1a12;
+
+  --divider:      rgba(255, 255, 255, 0.06);
+  --border:       rgba(255, 235, 200, 0.12);
+  --border-warm:  rgba(255, 200, 150, 0.18);
+
+  --ink:          #f5e8d1;
+  --ink-bright:   #ffffff;
+  --ink-muted:    #c4ad88;
+  --ink-faint:    #806e54;
+  --ink-stamp:    #a18c6f;
+
+  --red:          #ff3b2f;
+  --red-bright:   #ff5346;
+  --red-deep:     #c01a10;
+  --red-glow:     rgba(255, 59, 47, 0.6);
+  --red-wash:     rgba(255, 59, 47, 0.1);
+
+  --amber:        #ffb627;
+  --amber-deep:   #c98800;
+  --amber-glow:   rgba(255, 182, 39, 0.45);
+
+  --danger:       #ff5c54;
+}
+
+/* ============================================================
+   Base — photo collage background
+   ============================================================ */
+
+html, body {
+  margin: 0; padding: 0;
+  color: var(--ink);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  background: var(--bg);
+}
+
+/*
+   The collage is built from three fixed-position layers so it scales
+   to any viewport and the content scrolls over a stable backdrop.
+   Z-stack:
+     0  body bg (warm black fallback)
+     1  body::before  Brew 5 neon — the dominant mood, full bleed, dim
+     1  body::after   dark vignette/overlay over Brew 5 for readability
+     0  fixed decorations (.bg-deco-*)  scratched walls at corners
+     2  main content
+*/
+
+/* Body backdrop — flat warm gradient + faint red glow from the top.
+   No more full-bleed photo; the photo lives in the logo (top-left). */
+body::before {
+  content: "";
+  position: fixed; inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 70% 50% at 50% -10%, rgba(255, 59, 47, 0.14), transparent 55%),
+    radial-gradient(ellipse 100% 80% at 50% 30%, transparent 40%, rgba(0,0,0,0.5) 90%, rgba(0,0,0,0.8) 100%),
+    #0a0807;
+}
+
+/* Decoration divs from earlier passes are no longer used. Hidden in case
+   they're still in the HTML. */
+.bg-deco { display: none !important; }
+
+/* ============================================================
+   Logo — the Rocky + Shooter neon as a small framed photo, top-left.
+   Replaces the photo collage backdrop. ~100x same content, ~1% the
+   rendering cost.
+   ============================================================ */
+.logo {
+  position: fixed;
+  top: 18px; left: 18px;
+  width: 88px; height: 88px;
+  z-index: 5;
+  background: url('/img/brew5.jpg') center center / cover no-repeat;
+  border-radius: 2px;
+  filter: brightness(0.9) saturate(1.15) contrast(1.05);
+  box-shadow:
+    0 0 0 1px rgba(255, 59, 47, 0.4),
+    0 0 0 4px rgba(15, 10, 8, 0.95),
+    0 0 0 5px rgba(80, 60, 45, 0.5),
+    0 6px 20px rgba(0, 0, 0, 0.7),
+    0 0 24px rgba(255, 59, 47, 0.18);
+  transform: rotate(-3deg);
+  transition: transform 200ms;
+}
+.logo:hover { transform: rotate(-3deg) scale(1.05); }
+.logo::after {
+  /* Tape strip at the top of the logo, like it's pinned to the page */
+  content: '';
+  position: absolute;
+  top: -8px; left: 50%;
+  width: 36px; height: 12px;
+  transform: translateX(-50%) rotate(-4deg);
+  background: rgba(245, 232, 209, 0.22);
+  border: 1px solid rgba(245, 232, 209, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+@media (max-width: 520px) {
+  .logo { width: 62px; height: 62px; top: 12px; left: 12px; }
+}
+
+/* Spray-paint noise overlay above everything — final scratched-wall layer */
+body > main::before {
+  content: "";
+  position: fixed; inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.1;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' seed='9'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 0.95  0 0 0 0 0.85  0 0 0 0.9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+main {
+  position: relative; z-index: 2;
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 32px 24px 140px;
+}
+
+/* ============================================================
+   Wordmark — Sharpie on the wall
+   ============================================================ */
+
+.wordmark {
+  text-align: center;
+  margin: 4px 0 18px;
+  padding-bottom: 18px;
+  position: relative;
+}
+
+.wordmark h1 {
+  font-family: 'Permanent Marker', cursive;
+  font-weight: 400;
+  font-size: clamp(48px, 10vw, 84px);
+  letter-spacing: -0.005em;
+  margin: 0;
+  line-height: 0.95;
+  color: var(--ink-bright);
+  /* Marker on a wall: chunky, slightly bled, with a tiny red drip-glow */
+  text-shadow:
+    0 0 1px rgba(255, 255, 255, 0.4),
+    0 2px 0 rgba(0, 0, 0, 0.5),
+    0 0 14px rgba(255, 59, 47, 0.35),
+    0 0 30px rgba(255, 59, 47, 0.18);
+  transform: rotate(-1.5deg);
+}
+.wordmark h1 .apostrophe {
+  color: var(--red);
+  text-shadow:
+    0 0 6px var(--red-glow),
+    0 0 14px var(--red-glow),
+    0 0 24px rgba(255, 59, 47, 0.5);
+}
+
+/* Spray-paint "circle" around the wordmark — like a tag underline */
+.wordmark::after {
+  content: "";
+  position: absolute;
+  left: 50%; bottom: -2px;
+  transform: translateX(-50%) rotate(-1deg);
+  width: 75%;
+  max-width: 360px;
+  height: 14px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 14' preserveAspectRatio='none'><path d='M5 9 Q 30 12, 60 8 Q 100 5, 140 9 Q 180 12, 220 7 Q 260 5, 310 10 Q 340 11, 355 8' fill='none' stroke='%23ff3b2f' stroke-width='2.4' stroke-linecap='round' opacity='0.7'/><path d='M15 11 Q 80 6, 170 10 Q 250 13, 340 9' fill='none' stroke='%23ff3b2f' stroke-width='1.2' stroke-linecap='round' opacity='0.4'/></svg>");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  filter: blur(0.3px);
+}
+
+.wordmark .tagline {
+  font-family: 'Special Elite', 'Courier New', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.5em;
+  font-size: 10px;
+  color: var(--ink-muted);
+  margin-top: 18px;
+  padding-right: 0.5em;
+}
+.wordmark .tagline .dot { color: var(--red); margin: 0 4px; }
+
+.role-pill {
+  display: inline-block;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 16px;
+  background: transparent;
+  color: var(--amber);
+  padding: 0 6px;
+  vertical-align: 0.4em;
+  margin-right: 14px;
+  margin-left: 0;
+  text-shadow:
+    0 0 8px var(--amber-glow),
+    0 0 16px rgba(255, 182, 39, 0.4);
+  transform: rotate(-8deg);
+  /* "Circled" with a sketchy red marker line */
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 30' fill='none' stroke='%23ff3b2f' stroke-width='1.5' stroke-linecap='round'><path d='M8 15 Q 5 5, 25 4 Q 50 3, 55 13 Q 56 25, 35 26 Q 8 28, 6 18 Q 5 12, 12 8' opacity='0.7'/></svg>");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 100% 100%;
+}
+
+.sub {
+  color: var(--ink-muted);
+  font-family: 'Special Elite', monospace;
+  font-size: 13px;
+  letter-spacing: 0.03em;
+  margin: 4px 0 26px;
+  text-align: center;
+  font-style: italic;
+}
+
+/* ============================================================
+   Content surface — semi-transparent dark card so the photos
+   peek through the background without eating the content
+   ============================================================ */
+
+main {
+  /* A subtle inner panel so search/list don't float on chaos */
+}
+
+/* ============================================================
+   Search input
+   ============================================================ */
+
+input.search {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 14px 18px;
+  font-size: 16px;
+  font-family: inherit;
+  background: rgba(10, 7, 5, 0.92);
+  color: var(--ink);
+  border: 1px solid var(--border);
+  border-radius: 1px;
+  outline: none;
+  transition: border-color 140ms, box-shadow 140ms;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.03),
+    0 2px 8px rgba(0, 0, 0, 0.5);
+}
+input.search::placeholder { color: var(--ink-faint); font-style: italic; }
+
+/* Singer-name input on the DJ page. Smaller, less prominent than search. */
+input.singer {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 9px 14px;
+  margin-bottom: 10px;
+  font-size: 14px;
+  font-family: 'Permanent Marker', cursive;
+  background: rgba(28, 24, 18, 0.85);
+  color: var(--amber);
+  border: 1px dashed var(--border-warm);
+  border-radius: 1px;
+  outline: none;
+  letter-spacing: 0.02em;
+}
+input.singer::placeholder {
+  color: var(--ink-faint);
+  font-family: 'Special Elite', monospace;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  font-weight: 400;
+}
+input.singer:focus {
+  border-color: var(--amber);
+  border-style: solid;
+  box-shadow: 0 0 12px var(--amber-glow);
+}
+
+/* "Requested by" tag in queue rows */
+.qrequester {
+  font-family: 'Permanent Marker', cursive;
+  color: var(--amber);
+  font-size: 13px;
+  margin-left: 6px;
+  white-space: nowrap;
+  text-shadow: 0 0 6px var(--amber-glow);
+}
+input.search:focus {
+  border-color: var(--red);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 0 0 1px var(--red),
+    0 0 22px var(--red-glow);
+}
+
+.status {
+  color: var(--ink-faint);
+  font-family: 'Special Elite', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  margin: 12px 2px 14px;
+}
+
+/* ============================================================
+   Search results — dark glass-paneled list
+   ============================================================ */
+
+ul.songs {
+  list-style: none; padding: 0; margin: 0;
+  background: rgba(10, 7, 5, 0.88);
+  border: 1px solid var(--border);
+  border-radius: 1px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.6);
+}
+ul.songs li {
+  padding: 12px 14px;
+  border-bottom: 1px dashed var(--divider);
+  display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  transition: background-color 100ms;
+}
+ul.songs li:last-child { border-bottom: none; }
+ul.songs li:hover { background: var(--red-wash); }
+
+.info { flex: 1; min-width: 0; overflow: hidden; }
+.artist {
+  color: var(--ink-bright);
+  font-weight: 600;
+  font-size: 15px;
+}
+.title  {
+  color: var(--ink-muted);
+  font-size: 15px;
+  font-style: italic;
+}
+.disc {
+  color: var(--ink-stamp);
+  font-family: 'Special Elite', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+}
+
+.actions { display: flex; gap: 8px; flex-shrink: 0; }
+
+/* ============================================================
+   Buttons — spray-paint stickers
+   ============================================================ */
+
+button {
+  font-family: 'Special Elite', 'Inter', sans-serif;
+  font-weight: 400;
+  border: none; border-radius: 1px;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 8px 14px;
+  white-space: nowrap;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  transition: background-color 120ms, box-shadow 140ms, transform 80ms;
+}
+button:active { transform: translateY(1px); }
+
+.play-btn {
+  background: var(--red);
+  color: #fff;
+  font-family: 'Permanent Marker', cursive;
+  letter-spacing: 0.05em;
+  font-size: 13px;
+  padding: 7px 14px 6px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.3),
+    0 2px 4px rgba(0, 0, 0, 0.55);
+  transform: rotate(-1deg);
+}
+.play-btn:hover {
+  background: var(--red-bright);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    0 0 18px var(--red-glow),
+    0 2px 6px rgba(0, 0, 0, 0.6);
+  transform: rotate(-1deg) translateY(-1px);
+}
+.play-btn.small { padding: 4px 10px; font-size: 11px; }
+
+.queue-btn {
+  background: transparent;
+  color: var(--red-bright);
+  border: 1.5px solid var(--red-deep);
+  font-family: 'Permanent Marker', cursive;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  padding: 6px 12px;
+  transform: rotate(1deg);
+}
+.queue-btn:hover {
+  background: rgba(255, 59, 47, 0.12);
+  border-color: var(--red);
+  color: #fff;
+  box-shadow:
+    0 0 14px var(--red-glow),
+    0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.empty {
+  color: var(--ink-faint);
+  padding: 26px 0;
+  text-align: center;
+  font-family: 'Special Elite', monospace;
+  font-style: italic;
+  font-size: 13px;
+}
+
+/* ============================================================
+   Queue panel (DJ only) — sheet of paper duct-taped to the wall
+   ============================================================ */
+
+section.queue {
+  margin-top: 40px;
+  padding: 22px 18px 20px;
+  background: rgba(28, 24, 18, 0.97);
+  border: 1px solid var(--border-warm);
+  border-radius: 1px;
+  position: relative;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    inset 0 0 30px rgba(0, 0, 0, 0.4),
+    0 6px 24px rgba(0, 0, 0, 0.65);
+  transform: rotate(-0.3deg);
+}
+
+/* Tape strips at corners — like the bulletin board */
+section.queue::before,
+section.queue::after {
+  content: '';
+  position: absolute;
+  width: 50px; height: 18px;
+  top: -10px;
+  background: rgba(245, 232, 209, 0.18);
+  border: 1px solid rgba(245, 232, 209, 0.1);
+  transform: rotate(-8deg);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+section.queue::before { left: 30px; }
+section.queue::after  { right: 30px; transform: rotate(6deg); }
+
+.queue-header {
+  display: flex; align-items: baseline; justify-content: space-between;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed var(--divider);
+}
+.queue-header h2 {
+  font-family: 'Permanent Marker', cursive;
+  font-weight: 400;
+  font-size: 28px;
+  margin: 0;
+  color: var(--ink-bright);
+  letter-spacing: 0.01em;
+  transform: rotate(-1deg);
+  text-shadow:
+    0 2px 0 rgba(0, 0, 0, 0.5),
+    0 0 10px rgba(255, 59, 47, 0.2);
+}
+.count-badge {
+  display: inline-block; min-width: 26px; text-align: center;
+  background: var(--red);
+  color: #fff;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 13px;
+  margin-left: 10px;
+  letter-spacing: 0;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+    0 0 14px var(--red-glow),
+    0 2px 4px rgba(0,0,0,0.4);
+  transform: rotate(-3deg);
+}
+
+.clear-btn {
+  background: transparent;
+  color: var(--ink-faint);
+  border: 1px solid var(--border);
+  padding: 6px 11px;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+}
+.clear-btn:hover {
+  color: var(--danger);
+  border-color: var(--danger);
+  background: rgba(255, 92, 84, 0.05);
+}
+
+ul.queue-list { list-style: none; padding: 0; margin: 0; }
+.qrow {
+  padding: 10px 10px;
+  border-bottom: 1px dashed var(--divider);
+  display: flex; align-items: center; gap: 10px;
+  background: transparent;
+  transition: background-color 100ms;
+}
+.qrow:last-child { border-bottom: none; }
+.qrow:hover { background: rgba(255, 182, 39, 0.04); }
+
+.drag-handle {
+  color: var(--ink-stamp);
+  font-size: 20px; cursor: grab;
+  padding: 0 4px; line-height: 1;
+  user-select: none;
+  transition: color 80ms, text-shadow 80ms;
+}
+.drag-handle:hover {
+  color: var(--amber);
+  text-shadow: 0 0 8px var(--amber-glow);
+}
+.drag-handle:active { cursor: grabbing; }
+.qrow-chosen { background: rgba(255, 182, 39, 0.1) !important; cursor: grabbing; }
+.qrow-ghost  { opacity: 0.3; }
+
+.qpos {
+  color: var(--ink-stamp);
+  font-family: 'Permanent Marker', cursive;
+  font-size: 14px;
+  min-width: 28px;
+}
+.qinfo { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.qartist { color: var(--ink-bright); font-weight: 600; }
+.qtitle  { color: var(--ink-muted); font-style: italic; }
+
+.remove-btn {
+  background: transparent;
+  color: var(--ink-faint);
+  padding: 4px 10px;
+  font-size: 20px;
+  line-height: 1;
+  letter-spacing: 0;
+}
+.remove-btn:hover {
+  color: var(--danger);
+  background: rgba(255, 92, 84, 0.08);
+}
+
+/* ============================================================
+   Player overlay — Brew 5 neon as the centerpiece backdrop
+   ============================================================ */
+
+.player {
+  position: fixed; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  z-index: 100;
+  padding: 16px;
+  box-sizing: border-box;
+  background:
+    /* dark center → black edges for focus on the canvas */
+    radial-gradient(ellipse 70% 60% at 50% 50%, rgba(0,0,0,0.55) 30%, rgba(0,0,0,0.9) 80%, #000 100%),
+    /* warm red wash at the top — neon glow */
+    radial-gradient(ellipse 80% 40% at 50% -5%, rgba(255, 59, 47, 0.25), transparent 60%),
+    /* Brew 5 as backdrop, heavily dimmed */
+    url('/img/brew5.jpg') center center / cover no-repeat,
+    #050302;
+}
+.player.hidden { display: none; }
+
+.player .now {
+  font-family: 'Permanent Marker', cursive;
+  font-weight: 400;
+  font-size: clamp(24px, 3.4vw, 32px);
+  color: var(--ink-bright);
+  margin-bottom: 6px;
+  max-width: 90%;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transform: rotate(-1deg);
+  text-shadow:
+    0 2px 0 rgba(0, 0, 0, 0.7),
+    0 0 14px rgba(255, 59, 47, 0.5),
+    0 0 28px rgba(255, 59, 47, 0.25);
+}
+
+.up-next {
+  color: var(--ink-stamp);
+  font-family: 'Special Elite', monospace;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  margin-bottom: 22px;
+  text-align: center;
+  max-width: 90vw;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.up-next.has-next {
+  color: var(--red);
+  text-shadow: 0 0 8px var(--red-glow);
+}
+
+.player canvas {
+  width: min(95vw, 900px);
+  aspect-ratio: 300 / 216;
+  height: auto;
+  background: #000;
+  image-rendering: pixelated; image-rendering: crisp-edges;
+  border-radius: 2px;
+  box-shadow:
+    0 0 0 1px rgba(255, 59, 47, 0.3),
+    0 0 0 6px rgba(0, 0, 0, 0.9),
+    0 0 0 7px rgba(84, 64, 45, 0.4),
+    0 18px 80px rgba(0, 0, 0, 0.9),
+    0 0 100px rgba(255, 59, 47, 0.1);
+}
+.player audio { width: min(95vw, 900px); margin-top: 20px; }
+
+.player .close-btn,
+.player .skip-btn {
+  position: absolute; top: 18px;
+  padding: 8px 14px;
+  border-radius: 1px;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+.player .close-btn {
+  right: 22px;
+  background: transparent;
+  color: var(--ink-muted);
+  border: 1px solid var(--border-warm);
+  transform: rotate(1deg);
+}
+.player .close-btn:hover {
+  color: var(--ink);
+  border-color: var(--ink-muted);
+  background: rgba(0, 0, 0, 0.4);
+}
+.player .skip-btn {
+  left: 22px;
+  background: var(--amber);
+  color: #1a1100;
+  transform: rotate(-2deg);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2),
+    0 0 14px var(--amber-glow),
+    0 2px 6px rgba(0, 0, 0, 0.55);
+}
+.player .skip-btn:hover { background: #ffc94d; transform: rotate(-2deg) translateY(-1px); }
+.player .hint {
+  color: var(--ink-faint);
+  font-family: 'Special Elite', monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  margin-top: 18px;
+  text-align: center;
+  max-width: 95%;
+}
+.player .hint strong { color: var(--ink-muted); }
+
+body.player-open { overflow: hidden; }
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (max-width: 520px) {
+  main { padding: 24px 16px 100px; }
+  .wordmark h1 { letter-spacing: -0.01em; }
+  ul.songs li { gap: 8px; padding: 11px 8px; }
+  .actions { flex-direction: column; }
+  .play-btn, .queue-btn { padding: 6px 10px; font-size: 11px; }
+  .disc { display: none; }
+  section.queue { padding: 22px 12px 18px; }
+  .role-pill { display: block; margin: 0 auto 12px; width: fit-content; }
+}

@@ -1,0 +1,46 @@
+<!doctype html>
+<!--
+  AUDIENCE VIEW. http://<server>:3000/
+  A clean "digital songbook": search + preview on your own phone.
+  No queue, no requests, no now-playing — the DJ takes requests in person.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Karaoke List</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Permanent+Marker&family=Special+Elite&family=Rock+Salt&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <!-- Logo: Rocky + Shooter neon as a small pinned photo. -->
+  <div class="logo" title="Karaoke List" aria-label="Logo: Rocky + Shooter neon"></div>
+
+  <main>
+    <header class="wordmark">
+      <h1>Karaoke List</h1>
+      <div class="tagline">Karaoke <span class="dot">&bull;</span> Songbook</div>
+    </header>
+    <p class="sub">Search and preview. To request a song, find the DJ.</p>
+
+    <input id="q" class="search" type="search" placeholder="Search by artist, title, or disc code…" autocomplete="off" autofocus>
+    <div class="status" id="status">Type to search</div>
+
+    <ul class="songs" id="songs"></ul>
+  </main>
+
+  <section id="player" class="player hidden" aria-label="Karaoke player">
+    <button id="close" class="close-btn" title="Close (Esc)">&times; Close</button>
+    <div id="now-playing" class="now">&mdash;</div>
+    <canvas id="canvas" width="300" height="216"></canvas>
+    <audio id="audio" controls preload="auto"></audio>
+    <p id="preview-hint" class="hint">Press <strong>Esc</strong> to close.</p>
+  </section>
+
+  <script type="module" src="/app.js"></script>
+</body>
+</html>
