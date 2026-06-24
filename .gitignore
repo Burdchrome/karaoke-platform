@@ -7,6 +7,7 @@ node_modules/
 # Caches / generated
 .cache/
 library-cache.json
+karaoke-architecture-VIEW.url
 
 # OS
 .DS_Store

@@ -254,8 +254,16 @@ From CLAUDE.md, restated for any agent continuing this work:
 - Could be run once, results cached forever
 
 **Project location (as of 2026-05-16):**
-- The app folder is at `C:\Users\crazy\Desktop\Executive Assistant\Karaoke Project\karaoke-app\` (was previously at `Executive Assistant\karaoke-app\` directly — wrapped in a `Karaoke Project\` parent folder).
+- The app folder is at `Karaoke Project\karaoke-app\` (was previously at
+  `Executive Assistant\karaoke-app\` directly — wrapped in a `Karaoke Project\` parent folder).
 - All commands in the README assume this path.
+
+**Version control (as of 2026-06-23):**
+- Git repo root is `Karaoke Project/` (the parent of `karaoke-app/`), not `karaoke-app/`.
+  Both the app code *and* the root-level docs (this handoff, design brief, inventory,
+  architecture diagram) are tracked in one repo.
+- Remote: `github.com/Burdchrome/karaoke-platform` (private), default branch `main`,
+  direct-to-main history (no PR flow).
 
 **Operational artifacts now in the project:**
 - `karaoke-app/scripts/extract-zips.js` — zip extractor, safe to re-run
