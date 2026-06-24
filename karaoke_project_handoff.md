@@ -1,6 +1,6 @@
 # Karaoke DJ Project — Master Handoff
 
-**Last updated:** 2026-05-15
+**Last updated:** 2026-06-23
 **Supersedes:** `karaoke_dj_handoff.md` (older — pre-inventory, contained open questions now answered)
 **For:** Shooter (Shaeder), a karaoke DJ the user knows personally
 
@@ -265,6 +265,11 @@ From CLAUDE.md, restated for any agent continuing this work:
 - `karaoke-app/README.md` — operational instructions including the Cloudflare Tunnel + auth flow
 - `karaoke_claude_design_brief.md` — design pass brief for next aesthetic iteration
 - `karaoke_shooter_sunday.md` — questions to ask Shooter in person
+- `karaoke-architecture.drawio` / `karaoke-architecture.png` (project root) — system
+  architecture diagram (clients → access → server → drive), built 2026-06-23. Includes
+  the API surface, the songId-vs-entryId model, and the GitHub repo block. Editable in
+  draw.io desktop; re-export PNG via the CLI. The hand-off companion to this doc for the
+  two-minute visual tour.
 
 **Verified working (v1):**
 - Two roles: audience at `/`, DJ at `/dj`. Audience has zero queue/now-playing UI by design (per Shooter's preference for pen-and-paper requests).
