@@ -4,6 +4,30 @@ A running record of manual test sessions against the karaoke server. Each sessio
 
 ---
 
+## Session: 2026-07-07c (dedupe at load)
+
+### What changed
+
+1. **Dedupe at load** (`server/index.js`) — after sorting, one pass keeps the
+   first copy per artist+title (blank artists key on filename) and counts the
+   rest as `versions`. Cache untouched — delete the block + restart to undo.
+2. **`versions` exposed** in `/api/songs` results.
+
+### Test cases
+
+| # | What | Expected | Pass/Fail | Notes |
+|---|------|----------|-----------|-------|
+| 1 | `/api/health` | songCount drops to ~43k | ✅ | 65,832 → 43,335 |
+| 2 | search "set fire to the rain" | 1 row, versions=12 | ✅ | was 12 rows |
+| 3 | stream kept copy | plays | ✅ | HEAD on /api/stream/:id/cdg ok |
+
+### Follow-ups
+
+- Version picker (choose disc per song) deferred until Shooter asks —
+  `ponytail:` comment marks the spot in index.js.
+
+---
+
 ## Session: 2026-07-07b (extraction remainder + sort)
 
 ### What changed

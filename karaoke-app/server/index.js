@@ -74,11 +74,28 @@ app.use(
 );
 
 // Load library before listening. Built from cache after first scan.
-// Sorted artist → title so search results group naturally (duplicates land
-// adjacent). Blank-artist entries sort last instead of topping every list.
-const songs = (await loadLibrary()).sort((a, b) =>
+// Sorted artist → title so search results group naturally. Blank-artist
+// entries sort last instead of topping every list.
+const allSongs = (await loadLibrary()).sort((a, b) =>
   (a.artist || '￿').localeCompare(b.artist || '￿') || a.title.localeCompare(b.title)
 );
+
+// Dedupe at load: the drive has whole folders copied around, so ~1/3 of
+// entries are extra copies of the same artist+title. Keep the first copy,
+// count the rest as `versions`. Blank-artist entries key on filename so
+// unrelated songs that share a title don't collapse into each other.
+// The cache keeps every copy — rescan-free and reversible by deleting this block.
+// ponytail: picks an arbitrary version; add a version picker if Shooter
+// ever asks for a specific disc.
+const seen = new Map();
+for (const s of allSongs) {
+  const key = `${(s.artist || s.filename).toLowerCase()}|${s.title.toLowerCase()}`;
+  const first = seen.get(key);
+  if (first) first.versions++;
+  else seen.set(key, Object.assign(s, { versions: 1 }));
+}
+const songs = [...seen.values()];
+logger.info(`Deduped ${allSongs.length} entries → ${songs.length} unique songs`);
 
 // O(1) lookup by id for the stream route. The array is for ordered iteration
 // (search), the map is for direct addressing (streaming).
