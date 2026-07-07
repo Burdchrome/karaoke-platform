@@ -31,8 +31,8 @@ export function makeSongsRouter(songs) {
     res.json({
       total: songs.length,
       matched: matches.length,
-      results: matches.slice(0, limit).map(({ id, artist, title, discCode, filename }) => ({
-        id, artist, title, discCode, filename,
+      results: matches.slice(0, limit).map(({ id, artist, title, discCode, filename, versions }) => ({
+        id, artist, title, discCode, filename, versions,
       })),
     });
   });

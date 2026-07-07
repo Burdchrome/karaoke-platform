@@ -3,10 +3,9 @@
 Local karaoke platform for Shooter's DJ gigs. Serves CDG+MP3 pairs from
 `E:\karaoke` to any browser on the local Wi-Fi.
 
-**Library:** 65,832 paired songs as of last scan (2026-07-07; all zips
-extracted except 4 corrupt ones — see `extract-zips.log`). Roughly a third
-are duplicate artist+title copies across pack folders; dedupe is an open
-Phase 3 question.
+**Library:** 43,335 unique songs (from 65,832 files on disk — duplicate
+artist+title copies are collapsed at load; each song carries a `versions`
+count). All zips extracted except 4 corrupt ones — see `extract-zips.log`.
 **Two roles:** audience at `/`, DJ at `/dj`.
 
 ---
@@ -57,9 +56,8 @@ To stop: press `Ctrl+C` in the terminal.
 - **Metadata cleanup** — artist/title labels are sometimes swapped or blank.
   Search-by-filename catches these so songs are still findable. Phase 3 will
   replace the regex with a disc-code-lookup pipeline.
-- **Duplicates** — ~23k entries are extra copies of the same artist+title
-  (some even the same disc code from copied folders). Collapse at display
-  time or clean the drive — undecided.
+- **Version picker** — dedupe keeps an arbitrary copy of each song; if a
+  specific disc's arrangement is ever wanted, expose the `versions` list.
 - **4 corrupt zips** failed extraction (truncated downloads) — re-source or ignore.
 - **52 CDG orphans** (matched MP3 missing) — recoverable later.
 - **Queue persistence** — state is lost on server restart. Fine for a 4-hour
