@@ -96,6 +96,14 @@ cloudflared --version
 
 ### Every time you want to share
 
+**Step 0 — dependency audit** (per ADR 0005: the tunnel is the trust boundary):
+
+```
+npm audit
+```
+
+Fix anything moderate or worse (`npm audit fix`) before exposing the app.
+
 **Terminal 1 — start the server with a DJ password:**
 
 Git Bash:
