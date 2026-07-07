@@ -17,10 +17,9 @@ const CACHE_FILE = path.join(process.cwd(), 'library-cache.json');
 
 /**
  * Walk a directory recursively and return all file paths.
- * We do this manually (not glob) to keep dependencies minimal and to log progress
- * on the slow USB drive walk.
+ * We do this manually (not glob) to keep dependencies minimal.
  */
-async function walk(dir, results = [], depth = 0) {
+async function walk(dir, results = []) {
   let entries;
   try {
     entries = await fs.readdir(dir, { withFileTypes: true });
@@ -32,7 +31,7 @@ async function walk(dir, results = [], depth = 0) {
   for (const entry of entries) {
     const full = path.join(dir, entry.name);
     if (entry.isDirectory()) {
-      await walk(full, results, depth + 1);
+      await walk(full, results);
     } else if (entry.isFile()) {
       results.push(full);
     }

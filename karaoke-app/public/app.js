@@ -230,11 +230,7 @@ if (IS_DJ) {
 
   $clearQueueBtn.addEventListener('click', async () => {
     if (!confirm('Clear the entire queue?')) return;
-    const r = await fetch('/api/queue');
-    const data = await r.json();
-    await Promise.all(data.queue.map(e =>
-      fetch(`/api/queue/${encodeURIComponent(e.id)}`, { method: 'DELETE' })
-    ));
+    await fetch('/api/queue', { method: 'DELETE' });
     refreshQueue();
   });
 

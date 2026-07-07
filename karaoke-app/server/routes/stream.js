@@ -25,19 +25,16 @@ export function makeStreamRouter(songsById) {
       return res.status(404).json({ error: 'song not found' });
     }
 
-    let filePath, contentType;
+    let filePath;
     if (type === 'mp3') {
-      filePath = song.mp3Path;
-      contentType = 'audio/mpeg';
+      filePath = song.mp3Path; // sendFile infers audio/mpeg from the extension
     } else if (type === 'cdg') {
       filePath = song.cdgPath;
-      contentType = 'application/octet-stream'; // CDG has no registered MIME type
+      // CDG has no registered MIME type — sendFile can't infer it.
+      res.setHeader('Content-Type', 'application/octet-stream');
     } else {
       return res.status(400).json({ error: 'type must be mp3 or cdg' });
     }
-
-    // Explicit headers — sendFile will add Content-Length / Accept-Ranges itself.
-    res.setHeader('Content-Type', contentType);
 
     res.sendFile(filePath, { acceptRanges: true, dotfiles: 'allow' }, (err) => {
       if (err && !res.headersSent) {

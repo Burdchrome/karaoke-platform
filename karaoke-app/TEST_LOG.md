@@ -4,6 +4,39 @@ A running record of manual test sessions against the karaoke server. Each sessio
 
 ---
 
+## Session: 2026-07-07 (ponytail review cleanup)
+
+### What changed since last verified state
+
+1. **`DELETE /api/queue` — one-shot clear** (`server/routes/queue.js`, `public/app.js`)
+   - Server's existing `clearQueue()` finally has a route.
+   - DJ "Clear all" now sends 1 request instead of fetch-queue + N deletes.
+2. **`stream.js`** — Content-Type header only set for `.cdg` (sendFile infers mp3).
+3. **`library.js`** — removed unused `depth` param from `walk()`.
+4. **Repo** — deleted 4 `Visual Board` JPGs that were byte-identical to `public/img/`.
+5. **README** — fixed drift: auto-advance is manual-skip by design (was listed
+   as auto); DJ auth exists (was listed as deferred); added `DELETE /api/queue`
+   to API table; added "HOWTO: add new songs" and a documentation map.
+
+### Test cases
+
+| # | What | Expected | Pass/Fail | Notes |
+|---|------|----------|-----------|-------|
+| 1 | `npm start` (port 3456) | Boots from cache | ✅ | 65,672 songs, `/api/health` ok |
+| 2 | POST two songs to queue | queue length 2 | ✅ | via API |
+| 3 | `DELETE /api/queue` | returns `removed: 2`, queue empty after | ✅ | new endpoint |
+| 4 | `node --check` on all edited JS | no syntax errors | ✅ | |
+
+Not re-run: browser UI flows (search/play/drag) — untouched by these changes
+except the Clear All button, which now hits the verified endpoint.
+
+### Follow-ups
+
+- Test 11 in the 2026-05-24 session ("auto-advances on song end") describes
+  removed behavior — auto-advance is intentionally off. Don't re-run it as written.
+
+---
+
 ## Session: 2026-05-24
 
 ### What changed since last verified state
