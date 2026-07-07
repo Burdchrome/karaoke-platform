@@ -74,7 +74,11 @@ app.use(
 );
 
 // Load library before listening. Built from cache after first scan.
-const songs = await loadLibrary();
+// Sorted artist → title so search results group naturally (duplicates land
+// adjacent). Blank-artist entries sort last instead of topping every list.
+const songs = (await loadLibrary()).sort((a, b) =>
+  (a.artist || '￿').localeCompare(b.artist || '￿') || a.title.localeCompare(b.title)
+);
 
 // O(1) lookup by id for the stream route. The array is for ordered iteration
 // (search), the map is for direct addressing (streaming).
