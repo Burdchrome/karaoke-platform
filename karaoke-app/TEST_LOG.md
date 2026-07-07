@@ -4,6 +4,33 @@ A running record of manual test sessions against the karaoke server. Each sessio
 
 ---
 
+## Session: 2026-07-07b (extraction remainder + sort)
+
+### What changed
+
+1. **Ran `extract-zips.js` over all 3,637 zips** — 3,633 ok, 4 corrupt
+   (truncated downloads, listed in `extract-zips.log`).
+2. **Forced rescan** — library went 65,672 → **65,832** (+160). The old
+   "3,477 packs unextracted" claim was stale; the remainder was tiny.
+3. **Sort at load** (`server/index.js`) — songs sorted artist → title once
+   at startup; blank-artist entries sort last.
+
+### Test cases
+
+| # | What | Expected | Pass/Fail | Notes |
+|---|------|----------|-----------|-------|
+| 1 | rescan | cache rebuilt, count grows | ✅ | 137,757 files walked, 65,832 paired |
+| 2 | `GET /api/songs?limit=5` | alphabetical, not disk order | ✅ | |
+| 3 | search "set fire to the rain" | dupes adjacent | ✅ | 12 copies incl. same-disc repeats (MRH81-17 ×4) |
+| 4 | `/api/health` | songCount 65,832 | ✅ | |
+
+### Follow-ups
+
+- Dedupe decision open: same-disc-code repeats (folder copies) are safe to
+  collapse; different-disc-code copies may be different arrangements — ask Shooter.
+
+---
+
 ## Session: 2026-07-07 (ponytail review cleanup)
 
 ### What changed since last verified state
