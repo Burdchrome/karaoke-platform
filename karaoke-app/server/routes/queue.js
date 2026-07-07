@@ -5,7 +5,7 @@
 // the SSE endpoint sends.
 
 import express from 'express';
-import { listQueue, addToQueue, removeFromQueue, moveEntry, enrichQueueEntry } from '../queue.js';
+import { listQueue, addToQueue, removeFromQueue, clearQueue, moveEntry, enrichQueueEntry } from '../queue.js';
 
 export function makeQueueRouter(songsById) {
   const router = express.Router();
@@ -27,6 +27,11 @@ export function makeQueueRouter(songsById) {
     }
     const entry = addToQueue(songId, requestedBy);
     res.status(201).json({ entry: enrich(entry) });
+  });
+
+  // Clear the whole queue in one shot (DJ "Clear queue" button).
+  router.delete('/', (req, res) => {
+    res.json({ removed: clearQueue() });
   });
 
   router.delete('/:entryId', (req, res) => {

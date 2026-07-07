@@ -43,8 +43,9 @@ To stop: press `Ctrl+C` in the terminal.
 - Queue panel showing what's coming up, with live count
 - Per-entry: drag-to-reorder (≡), play (▶), remove (×)
 - `Clear all` button for the queue
-- Auto-advance when a song ends → next queued song plays automatically
-- Manual `⏭ Skip` button mid-playback
+- Manual `⏭ Skip` button — pops the head of the queue and plays it.
+  (Auto-advance on song end is intentionally OFF — Shooter talks between
+  songs and clicks into each one himself.)
 - `Up next` indicator inside the player overlay
 - Real-time sync between multiple DJ tabs/devices (Server-Sent Events)
 
@@ -58,7 +59,6 @@ To stop: press `Ctrl+C` in the terminal.
 - **Queue persistence** — state is lost on server restart. Fine for a 4-hour
   gig; SQLite/JSON-on-disk if needed later.
 - **Play history** — what's been played isn't recorded yet.
-- **DJ vs audience auth** — `/dj` is unguarded (security through obscurity).
 - **Separate display screen** — for showing lyrics on a TV while DJ manages the
   queue on the laptop.
 - **Favicon** — Firefox auto-requests one, we 404.
@@ -166,16 +166,22 @@ Don't put URL + creds in the same message.
 
 ---
 
-## Force a library rescan
+## HOWTO: add new songs
 
-If you add/remove files on the drive:
-
-```
-FORCE_RESCAN=1 npm start          # Git Bash
-$env:FORCE_RESCAN=1; npm start    # PowerShell
-```
-
-Or delete `library-cache.json` and start normally.
+1. Copy the new CDG+MP3 pairs (or zips of them) anywhere under `E:\karaoke`.
+2. If they arrived as zips, extract them in place:
+   ```
+   node scripts/extract-zips.js
+   ```
+   (Needs `unzip` on PATH — Git Bash has it. Safe to re-run; never overwrites.)
+3. Force a library rescan:
+   ```
+   FORCE_RESCAN=1 npm start          # Git Bash
+   $env:FORCE_RESCAN=1; npm start    # PowerShell
+   ```
+   Or delete `library-cache.json` and start normally.
+4. Sanity check: the startup log prints the new song count, and
+   `/api/health` reports it too.
 
 ---
 
@@ -213,10 +219,29 @@ karaoke-app/
 │   ├── dj.html           # DJ: same plus queue management
 │   ├── app.js            # one script for both pages, DOM-detects role
 │   └── styles.css        # shared styles
+├── scripts/
+│   └── extract-zips.js   # one-off: extract karaoke pack zips in place
 ├── library-cache.json    # auto-generated; delete to force rescan
 ├── server.log            # auto-generated; structured JSON logs
+├── TEST_LOG.md           # manual test sessions (what changed, what was verified)
 └── README.md             # this file
 ```
+
+## Documentation map
+
+Everything an outside reader needs, in reading order:
+
+1. **This README** — what it is, how to run it, HOWTOs, API.
+2. **`TEST_LOG.md`** — what's been manually verified, session by session.
+3. **`../karaoke-architecture.png`** (+ `.drawio` source) — system diagram.
+4. **`../karaoke_project_handoff.md`** — full project state, roadmap, and
+   the *why* behind decisions. Internal working doc; start here if you're
+   picking up development.
+5. **`../karaoke_claude_design_brief.md`** — visual/design direction.
+
+Rule of thumb: the README documents the *system*, the handoff documents the
+*project*. If a fact is about how the app works today, it belongs here; if
+it's about where the work is going, it belongs in the handoff.
 
 ## API summary
 
@@ -227,7 +252,8 @@ GET    /api/stream/:id/mp3               # stream audio (byte-range)
 GET    /api/stream/:id/cdg               # stream CDG bytes
 
 GET    /api/queue                        # current queue + enriched metadata
-POST   /api/queue        {songId}        # append to queue
+POST   /api/queue        {songId, requestedBy?}   # append to queue
+DELETE /api/queue                        # clear the whole queue
 DELETE /api/queue/:entryId               # remove one entry
 POST   /api/queue/move   {entryId, newPosition}   # atomic single-move
 
