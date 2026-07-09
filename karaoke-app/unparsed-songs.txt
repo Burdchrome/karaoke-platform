@@ -1,380 +1,92 @@
-UNPARSED SONGS REPORT — Phase 3a after no-disc fallback
-Total unparsed: 875 of 65672 (1.3%)
+# Unparsed songs (empty artist) — regenerated 2026-07-09
+# 875 of 65832 songs (1.3%)
 
-These are still searchable by filename — they just show no artist label.
-If you want me to fix more of these, tell me which prefix(es) below are
-real packs that follow a specific pattern.
+## stray-space disc code (e.g. "SC 8385-15 ...") (77)
+Ah 8012-01 - Johnny Mathis - Chances Are
+Ah 8012-01 - Johnny Mathis - Chances Are
+Ah 8012-01 - Johnny Mathis - Chances Are
+CB 7002-03
+CB 7002-03
+CB 7002-03
+CB 7002-14
+CB 7002-14
+CB 7002-14
+CBEP 454-1-06
+CBEP 454-1-06
+CBEP 454-1-06
+CBEP 454-1-15
+CBEP 454-1-15
+CBEP 454-1-15
+CBEP 459-3-05
+CBEP 459-3-05
+CBEP 459-3-05
+CBEP 462-01-12
+CBEP 462-01-12
+CBEP 462-01-12
+LEG 074-07 - Humperdink, Engelbert - Am I Easy To Forget
+LEG 074-07 - Humperdink, Engelbert - Am I Easy To Forget
+LEG 074-07 - Humperdink, Engelbert - Am I Easy To Forget
+Mm 6070-11 - Elvis - I'll Remember You
+Mm 6070-11 - Elvis - I'll Remember You
+Mm 6371-03 - Elvis - Do You Know Who I Am
+Mm 6371-03 - Elvis - Do You Know Who I Am
+Mm 6371-03 - Elvis - Do You Know Who I Am
+PS 1023-12 - Perry Como - Santa Claus Is Coming To Town
+PS 1023-15 - Bing Crosby - Home For The Holidays
+PS 1023-19 - Tony Bennett - Have Yourself A Merry Little Christmas
+PS 1023-20 - Perry Como - Silver Bells
+PS 1023-22 - Perry Como - Silent Night
+PS 1032-15 - Nat King Cole - Somewhere Along The Way
+PS 1032-19 - Nat King Cole - Smile
+PS 1332-17 - Spice Girls - Saturday Night Divas
+PS 1332-18 - Spice Girls - Never Give Up On The Good Times
+PS 1388-11 - Frank Sinatra - That Old Feeling
+PS 1388-12 - Frank Sinatra - The Last Dance
+PS 1388-14 - Frank Sinatra - I Got It Bad (& That Ain't Good)
+PS 1388-15 - Frank Sinatra - Nancy (With The Laughing Face)
+PS 1388-16 - Frank Sinatra - I Thought About You
+PS 1388-17 - Frank Sinatra - It Happened In Monterey
+PS 1388-18 - Frank Sinatra - We'll Be Together Again
+PS 1388-20 - Frank Sinatra - I Have Dreamed
+PSCD 1192 I see your face before me Sinatra 02
+PSCD 1192 I see your face before me Sinatra 02
+PSCD 1192 I see your face before me Sinatra 02
+SC 7555-06 - Watson, Gene - Farewell Party
+SC 7555-06 - Watson, Gene - Farewell Party
+SC 7555-06 - Watson, Gene - Farewell Party
+SC 8385-15
+SC 8385-15
+SC 8385-15
+Sc 2128-02 - Let There Be Peace On Earth
+Sc 2128-02 - Let There Be Peace On Earth
+Sc 2128-02 - Let There Be Peace On Earth
+Sc 8327-11 - Hendrix, Jimi - Red House
+Sc 8327-11 - Hendrix, Jimi - Red House
+Sc 8327-11 - Hendrix, Jimi - Red House
+TTU 066-03 - Chipmunks - Chipmunk Song
+TTU 066-05 - Jose Filiziano - Feliz Navidad
+TTU 130-03 - Claudia Barry - Boogie Woogie Dancing Shoes
+TTU 130-18 - Van McCoy - The Hustle
+ZKH 009_CD-13 - Mud - Lonely This Christmas
+ZKH 009_CD-13 - Mud - Lonely This Christmas
+ZKH 009_CD-13 - Mud - Lonely This Christmas
+ZM 009-05 - Essex, David - Winter's Tale, A
+ZM 009-05 - Essex, David - Winter's Tale, A
+ZM 009-05 - Essex, David - Winter's Tale, A
+cbep 453-1-13 - where've you been - kathy mattea
+cbep 453-1-13 - where've you been - kathy mattea
+cbep 453-1-13 - where've you been - kathy mattea
+lg 200-03
+lg 200-03
+lg 200-03
 
-=== TOP CLUSTERS ===
-
---- Prefix 'SC': 276 songs ---
-  SC 8385-15
-  SC 8385-15
-  SC 7555-06 - Watson, Gene - Farewell Party
-  SC819607
-  SC8825-13 Sinatra, Frank  Summer Wind
-
---- Prefix '(no-prefix)': 163 songs ---
-  632215
-  632212
-  09_Queen_Crazy_Little_Thing_Called_Love
-  609814 ~ Easy For Me To Say - Clint Black & Lisa Hartman Black
-  632207
-
---- Prefix 'G': 36 songs ---
-  G05989 Teddy Bear
-  G05990 Surrender
-  G05993 Suspicion
-  G06016 Can't Help Falling In Love
-  G06075 Good Luck Charm
-
---- Prefix 'track': 17 songs ---
-  track07
-  track08
-  track06
-  track07
-  track08
-
---- Prefix 'PS': 17 songs ---
-  PS 1023-12 - Perry Como - Santa Claus Is Coming To Town
-  PS 1023-15 - Bing Crosby - Home For The Holidays
-  PS 1023-19 - Tony Bennett - Have Yourself A Merry Little Christmas
-  PS 1023-20 - Perry Como - Silver Bells
-  PS 1023-22 - Perry Como - Silent Night
-
---- Prefix 'sc': 15 songs ---
-  sc7596_09_berry__john__your_love_amazes_me
-  sc7596_10_wright__chely__single_white_female
-  sc7596_11_carter__deana__strawberry_wine
-  sc8348-06_stay_i_missed_you_
-  sc8793_02_clarkson_kelly_before_your_love
-
---- Prefix 'CBEP': 12 songs ---
-  CBEP 454-1-06
-  CBEP 459-3-05
-  CBEP 454-1-06
-  CBEP 459-3-05
-  CBEP 454-1-15
-
---- Prefix 'DK': 12 songs ---
-  DK067-15
-  DK11-04
-  DK801_19_Gospel_-_I'll_Fly_Away
-  DK801_09_Gospel_-_In_The_Garden
-  DK067-15
-
---- Prefix 'CB': 11 songs ---
-  CB-9066-07
-  CB-9066-09
-  CB 7002-03
-  CB 7002-14
-  CB-9066-07
-
---- Prefix 'Sc': 9 songs ---
-  Sc Brick 04 04 7558-09 - Ray Price - I've Got A New Heartache
-  Sc 8327-11 - Hendrix, Jimi - Red House
-  Sc 2128-02 - Let There Be Peace On Earth
-  Sc Brick 04 04 7558-09 - Ray Price - I've Got A New Heartache
-  Sc 8327-11 - Hendrix, Jimi - Red House
-
---- Prefix 'cb': 9 songs ---
-  cb90030-05
-  cb60126-02
-  cb60041-01
-  cb90030-05
-  cb60126-02
-
---- Prefix 'If': 8 songs ---
-  If I Could See The World Patsy Cline
-  If You Ever Have Forever In Mind Vince Gill
-  If I Could See The World Patsy Cline
-  If You Ever Have Forever In Mind Vince Gill
-  If You Know What I Mean
-
---- Prefix 'Blink': 8 songs ---
-  Blink 182 - All The Small Things
-  Blink 182 - Dammit
-  Blink 182 - First Date
-  Blink 182 - Man Overboard
-  Blink 182 - Rock Show
-
---- Prefix 'Sound': 6 songs ---
-  Sound_Choice_7518_10
-  Sound_Choice_7518_10
-  Sound Choice 8345 -12
-  Sound Choice 8345 -12
-  Sound_Choice_7518_10
-
---- Prefix 'Legends': 6 songs ---
-  Legends 046 16 Jim Reeves - Am I Loosing You
-  Legends 046 16 Jim Reeves - Am I Loosing You
-  Legends 046 02 Jim Reeves - I Love You Because
-  Legends 046 02 Jim Reeves - I Love You Because
-  Legends 046 16 Jim Reeves - Am I Loosing You
-
---- Prefix 'Disc': 6 songs ---
-  Disc #NSAV7001 - Track #05 - Autumn Leaves - Cole, Nat  King 
-  Disc #NSAV7001 - Track #05 - Autumn Leaves - Cole, Nat  King 
-  Disc #Mm6019 - Track #08 - If Tomorrow Never Comes - Brooks, Garth
-  Disc #Mm6019 - Track #08 - If Tomorrow Never Comes - Brooks, Garth
-  Disc #NSAV7001 - Track #05 - Autumn Leaves - Cole, Nat  King 
-
---- Prefix 'MM': 6 songs ---
-  MM6371-101
-  MM6218 08 Just A Closer Walk With Thee Patsy Cline
-  MM6371-101
-  MM6218 08 Just A Closer Walk With Thee Patsy Cline
-  MM6371-101
-
---- Prefix 'cdg': 6 songs ---
-  cdg13
-  cdg06
-  cdg13
-  cdg06
-  cdg13
-
---- Prefix 'Mm': 5 songs ---
-  Mm 6371-03 - Elvis - Do You Know Who I Am
-  Mm 6070-11 - Elvis - I'll Remember You
-  Mm 6371-03 - Elvis - Do You Know Who I Am
-  Mm 6371-03 - Elvis - Do You Know Who I Am
-  Mm 6070-11 - Elvis - I'll Remember You
-
---- Prefix 'DKK': 5 songs ---
-  DKK003_11
-  DKK002_08
-  DKK002_08
-  DKK003_11
-  DKK002_08
-
---- Prefix 'PHM': 5 songs ---
-  PHM-0502C-05
-  PHM-0502C-05
-  PHM0406 06 - Israel Kamakawiwo'ole - Over The Rainbow
-  PHM0406 07 - Alanis Morissette - Everything
-  PHM-0502C-05
-
---- Prefix 'dk': 5 songs ---
-  dk_05-16
-  dk67-15
-  dk_05-16
-  dk_05-16
-  dk67-15
-
---- Prefix 'You': 5 songs ---
-  You belong to my heart
-  You're My Angel
-  You're My Angel
-  You belong to my heart
-  You're My Angel
-
---- Prefix 'ZOOM': 4 songs ---
-  ZOOM011_16
-  ZOOM011_16
-  ZOOM011_16
-  ZOOM011_16
-
---- Prefix 'That': 4 songs ---
-  That's Someone You Never Forget +0
-  That's Someone You Never Forget +0
-  That Summer
-  That's Someone You Never Forget +0
-
---- Prefix 'SB': 4 songs ---
-  SB20036 Miranda Lambert - More Like Her
-  SB25388 Carrie Underwood - Good Girl
-  SB20036 Miranda Lambert - More Like Her
-  SB25388 Carrie Underwood - Good Girl
-
---- Prefix 'love': 4 songs ---
-  love her madly
-  love me two times
-  love her madly
-  love me two times
-
---- Prefix 'the': 4 songs ---
-  the end
-  the beaches of cheyenne
-  the fever
-  the night i called the old man out
-
---- Prefix 'SF': 4 songs ---
-  SF277_10_Beyonce_-_Halo
-  SF03238 Tears For Fears - Mad World
-  SF06893 Script - Man Who Can't Be Moved
-  SF03238 Tears For Fears - Mad World
-
---- Prefix 'TTU': 4 songs ---
-  TTU 066-03 - Chipmunks - Chipmunk Song
-  TTU 066-05 - Jose Filiziano - Feliz Navidad
-  TTU 130-03 - Claudia Barry - Boogie Woogie Dancing Shoes
-  TTU 130-18 - Van McCoy - The Hustle
-
---- Prefix 'Lorrie': 3 songs ---
-  Lorrie Morgan-A Picture Of You Without Me(MM6017-02)
-  Lorrie Morgan-A Picture Of You Without Me(MM6017-02)
-  Lorrie Morgan-A Picture Of You Without Me(MM6017-02)
-
---- Prefix 'LEG': 3 songs ---
-  LEG 074-07 - Humperdink, Engelbert - Am I Easy To Forget
-  LEG 074-07 - Humperdink, Engelbert - Am I Easy To Forget
-  LEG 074-07 - Humperdink, Engelbert - Am I Easy To Forget
-
---- Prefix 'Among': 3 songs ---
-  Among My Souvenirs Marty Robbins
-  Among My Souvenirs Marty Robbins
-  Among My Souvenirs Marty Robbins
-
---- Prefix 'softly': 3 songs ---
-  softly
-  softly
-  softly
-
---- Prefix 'Ah': 3 songs ---
-  Ah 8012-01 - Johnny Mathis - Chances Are
-  Ah 8012-01 - Johnny Mathis - Chances Are
-  Ah 8012-01 - Johnny Mathis - Chances Are
-
---- Prefix 'Gentle': 3 songs ---
-  Gentle On My Mind -- Elvis
-  Gentle On My Mind -- Elvis
-  Gentle On My Mind -- Elvis
-
---- Prefix 'hush': 3 songs ---
-  hush, not a word to mary
-  hush, not a word to mary
-  hush, not a word to mary
-
---- Prefix 'rb': 3 songs ---
-  rb01403
-  rb01403
-  rb01403
-
---- Prefix 'i': 3 songs ---
-  i will love you all my life
-  i will love you all my life
-  i will love you all my life
-
---- Prefix 'PSCD': 3 songs ---
-  PSCD 1192 I see your face before me Sinatra 02
-  PSCD 1192 I see your face before me Sinatra 02
-  PSCD 1192 I see your face before me Sinatra 02
-
-=== FULL LIST (875 filenames) ===
-._G06012 - Blue Jean - David Bowie
-._G08592 - Thursday's Child - David Bowie
-._G10272 - Loving The Alien - David Bowie
-._G18677 - I'm Going Slightly Mad - Queen
-01.-Alyssa-Reid-Feat.-Jump-Smokers-Alone-Again-(SF313-01)
-01.-Alyssa-Reid-Feat.-Jump-Smokers-Alone-Again-(SF313-01)
-01.-Christina-Aguilera-(Burlesque)-Bound-To-You-(SFKK057-04)
-01.-Christina-Aguilera-(Burlesque)-Bound-To-You-(SFKK057-04)
-01.-Christina-Aguilera-(Burlesque)-Bound-To-You-(SFKK057-04)
-01.-Faith-Hill-Where-Are-You-Christmas-(MW844-12)
-01.-Faith-Hill-Where-Are-You-Christmas-(MW844-12)
-01.-Lady-Gaga-Teeth-(SF314-01)
-01.-Lady-Gaga-Teeth-(SF314-01)
-01.-Notorious-B.I.G.-Juicy-(It's-All-Good)-(SFDT-1394)
-01.-Notorious-B.I.G.-Juicy-(It's-All-Good)-(SFDT-1394)
-02.-Calvin-Harris-Feat.-Ne-Yo-Let's-Go-(SF314-02)
-02.-Calvin-Harris-Feat.-Ne-Yo-Let's-Go-(SF314-02)
-02.-JLS-Proud-(SF313-02)
-02.-JLS-Proud-(SF313-02)
-03.-Brad-Paisley-and-Carrie-Underwood-Remind-Me-(SFDT-2436)
-03.-Brad-Paisley-and-Carrie-Underwood-Remind-Me-(SFDT-2436)
-03.-Matt-Cardle-Amazing-(SF313-03)
-03.-Matt-Cardle-Amazing-(SF313-03)
-03.-Rihanna-Where-Have-You-Been-(SF314-03)
-03.-Rihanna-Where-Have-You-Been-(SF314-03)
-04.-Jason-Aldean-Dirt-Road-Anthem-(SFDT-1987)
-04.-Jason-Aldean-Dirt-Road-Anthem-(SFDT-1987)
-04.-Katy-Perry-Part-Of-Me-(SF313-04)
-04.-Katy-Perry-Part-Of-Me-(SF313-04)
-04.-Madonna-Girl-Gone-Wild-(SF314-04)
-04.-Madonna-Girl-Gone-Wild-(SF314-04)
-04.-Rihanna-California-King-Bed-(SF303V-04)
-04.-Rihanna-California-King-Bed-(SF303V-04)
-05.-Dappy-Feat.-Brian-May-Rock-Star-(Clean)-(SF313-05)
-05.-Dappy-Feat.-Brian-May-Rock-Star-(Clean)-(SF313-05)
-05.-Nicki-Minaj-Starships-(Clean)-(SF314-05)
-05.-Nicki-Minaj-Starships-(Clean)-(SF314-05)
-06.-Madonna-Feat.-Nicki-Minaj-and-MIA-Give-Me-All-Your-Luvin'-(SF313-06)
-06.-Madonna-Feat.-Nicki-Minaj-and-MIA-Give-Me-All-Your-Luvin'-(SF313-06)
-06.-Marcus-Collins-Seven-Nation-Army-(SF314-06)
-06.-Marcus-Collins-Seven-Nation-Army-(SF314-06)
-07.-Cher-Lloyd-Feat.-Astro-Want-U-Back-(SF314-07)
-07.-Cher-Lloyd-Feat.-Astro-Want-U-Back-(SF314-07)
-07.-Rizzle-Kicks-Traveller's-Chant-(SF313-07)
-07.-Rizzle-Kicks-Traveller's-Chant-(SF313-07)
-08.-Olly-Murs-Oh-My-Goodness-(SF314-08)
-08.-Olly-Murs-Oh-My-Goodness-(SF314-08)
-08.-Rebecca-Ferguson-Too-Good-To-Lose-(SF313-08)
-08.-Rebecca-Ferguson-Too-Good-To-Lose-(SF313-08)
-09.-Arctic-Monkeys-R-U-Mine-(SF314-09)
-09.-Arctic-Monkeys-R-U-Mine-(SF314-09)
-09.-Chris-Brown-Turn-Up-The-Music-(SF313-09)
-09.-Chris-Brown-Turn-Up-The-Music-(SF313-09)
-09_Queen_Crazy_Little_Thing_Called_Love
-09_Queen_Crazy_Little_Thing_Called_Love
-09_Queen_Crazy_Little_Thing_Called_Love
-10,000 Maniacs - Candy Everybody Wants
-10,000 Maniacs - More Than This
-10,000 Maniacs - These Are The Days
-10.-Coldplay-Charlie-Brown-(SF313-10)
-10.-Coldplay-Charlie-Brown-(SF313-10)
-10.-Will-Young-Losing-Myself-(SF314-10)
-10.-Will-Young-Losing-Myself-(SF314-10)
+## trackNN / numeric-only name (65)
 11
 11
 11
-11.-Bruno-Mars-Count-On-Me-(SF313-11)
-11.-Bruno-Mars-Count-On-Me-(SF313-11)
-11.-Goyte-Eyes-Wide-Open-(SF314-11)
-11.-Goyte-Eyes-Wide-Open-(SF314-11)
-112 - Come See Me
-112 - Dance With Me
-112 - It's Over Now
-112 - Only You
-112 - Peaches And Cream
-112 - U Already Know
-112 - U Already Know
-12.-B.o.B-So-Good-(SF314-12)
-12.-B.o.B-So-Good-(SF314-12)
-12.-Emeli-Sande-Next-To-Me-(SF313-12)
-12.-Emeli-Sande-Next-To-Me-(SF313-12)
 13
 13
 13
-13.-Fun.-Feat.-Janelle-Monáe-We-Are-Young-(SF314-13)
-13.-Fun.-Feat.-Janelle-Monáe-We-Are-Young-(SF314-13)
-13.-Kelly-Rowland-Keep-It-Between-Us-(SF313-13)
-13.-Kelly-Rowland-Keep-It-Between-Us-(SF313-13)
-14.-Kelly-Clarkson-Dark-Side-(SF314-14)
-14.-Kelly-Clarkson-Dark-Side-(SF314-14)
-14.-Scissor-Sisters-Vs.-Krystal-Pepsy-Shady-Love-(SF313-14)
-14.-Scissor-Sisters-Vs.-Krystal-Pepsy-Shady-Love-(SF313-14)
-15.-Alexandra-Burke-Feat.-Erick-Morillo-Elephant-(SF314-15)
-15.-Alexandra-Burke-Feat.-Erick-Morillo-Elephant-(SF314-15)
-15.-Stooshe-Feat.-Travie-McCoy-Love-Me-(SF313-15)
-15.-Stooshe-Feat.-Travie-McCoy-Love-Me-(SF313-15)
-16.-Jason-Mraz-I-Won't-Give-Up-(SF314-16)
-16.-Jason-Mraz-I-Won't-Give-Up-(SF314-16)
-16.-Labrinth-Last-Time-(SF313-16)
-16.-Labrinth-Last-Time-(SF313-16)
-17.-DJ-Fresh-Feat.-Rita-Ora-Hot-Right-Now-(SF313-17)
-17.-DJ-Fresh-Feat.-Rita-Ora-Hot-Right-Now-(SF313-17)
-17.-Gym-Class-Heroes-Feat.-Neon-Hitch-Get-Yourself-Back-Home-(SF314-17)
-17.-Gym-Class-Heroes-Feat.-Neon-Hitch-Get-Yourself-Back-Home-(SF314-17)
-18.-Conor-Maynard-Can't-Say-No-(SF314-18)
-18.-Conor-Maynard-Can't-Say-No-(SF314-18)
-18.-Lil'-Wayne-Feat.-Bruno-Mars-Mirrors-(Clean)-(SF313-18)
-18.-Lil'-Wayne-Feat.-Bruno-Mars-Mirrors-(Clean)-(SF313-18)
-1910 Fruitgum Co. - Simon Says
-311 - All Mixed Up
-311 - Down
-609814 ~ Easy For Me To Say - Clint Black & Lisa Hartman Black
-609814 ~ Easy For Me To Say - Clint Black & Lisa Hartman Black
-609814 ~ Easy For Me To Say - Clint Black & Lisa Hartman Black
 632202
 632202
 632202
@@ -411,33 +123,37 @@ real packs that follow a specific pattern.
 632215
 632215
 632215
-702 - Get It Together
-8133-09
-8133-09
-8133-09
 826201
 826201
 867611
 867611
 867611
-90210-11
-90210-11
-90210-11
-911 - Private Number
-Aerosmith_-_Pink_-_Sc3021-05
-Ah 8012-01 - Johnny Mathis - Chances Are
-Ah 8012-01 - Johnny Mathis - Chances Are
-Ah 8012-01 - Johnny Mathis - Chances Are
+Track 13
+track03
+track05
+track06
+track06
+track06
+track07
+track07
+track07
+track07
+track08
+track08
+track08
+track08
+track09
+track10
+track14
+track15
+
+## no separator at all (no " - ") (445)
+09_Queen_Crazy_Little_Thing_Called_Love
+09_Queen_Crazy_Little_Thing_Called_Love
+09_Queen_Crazy_Little_Thing_Called_Love
 Ain't Going Down (Till The Sun Comes Up)
-alabama song
-alabama song
-alice cooper-poison
-Alice_In_Chains_-_Would_-_TU129-17
-all 4 one-i swear
-alphaville-forever young
 America
 America
-American Honky-Tonk Bar Association
 Among My Souvenirs Marty Robbins
 Among My Souvenirs Marty Robbins
 Among My Souvenirs Marty Robbins
@@ -445,112 +161,24 @@ Another Brick In The Wall
 B04
 B04
 B04
-back door man
-barenaked ladies-its all been done
-beach boys-california girls
-Beautiful Noise
-berlin-take my breath away
-bill withers-lean on me
-Blink 182 - All The Small Things
-Blink 182 - All The Small Things
-Blink 182 - Dammit
-Blink 182 - Dammit
-Blink 182 - First Date
-Blink 182 - Man Overboard
-Blink 182 - Rock Show
-Blink 182 - Rock Show
-blues brothers-rawhide
-blues brothers-riders in the sky
-Bob_&_Tom_Band_-_Blow_Me_A_Kiss
 BOSTON
-break on through
-break on through
-burnin' the roadhouse down
+Beautiful Noise
 Callin' Baton Rouge
-CB 7002-03
-CB 7002-03
-CB 7002-03
-CB 7002-14
-CB 7002-14
-CB 7002-14
-CB-9066-07
-CB-9066-07
-CB-9066-07
-CB-9066-09
-CB-9066-09
-cb60041-01
-cb60041-01
-cb60041-01
-cb60126-02
-cb60126-02
-cb60126-02
-cb90030-05
-cb90030-05
-cb90030-05
-cbep 453-1-13 - where've you been - kathy mattea
-cbep 453-1-13 - where've you been - kathy mattea
-cbep 453-1-13 - where've you been - kathy mattea
-CBEP 454-1-06
-CBEP 454-1-06
-CBEP 454-1-06
-CBEP 454-1-15
-CBEP 454-1-15
-CBEP 454-1-15
-CBEP 459-3-05
-CBEP 459-3-05
-CBEP 459-3-05
-CBEP 462-01-12
-CBEP 462-01-12
-CBEP 462-01-12
-cdg06
-cdg06
-cdg06
-cdg13
-cdg13
-cdg13
-COUNTRY HITS 2007-01 - Josh Turner Feat Trisha Yearwood - Firecracker
 Cracklin' Rose
+DIGGIN' UP BONES
+DIGGIN' UP BONES
+DKK002_08
+DKK002_08
+DKK002_08
+DKK003_11
+DKK003_11
 DangerHighVoltage_ElectricSix_WithoutLeadVocal
 Deftones_Change_In_The_House_Of_Flies
-DIGGIN' UP BONES
-DIGGIN' UP BONES
-Disc #Mm6019 - Track #08 - If Tomorrow Never Comes - Brooks, Garth
-Disc #Mm6019 - Track #08 - If Tomorrow Never Comes - Brooks, Garth
-Disc #Mm6019 - Track #08 - If Tomorrow Never Comes - Brooks, Garth
-Disc #NSAV7001 - Track #05 - Autumn Leaves - Cole, Nat  King 
-Disc #NSAV7001 - Track #05 - Autumn Leaves - Cole, Nat  King 
-Disc #NSAV7001 - Track #05 - Autumn Leaves - Cole, Nat  King 
-DK067-15
-DK067-15
-DK067-15
-DK11-04
-DK11-04
-DK11-04
-dk67-15
-dk67-15
-DK801_09_Gospel_-_In_The_Garden
-DK801_09_Gospel_-_In_The_Garden
-DK801_09_Gospel_-_In_The_Garden
-DK801_19_Gospel_-_I'll_Fly_Away
-DK801_19_Gospel_-_I'll_Fly_Away
-DK801_19_Gospel_-_I'll_Fly_Away
-dk_05-16
-dk_05-16
-dk_05-16
-DKK002_08
-DKK002_08
-DKK002_08
-DKK003_11
-DKK003_11
-do what you gotta do
 Elvis_velvet_collection_18_02
 Elvis_velvet_collection_18_02
 Elvis_velvet_collection_18_02
-estelle(american boy mrh)
-flock of seagulls -wishing
 Forever In Blue Jeans
 Friends In Low Places
-friends in low places (live version with 3rd verse)
 G05989 Teddy Bear
 G05989 Teddy Bear
 G05989 Teddy Bear
@@ -587,31 +215,17 @@ G13376 Dragostea Din Tei
 G13974 Technologic
 G13974 Technologic
 G23618 IF I HAD YOU (ADAM LAMBERT)
-gaslight anthem 59 sound
-Gentle On My Mind -- Elvis
-Gentle On My Mind -- Elvis
-Gentle On My Mind -- Elvis
-george michael-father figure
+GOSPEL IF WE NEVER MEET AGAIN
+GOSPEL IF WE NEVER MEET AGAIN
+GOSPEL IF WE NEVER MEET AGAIN
 Girl You'll Be A Woman Soon
 Glory Days
-GOSPEL IF WE NEVER MEET AGAIN
-GOSPEL IF WE NEVER MEET AGAIN
-GOSPEL IF WE NEVER MEET AGAIN
 HATE ME
 He Ain't Heavy He's My Brother
 Heartlight
-hello, i love you
-hello, i love you
 Holly Holy
-how you ever gonna know
-hush, not a word to mary
-hush, not a word to mary
-hush, not a word to mary
 I Am I Said
 I Thank The Lord For The Nightime
-i will love you all my life
-i will love you all my life
-i will love you all my life
 If I Could See The World Patsy Cline
 If I Could See The World Patsy Cline
 If I Could See The World Patsy Cline
@@ -620,133 +234,25 @@ If You Ever Have Forever In Mind Vince Gill
 If You Ever Have Forever In Mind Vince Gill
 If You Ever Have Forever In Mind Vince Gill
 If You Know What I Mean
-in another's eyes (duet)
 InTheMeantime_Spacehog_WithoutLeadVocal
-it's midnight cinderella
-it's your song
-JT04123 Andrea Bocelli - Les Feuilles Mortes
-Kanye_West_And_Jamie_Foxx_-_Gold_Digger_(SC)
-Kanye_West_And_Jamie_Foxx_-_Gold_Digger_(SC)
-KARAOKE 5081-01 - Bobby Valentino & Timbaland - Anonymous
-Kelly_Clarkson_-_Since_You've_Been_Gone_-_CBEP485+2-06
-l.a. woman
-l.a. woman
 Learning To Live Again
-LEG 074-07 - Humperdink, Engelbert - Am I Easy To Forget
-LEG 074-07 - Humperdink, Engelbert - Am I Easy To Forget
-LEG 074-07 - Humperdink, Engelbert - Am I Easy To Forget
-Legends 046 02 Jim Reeves - I Love You Because
-Legends 046 02 Jim Reeves - I Love You Because
-Legends 046 02 Jim Reeves - I Love You Because
-Legends 046 16 Jim Reeves - Am I Loosing You
-Legends 046 16 Jim Reeves - Am I Loosing You
-Legends 046 16 Jim Reeves - Am I Loosing You
-lg 200-03
-lg 200-03
-lg 200-03
-light my fire
-light my fire
-long neck bottle
 Long version In My Way
 Long version In My Way
 Longfellow Serenade
-Lorrie Morgan-A Picture Of You Without Me(MM6017-02)
-Lorrie Morgan-A Picture Of You Without Me(MM6017-02)
-Lorrie Morgan-A Picture Of You Without Me(MM6017-02)
-love her madly
-love her madly
-love me two times
-love me two times
 Love On The Rocks
+MM6218 08 Just A Closer Walk With Thee Patsy Cline
+MM6218 08 Just A Closer Walk With Thee Patsy Cline
+MM6218 08 Just A Closer Walk With Thee Patsy Cline
 Memories Elvis Presley
 Memories Elvis Presley
-Miley_Cyrus_-_The_Climb_-_MRH56-02
-Mm 6070-11 - Elvis - I'll Remember You
-Mm 6070-11 - Elvis - I'll Remember You
-Mm 6371-03 - Elvis - Do You Know Who I Am
-Mm 6371-03 - Elvis - Do You Know Who I Am
-Mm 6371-03 - Elvis - Do You Know Who I Am
-mm6018-04
-mm6018-04
-mm6018-04
-MM6218 08 Just A Closer Walk With Thee Patsy Cline
-MM6218 08 Just A Closer Walk With Thee Patsy Cline
-MM6218 08 Just A Closer Walk With Thee Patsy Cline
-MM6371-101
-MM6371-101
-MM6371-101
 Much Too Young (To Feel This Damn Old)
 My Forever Friend (Daniel O'Donnell_seq Chris.Hankins)
 My Forever Friend (Daniel O'Donnell_seq Chris.Hankins)
 My Forever Friend (Daniel O'Donnell_seq Chris.Hankins)
-Natasha_Bedingfield_-_These_Words_-_CB30054-06
 Not Counting You
-one night a day
 Papa Loved Mama
-people are strange
-people are strange
-PHM-0502C-05
-PHM-0502C-05
-PHM-0502C-05
-PHM0406 06 - Israel Kamakawiwo'ole - Over The Rainbow
-PHM0406 07 - Alanis Morissette - Everything
-Powerman 5000 - When Worlds Collide
-PS 1023-12 - Perry Como - Santa Claus Is Coming To Town
-PS 1023-15 - Bing Crosby - Home For The Holidays
-PS 1023-19 - Tony Bennett - Have Yourself A Merry Little Christmas
-PS 1023-20 - Perry Como - Silver Bells
-PS 1023-22 - Perry Como - Silent Night
-PS 1032-15 - Nat King Cole - Somewhere Along The Way
-PS 1032-19 - Nat King Cole - Smile
-PS 1332-17 - Spice Girls - Saturday Night Divas
-PS 1332-18 - Spice Girls - Never Give Up On The Good Times
-PS 1388-11 - Frank Sinatra - That Old Feeling
-PS 1388-12 - Frank Sinatra - The Last Dance
-PS 1388-14 - Frank Sinatra - I Got It Bad (& That Ain't Good)
-PS 1388-15 - Frank Sinatra - Nancy (With The Laughing Face)
-PS 1388-16 - Frank Sinatra - I Thought About You
-PS 1388-17 - Frank Sinatra - It Happened In Monterey
-PS 1388-18 - Frank Sinatra - We'll Be Together Again
-PS 1388-20 - Frank Sinatra - I Have Dreamed
-PSCD 1192 I see your face before me Sinatra 02
-PSCD 1192 I see your face before me Sinatra 02
-PSCD 1192 I see your face before me Sinatra 02
-PSJT201~6-02-PRESLEY, ELVIS-TOMORROW NIGHT
-PSJT201~6-02-PRESLEY, ELVIS-TOMORROW NIGHT
-PSJT201~6-02-PRESLEY, ELVIS-TOMORROW NIGHT
-rb01403
-rb01403
-rb01403
 Red Red Wine
-riders on the storm
-riders on the storm
-roadhouse blues
-roadhouse blues
 Rodeo
-Say_Hey__I_Love_You__No_Vocal
-Say_Hey__I_Love_You__No_Vocal
-SB20036 Miranda Lambert - More Like Her
-SB20036 Miranda Lambert - More Like Her
-SB25388 Carrie Underwood - Good Girl
-SB25388 Carrie Underwood - Good Girl
-Sc 2128-02 - Let There Be Peace On Earth
-Sc 2128-02 - Let There Be Peace On Earth
-Sc 2128-02 - Let There Be Peace On Earth
-SC 7555-06 - Watson, Gene - Farewell Party
-SC 7555-06 - Watson, Gene - Farewell Party
-SC 7555-06 - Watson, Gene - Farewell Party
-Sc 8327-11 - Hendrix, Jimi - Red House
-Sc 8327-11 - Hendrix, Jimi - Red House
-Sc 8327-11 - Hendrix, Jimi - Red House
-SC 8385-15
-SC 8385-15
-SC 8385-15
-Sc Brick 04 04 7558-09 - Ray Price - I've Got A New Heartache
-Sc Brick 04 04 7558-09 - Ray Price - I've Got A New Heartache
-Sc Brick 04 04 7558-09 - Ray Price - I've Got A New Heartache
-SC3428 02 - Jesse McCartney - Beautiful Soul
-SC3428 04 - Ashanti - Only U
-SC3428 05 - Simple Plan - Shut Up!
 SC7513_01_Five_Satins_In_The_Still_Of_The_Night
 SC7513_02_Carly_Perkins_Blue_Suede_Shoes
 SC7513_04_Platters_Only_You
@@ -867,75 +373,15 @@ SC7529_05_Bill_Withers_Lean_On_Me
 SC7529_08_Eurythmics_Sweet_Dreams_Are_Made_Of_This_
 SC7529_10_Billy_Vera_The_Beaters_At_This_Moment
 SC7529_14_Loggins_Messina_Your_Momma_Don_t_Dance
-SC7571 07 - Little Anthony & The Imperials - Goin' Out Of My Head
-SC7571 13 - Supremes - You Can't Hurry Love
-SC7571 15 - James Brown - Papa's Got A Brand New Bag (Part 1)
-SC7573 11 - Paul McCartney - Come Together
-SC7574 06 - Isley Brothers - It's Your Thing
-SC7574 11 - Marvin Gaye - What's Going On
-SC7574 13 - Betty Wright - Clean Up Woman
-SC7574 14 - Donny Hathaway & Robert Flack - Closer I Get To You
-sc7596_09_berry__john__your_love_amazes_me
-sc7596_10_wright__chely__single_white_female
-sc7596_11_carter__deana__strawberry_wine
-sc7596_11_carter__deana__strawberry_wine
-SC8134 04 - Elton John - Levon
-SC8134 13 - Elton John - Little Jeannie
-SC8134 15 - Elton John - Sorry Seems To Be The Hardest Word
-SC8136 04 - Roger Miller - Chug-A-Lug
-SC8136 13 - Hank Willams Jr. - Honky Tonkin'
-SC8143 04 - Sylvers - Hot Line
-SC8143 07 - Peaches & Herb - Shake Your Groove Thang
-SC8143 09 - Bee Gees - You Should Be Dancing
-SC8153 02 - Billy Ocean - Color Of Love
-SC8153 05 - Linda Ronstadt - Heatwave
-SC8153 06 - Kenny Nolan - I Like Dreamin'
-SC8153 07 - Ray Stevens - Everything Is Beautiful
-SC8153 08 - Janet Jackson - If You Say My Eyes Are Beautiful
-SC8153 13 - Bee Gees - Lonely Days
-SC8169 04 - Salt N Pepa - Rush It
-SC8169 05 - Who - Squeeze Box
-SC8169 13 - Frank Zappa - Dinah Moe Humm
-SC8175 08 - Hal Ketchum - That's What I Get
-SC8175 10 - Wynonna Judd - She Is His Only Need
-SC8176 07 - John Mellencamp - R O C K In The U S A
-SC8176 08 - Timbuk 3 - Future's So Bright I Gotta Wear Shades
-SC8176 13 - John Cafferty - On The Dark Side
-SC8186 07 - Rhett Akins - That Ain't My Truck
-SC8186 14 - John Berry - I Think About It All The Time
-SC8194 03 - Joe Diffie - That Road Not Taken
-SC8194 09 - Alison Krauss - Baby, Now That I've Found You
-SC8194 15 - Lari White - That'a How You Know When Your In Love
 SC819607
 SC819607
 SC819607
-SC8198 02 - Little Texas - Amy's Back In Austin
-SC8198 09 - Collin Raye - Man Of My Word
-SC8198 13 - David Lee Murphy - Fish Ain't Bitin'
-SC8199 08 - Monica - Don't Take It Personal
-SC8201 01 - Sade - Sweetest Taboo
-sc8348-06_stay_i_missed_you_
-sc8544-11
-sc8574-07
-sc8574-12
-SC8674 06 - Led Zeppelin - Bring It On Home
-SC8674 07 - Led Zeppelin - Hey Hey What Can I Do
 SC8738_02_Thompson_Cyndi_What_I_Really_Meant_To_Say
 SC8738_06_O_Neal_Jamie_When_I_Think_About_Angels
 SC8738_07_Johnson_Carolyn_Dawn_Complicated
 SC8738_11_Andrews_Jessica_Who_I_Am
 SC8738_13_Cochran_Tammy_Angels_In_Waiting
 SC8738_15_Evans_Sara_I_Could_Not_Ask_For_More
-sc8793_02_clarkson_kelly_before_your_love
-sc8793_04_headley_heather_he_is
-sc8793_07_rowland_kelly_stole_radio_version_
-sc8793_08_pink_family_portrait_radio_version_
-sc8793_11_jimmy_eat_world_praise_chorus_a
-sc8793_13_new_found_glory_head_on_collision
-sc8793_15_las_ketchup_ketchup_song_spanglish_version_
-SC8825-13 Sinatra, Frank  Summer Wind
-SC8825-13 Sinatra, Frank  Summer Wind
-SC8825-13 Sinatra, Frank  Summer Wind
 SC_7571_02_Ain_t_Too_Proud_To_Beg_Temptations
 SC_7571_04_Get_Ready_Temptations
 SC_7571_05_Tellit_Like_It_Is_Aaron_Neville
@@ -1029,110 +475,415 @@ SC_7582_12_Tennessee_ARRESTED_DEVELOPMENT
 SC_7582_13_No_Diggity_Blacksteet_Duet_
 SC_7582_14_I_Beleive_I_Can_Fly_R_Kelly
 SC_7582_15_I_Wanna_Sex_You_Up_Color_Me_Badd_Duet_
+Say_Hey__I_Love_You__No_Vocal
+Say_Hey__I_Love_You__No_Vocal
 September Morn'
-SF03238 Tears For Fears - Mad World
-SF03238 Tears For Fears - Mad World
-SF06893 Script - Man Who Can't Be Moved
-Sf094 08 Jim Reeves - There's A Heartache Following Me
-Sf094 08 Jim Reeves - There's A Heartache Following Me
-Sf094 08 Jim Reeves - There's A Heartache Following Me
-SF277_10_Beyonce_-_Halo
 Shameless
+Softly as I leave you (concert with Papaz vocal)
+Softly as I leave you (concert with Papaz vocal)
+Softly as I leave you (concert with Papaz vocal)
+Somewhere Other Than The Night
+Sound_Choice_7518_10
+Sound_Choice_7518_10
+Sound_Choice_7518_10
+Sweet Caroline
+That Summer
+That's Someone You Never Forget +0
+That's Someone You Never Forget +0
+That's Someone You Never Forget +0
+The Dance
+The River
+Thunder Rolls
+Two Of A Kind, Workin' On A Full House
+Unanswered Prayers
+We Shall Be Free
+What Now, What Next, Where To
+What Now, What Next, Where To
+What She's Doing Now
+Yesterday's Songs
+You belong to my heart
+You belong to my heart
+You're My Angel
+You're My Angel
+You're My Angel
+ZOOM011_16
+ZOOM011_16
+ZOOM011_16
+ZOOM011_16
+alabama song
+alabama song
+back door man
+break on through
+break on through
+burnin' the roadhouse down
+cdg06
+cdg06
+cdg06
+cdg13
+cdg13
+cdg13
+do what you gotta do
+estelle(american boy mrh)
+friends in low places (live version with 3rd verse)
+gaslight anthem 59 sound
+hello, i love you
+hello, i love you
+how you ever gonna know
+hush, not a word to mary
+hush, not a word to mary
+hush, not a word to mary
+i will love you all my life
+i will love you all my life
+i will love you all my life
+in another's eyes (duet)
+it's midnight cinderella
+it's your song
+l.a. woman
+l.a. woman
+light my fire
+light my fire
+long neck bottle
+love her madly
+love her madly
+love me two times
+love me two times
+one night a day
+people are strange
+people are strange
+rb01403
+rb01403
+rb01403
+riders on the storm
+riders on the storm
+roadhouse blues
+roadhouse blues
+sc7596_09_berry__john__your_love_amazes_me
+sc7596_10_wright__chely__single_white_female
+sc7596_11_carter__deana__strawberry_wine
+sc7596_11_carter__deana__strawberry_wine
+sc8793_02_clarkson_kelly_before_your_love
+sc8793_04_headley_heather_he_is
+sc8793_07_rowland_kelly_stole_radio_version_
+sc8793_08_pink_family_portrait_radio_version_
+sc8793_11_jimmy_eat_world_praise_chorus_a
+sc8793_13_new_found_glory_head_on_collision
+sc8793_15_las_ketchup_ketchup_song_spanglish_version_
 she's every woman
 she's gonna make it
 softly
 softly
 softly
-Softly as I leave you (concert with Papaz vocal)
-Softly as I leave you (concert with Papaz vocal)
-Softly as I leave you (concert with Papaz vocal)
-Solitaire -- Elvis
-Solitaire -- Elvis
-Somewhere Other Than The Night
 songs01
 songs01
-Sound Choice 8345 -12
-Sound Choice 8345 -12
-Sound Choice 8345 -12
-Sound_Choice_7518_10
-Sound_Choice_7518_10
-Sound_Choice_7518_10
-Springsteen-LG050-02
 standing outside the fire
 strange days
-Sunfly-058-02
-Sunfly-058-02
-Sunfly-058-02
-Sweet Caroline
-Talk to Me SC8403-04
-Talk to Me SC8403-04
-Talk to Me SC8403-04
-talking heads-road to nowhere
 tearin' it up (and burnin' it down)
 that ol' wind
-That Summer
-That's Someone You Never Forget +0
-That's Someone You Never Forget +0
-That's Someone You Never Forget +0
 the beaches of cheyenne
-The Dance
 the end
 the fever
 the night i called the old man out
-The River
-Thunder Rolls
 to make you feel my love
 touch me
 touch me
-Track 13
-track03
-track05
-track06
-track06
-track06
-track07
-track07
-track07
-track07
-track08
-track08
-track08
-track08
-track09
-track10
-track14
-track15
-traveling wilburys-end of the line
-TTU 066-03 - Chipmunks - Chipmunk Song
-TTU 066-05 - Jose Filiziano - Feliz Navidad
-TTU 130-03 - Claudia Barry - Boogie Woogie Dancing Shoes
-TTU 130-18 - Van McCoy - The Hustle
-Two Of A Kind, Workin' On A Full House
 two pina coladas
-Unanswered Prayers
 wat colour is theeee wind
 wat colour is theeee wind
 wat colour is theeee wind
-We Shall Be Free
-What Now, What Next, Where To
-What Now, What Next, Where To
-What She's Doing Now
 when the music's over
 where your road leads (duet)
-Yesterday's Songs
-You belong to my heart
-You belong to my heart
 you move me
-You're My Angel
-You're My Angel
-You're My Angel
-ZKH 009_CD-13 - Mud - Lonely This Christmas
-ZKH 009_CD-13 - Mud - Lonely This Christmas
-ZKH 009_CD-13 - Mud - Lonely This Christmas
-ZM 009-05 - Essex, David - Winter's Tale, A
-ZM 009-05 - Essex, David - Winter's Tale, A
-ZM 009-05 - Essex, David - Winter's Tale, A
-ZOOM011_16
-ZOOM011_16
-ZOOM011_16
-ZOOM011_16
+
+## underscore-separated (19)
+Aerosmith_-_Pink_-_Sc3021-05
+Alice_In_Chains_-_Would_-_TU129-17
+Bob_&_Tom_Band_-_Blow_Me_A_Kiss
+DK801_09_Gospel_-_In_The_Garden
+DK801_09_Gospel_-_In_The_Garden
+DK801_09_Gospel_-_In_The_Garden
+DK801_19_Gospel_-_I'll_Fly_Away
+DK801_19_Gospel_-_I'll_Fly_Away
+DK801_19_Gospel_-_I'll_Fly_Away
+Kanye_West_And_Jamie_Foxx_-_Gold_Digger_(SC)
+Kanye_West_And_Jamie_Foxx_-_Gold_Digger_(SC)
+Kelly_Clarkson_-_Since_You've_Been_Gone_-_CBEP485+2-06
+Miley_Cyrus_-_The_Climb_-_MRH56-02
+Natasha_Bedingfield_-_These_Words_-_CB30054-06
+SF277_10_Beyonce_-_Halo
+dk_05-16
+dk_05-16
+dk_05-16
+sc8348-06_stay_i_missed_you_
+
+## digits-in-left-side (pass-3 caution branch) (106)
+._G06012 - Blue Jean - David Bowie
+._G08592 - Thursday's Child - David Bowie
+._G10272 - Loving The Alien - David Bowie
+._G18677 - I'm Going Slightly Mad - Queen
+10,000 Maniacs - Candy Everybody Wants
+10,000 Maniacs - More Than This
+10,000 Maniacs - These Are The Days
+112 - Come See Me
+112 - Dance With Me
+112 - It's Over Now
+112 - Only You
+112 - Peaches And Cream
+112 - U Already Know
+112 - U Already Know
+1910 Fruitgum Co. - Simon Says
+311 - All Mixed Up
+311 - Down
+609814 ~ Easy For Me To Say - Clint Black & Lisa Hartman Black
+609814 ~ Easy For Me To Say - Clint Black & Lisa Hartman Black
+609814 ~ Easy For Me To Say - Clint Black & Lisa Hartman Black
+702 - Get It Together
+911 - Private Number
+Blink 182 - All The Small Things
+Blink 182 - All The Small Things
+Blink 182 - Dammit
+Blink 182 - Dammit
+Blink 182 - First Date
+Blink 182 - Man Overboard
+Blink 182 - Rock Show
+Blink 182 - Rock Show
+COUNTRY HITS 2007-01 - Josh Turner Feat Trisha Yearwood - Firecracker
+Disc #Mm6019 - Track #08 - If Tomorrow Never Comes - Brooks, Garth
+Disc #Mm6019 - Track #08 - If Tomorrow Never Comes - Brooks, Garth
+Disc #Mm6019 - Track #08 - If Tomorrow Never Comes - Brooks, Garth
+Disc #NSAV7001 - Track #05 - Autumn Leaves - Cole, Nat  King
+Disc #NSAV7001 - Track #05 - Autumn Leaves - Cole, Nat  King
+Disc #NSAV7001 - Track #05 - Autumn Leaves - Cole, Nat  King
+JT04123 Andrea Bocelli - Les Feuilles Mortes
+KARAOKE 5081-01 - Bobby Valentino & Timbaland - Anonymous
+Legends 046 02 Jim Reeves - I Love You Because
+Legends 046 02 Jim Reeves - I Love You Because
+Legends 046 02 Jim Reeves - I Love You Because
+Legends 046 16 Jim Reeves - Am I Loosing You
+Legends 046 16 Jim Reeves - Am I Loosing You
+Legends 046 16 Jim Reeves - Am I Loosing You
+PHM0406 06 - Israel Kamakawiwo'ole - Over The Rainbow
+PHM0406 07 - Alanis Morissette - Everything
+Powerman 5000 - When Worlds Collide
+SB20036 Miranda Lambert - More Like Her
+SB20036 Miranda Lambert - More Like Her
+SB25388 Carrie Underwood - Good Girl
+SB25388 Carrie Underwood - Good Girl
+SC3428 02 - Jesse McCartney - Beautiful Soul
+SC3428 04 - Ashanti - Only U
+SC3428 05 - Simple Plan - Shut Up!
+SC7571 07 - Little Anthony & The Imperials - Goin' Out Of My Head
+SC7571 13 - Supremes - You Can't Hurry Love
+SC7571 15 - James Brown - Papa's Got A Brand New Bag (Part 1)
+SC7573 11 - Paul McCartney - Come Together
+SC7574 06 - Isley Brothers - It's Your Thing
+SC7574 11 - Marvin Gaye - What's Going On
+SC7574 13 - Betty Wright - Clean Up Woman
+SC7574 14 - Donny Hathaway & Robert Flack - Closer I Get To You
+SC8134 04 - Elton John - Levon
+SC8134 13 - Elton John - Little Jeannie
+SC8134 15 - Elton John - Sorry Seems To Be The Hardest Word
+SC8136 04 - Roger Miller - Chug-A-Lug
+SC8136 13 - Hank Willams Jr. - Honky Tonkin'
+SC8143 04 - Sylvers - Hot Line
+SC8143 07 - Peaches & Herb - Shake Your Groove Thang
+SC8143 09 - Bee Gees - You Should Be Dancing
+SC8153 02 - Billy Ocean - Color Of Love
+SC8153 05 - Linda Ronstadt - Heatwave
+SC8153 06 - Kenny Nolan - I Like Dreamin'
+SC8153 07 - Ray Stevens - Everything Is Beautiful
+SC8153 08 - Janet Jackson - If You Say My Eyes Are Beautiful
+SC8153 13 - Bee Gees - Lonely Days
+SC8169 04 - Salt N Pepa - Rush It
+SC8169 05 - Who - Squeeze Box
+SC8169 13 - Frank Zappa - Dinah Moe Humm
+SC8175 08 - Hal Ketchum - That's What I Get
+SC8175 10 - Wynonna Judd - She Is His Only Need
+SC8176 07 - John Mellencamp - R O C K In The U S A
+SC8176 08 - Timbuk 3 - Future's So Bright I Gotta Wear Shades
+SC8176 13 - John Cafferty - On The Dark Side
+SC8186 07 - Rhett Akins - That Ain't My Truck
+SC8186 14 - John Berry - I Think About It All The Time
+SC8194 03 - Joe Diffie - That Road Not Taken
+SC8194 09 - Alison Krauss - Baby, Now That I've Found You
+SC8194 15 - Lari White - That'a How You Know When Your In Love
+SC8198 02 - Little Texas - Amy's Back In Austin
+SC8198 09 - Collin Raye - Man Of My Word
+SC8198 13 - David Lee Murphy - Fish Ain't Bitin'
+SC8199 08 - Monica - Don't Take It Personal
+SC8201 01 - Sade - Sweetest Taboo
+SC8674 06 - Led Zeppelin - Bring It On Home
+SC8674 07 - Led Zeppelin - Hey Hey What Can I Do
+SF03238 Tears For Fears - Mad World
+SF03238 Tears For Fears - Mad World
+SF06893 Script - Man Who Can't Be Moved
+Sc Brick 04 04 7558-09 - Ray Price - I've Got A New Heartache
+Sc Brick 04 04 7558-09 - Ray Price - I've Got A New Heartache
+Sc Brick 04 04 7558-09 - Ray Price - I've Got A New Heartache
+Sf094 08 Jim Reeves - There's A Heartache Following Me
+Sf094 08 Jim Reeves - There's A Heartache Following Me
+Sf094 08 Jim Reeves - There's A Heartache Following Me
+
+## tight-dash only (e.g. "A-B" no spaced dash) (163)
+01.-Alyssa-Reid-Feat.-Jump-Smokers-Alone-Again-(SF313-01)
+01.-Alyssa-Reid-Feat.-Jump-Smokers-Alone-Again-(SF313-01)
+01.-Christina-Aguilera-(Burlesque)-Bound-To-You-(SFKK057-04)
+01.-Christina-Aguilera-(Burlesque)-Bound-To-You-(SFKK057-04)
+01.-Christina-Aguilera-(Burlesque)-Bound-To-You-(SFKK057-04)
+01.-Faith-Hill-Where-Are-You-Christmas-(MW844-12)
+01.-Faith-Hill-Where-Are-You-Christmas-(MW844-12)
+01.-Lady-Gaga-Teeth-(SF314-01)
+01.-Lady-Gaga-Teeth-(SF314-01)
+01.-Notorious-B.I.G.-Juicy-(It's-All-Good)-(SFDT-1394)
+01.-Notorious-B.I.G.-Juicy-(It's-All-Good)-(SFDT-1394)
+02.-Calvin-Harris-Feat.-Ne-Yo-Let's-Go-(SF314-02)
+02.-Calvin-Harris-Feat.-Ne-Yo-Let's-Go-(SF314-02)
+02.-JLS-Proud-(SF313-02)
+02.-JLS-Proud-(SF313-02)
+03.-Brad-Paisley-and-Carrie-Underwood-Remind-Me-(SFDT-2436)
+03.-Brad-Paisley-and-Carrie-Underwood-Remind-Me-(SFDT-2436)
+03.-Matt-Cardle-Amazing-(SF313-03)
+03.-Matt-Cardle-Amazing-(SF313-03)
+03.-Rihanna-Where-Have-You-Been-(SF314-03)
+03.-Rihanna-Where-Have-You-Been-(SF314-03)
+04.-Jason-Aldean-Dirt-Road-Anthem-(SFDT-1987)
+04.-Jason-Aldean-Dirt-Road-Anthem-(SFDT-1987)
+04.-Katy-Perry-Part-Of-Me-(SF313-04)
+04.-Katy-Perry-Part-Of-Me-(SF313-04)
+04.-Madonna-Girl-Gone-Wild-(SF314-04)
+04.-Madonna-Girl-Gone-Wild-(SF314-04)
+04.-Rihanna-California-King-Bed-(SF303V-04)
+04.-Rihanna-California-King-Bed-(SF303V-04)
+05.-Dappy-Feat.-Brian-May-Rock-Star-(Clean)-(SF313-05)
+05.-Dappy-Feat.-Brian-May-Rock-Star-(Clean)-(SF313-05)
+05.-Nicki-Minaj-Starships-(Clean)-(SF314-05)
+05.-Nicki-Minaj-Starships-(Clean)-(SF314-05)
+06.-Madonna-Feat.-Nicki-Minaj-and-MIA-Give-Me-All-Your-Luvin'-(SF313-06)
+06.-Madonna-Feat.-Nicki-Minaj-and-MIA-Give-Me-All-Your-Luvin'-(SF313-06)
+06.-Marcus-Collins-Seven-Nation-Army-(SF314-06)
+06.-Marcus-Collins-Seven-Nation-Army-(SF314-06)
+07.-Cher-Lloyd-Feat.-Astro-Want-U-Back-(SF314-07)
+07.-Cher-Lloyd-Feat.-Astro-Want-U-Back-(SF314-07)
+07.-Rizzle-Kicks-Traveller's-Chant-(SF313-07)
+07.-Rizzle-Kicks-Traveller's-Chant-(SF313-07)
+08.-Olly-Murs-Oh-My-Goodness-(SF314-08)
+08.-Olly-Murs-Oh-My-Goodness-(SF314-08)
+08.-Rebecca-Ferguson-Too-Good-To-Lose-(SF313-08)
+08.-Rebecca-Ferguson-Too-Good-To-Lose-(SF313-08)
+09.-Arctic-Monkeys-R-U-Mine-(SF314-09)
+09.-Arctic-Monkeys-R-U-Mine-(SF314-09)
+09.-Chris-Brown-Turn-Up-The-Music-(SF313-09)
+09.-Chris-Brown-Turn-Up-The-Music-(SF313-09)
+10.-Coldplay-Charlie-Brown-(SF313-10)
+10.-Coldplay-Charlie-Brown-(SF313-10)
+10.-Will-Young-Losing-Myself-(SF314-10)
+10.-Will-Young-Losing-Myself-(SF314-10)
+11.-Bruno-Mars-Count-On-Me-(SF313-11)
+11.-Bruno-Mars-Count-On-Me-(SF313-11)
+11.-Goyte-Eyes-Wide-Open-(SF314-11)
+11.-Goyte-Eyes-Wide-Open-(SF314-11)
+12.-B.o.B-So-Good-(SF314-12)
+12.-B.o.B-So-Good-(SF314-12)
+12.-Emeli-Sande-Next-To-Me-(SF313-12)
+12.-Emeli-Sande-Next-To-Me-(SF313-12)
+13.-Fun.-Feat.-Janelle-Monáe-We-Are-Young-(SF314-13)
+13.-Fun.-Feat.-Janelle-Monáe-We-Are-Young-(SF314-13)
+13.-Kelly-Rowland-Keep-It-Between-Us-(SF313-13)
+13.-Kelly-Rowland-Keep-It-Between-Us-(SF313-13)
+14.-Kelly-Clarkson-Dark-Side-(SF314-14)
+14.-Kelly-Clarkson-Dark-Side-(SF314-14)
+14.-Scissor-Sisters-Vs.-Krystal-Pepsy-Shady-Love-(SF313-14)
+14.-Scissor-Sisters-Vs.-Krystal-Pepsy-Shady-Love-(SF313-14)
+15.-Alexandra-Burke-Feat.-Erick-Morillo-Elephant-(SF314-15)
+15.-Alexandra-Burke-Feat.-Erick-Morillo-Elephant-(SF314-15)
+15.-Stooshe-Feat.-Travie-McCoy-Love-Me-(SF313-15)
+15.-Stooshe-Feat.-Travie-McCoy-Love-Me-(SF313-15)
+16.-Jason-Mraz-I-Won't-Give-Up-(SF314-16)
+16.-Jason-Mraz-I-Won't-Give-Up-(SF314-16)
+16.-Labrinth-Last-Time-(SF313-16)
+16.-Labrinth-Last-Time-(SF313-16)
+17.-DJ-Fresh-Feat.-Rita-Ora-Hot-Right-Now-(SF313-17)
+17.-DJ-Fresh-Feat.-Rita-Ora-Hot-Right-Now-(SF313-17)
+17.-Gym-Class-Heroes-Feat.-Neon-Hitch-Get-Yourself-Back-Home-(SF314-17)
+17.-Gym-Class-Heroes-Feat.-Neon-Hitch-Get-Yourself-Back-Home-(SF314-17)
+18.-Conor-Maynard-Can't-Say-No-(SF314-18)
+18.-Conor-Maynard-Can't-Say-No-(SF314-18)
+18.-Lil'-Wayne-Feat.-Bruno-Mars-Mirrors-(Clean)-(SF313-18)
+18.-Lil'-Wayne-Feat.-Bruno-Mars-Mirrors-(Clean)-(SF313-18)
+8133-09
+8133-09
+8133-09
+90210-11
+90210-11
+90210-11
+American Honky-Tonk Bar Association
+CB-9066-07
+CB-9066-07
+CB-9066-07
+CB-9066-09
+CB-9066-09
+DK067-15
+DK067-15
+DK067-15
+DK11-04
+DK11-04
+DK11-04
+Gentle On My Mind -- Elvis
+Gentle On My Mind -- Elvis
+Gentle On My Mind -- Elvis
+Lorrie Morgan-A Picture Of You Without Me(MM6017-02)
+Lorrie Morgan-A Picture Of You Without Me(MM6017-02)
+Lorrie Morgan-A Picture Of You Without Me(MM6017-02)
+MM6371-101
+MM6371-101
+MM6371-101
+PHM-0502C-05
+PHM-0502C-05
+PHM-0502C-05
+PSJT201~6-02-PRESLEY, ELVIS-TOMORROW NIGHT
+PSJT201~6-02-PRESLEY, ELVIS-TOMORROW NIGHT
+PSJT201~6-02-PRESLEY, ELVIS-TOMORROW NIGHT
+SC8825-13 Sinatra, Frank  Summer Wind
+SC8825-13 Sinatra, Frank  Summer Wind
+SC8825-13 Sinatra, Frank  Summer Wind
+Solitaire -- Elvis
+Solitaire -- Elvis
+Sound Choice 8345 -12
+Sound Choice 8345 -12
+Sound Choice 8345 -12
+Springsteen-LG050-02
+Sunfly-058-02
+Sunfly-058-02
+Sunfly-058-02
+Talk to Me SC8403-04
+Talk to Me SC8403-04
+Talk to Me SC8403-04
+alice cooper-poison
+all 4 one-i swear
+alphaville-forever young
+barenaked ladies-its all been done
+beach boys-california girls
+berlin-take my breath away
+bill withers-lean on me
+blues brothers-rawhide
+blues brothers-riders in the sky
+cb60041-01
+cb60041-01
+cb60041-01
+cb60126-02
+cb60126-02
+cb60126-02
+cb90030-05
+cb90030-05
+cb90030-05
+dk67-15
+dk67-15
+flock of seagulls -wishing
+george michael-father figure
+mm6018-04
+mm6018-04
+mm6018-04
+sc8544-11
+sc8574-07
+sc8574-12
+talking heads-road to nowhere
+traveling wilburys-end of the line
