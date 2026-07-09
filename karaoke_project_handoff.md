@@ -103,13 +103,17 @@ Later phases add queue management, DJ controls, and library cleanup tools.
 **✅ Phases 0–2 shipped** — see [Current State](#current-state-as-of-2026-05-15-end-of-session) below for full detail.
 
 ### Phase 3 — Library cleanup
-- [ ] Extract the 3,477 zip files (each is one more song)
-- [ ] Try to match the 52 CDG orphans to MP3s elsewhere on the drive
-- [ ] Decide what to do with the 6 MP4 video karaoke files
-- [ ] **Metadata cleanup pipeline** (see spec below)
-- [ ] Dedupe songs that exist under multiple disc codes (rolled into the metadata pipeline)
+- [x] Extract the 3,477 zip files — extraction ran 2026-05-15 (`extract-zips.log`); verification + rescan is map ticket #2
+- [ ] Try to match the 52 CDG orphans to MP3s elsewhere on the drive *(ruled out of the pipeline map's scope — own small effort later)*
+- [ ] Decide what to do with the 6 MP4 video karaoke files *(same — out of map scope)*
+- [ ] **Metadata cleanup pipeline** — now being charted as a wayfinder map:
+  [issue #1](https://github.com/Burdchrome/karaoke-platform/issues/1) (tickets #2–#6).
+  The map is the canonical plan; the spec below is superseded by it and kept only
+  as the original problem statement. Song-identity decision locked in
+  [ADR 0001](docs/adr/0001-song-identity-per-file-ids-plus-grouping-key.md).
+- [ ] Dedupe songs that exist under multiple disc codes (rolled into the metadata pipeline; fingerprinting deferred per the map)
 
-#### Phase 3 spec — metadata cleanup pipeline
+#### Phase 3 spec — metadata cleanup pipeline (original sketch — superseded by map #1)
 
 **Do not start until Phase 1 (v0 player) and Phase 2 (queue management) are shipped.**
 
