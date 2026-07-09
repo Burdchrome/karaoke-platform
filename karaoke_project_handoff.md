@@ -33,7 +33,7 @@ Later phases add queue management, DJ controls, and library cleanup tools.
 
 | Item | Count | Size |
 |---|---|---|
-| **Paired songs (CDG + MP3, both present, matching names)** | **65,672** | ~330 GB |
+| **Paired songs (CDG + MP3, both present, matching names)** | **65,832** (verified rescan 2026-07-09; 43,335 unique after dedupe) | ~330 GB |
 | MP3s without a matching CDG | ~143 | mostly sound effects in `old stuff\` |
 | CDGs without a matching MP3 | <52 | real songs — recoverable later |
 | ~~Unextracted `.zip` packs~~ | **EXTRACTED 2026-05-15** | 3,473 of 3,477 succeeded; 4 corrupted zips logged |
@@ -222,7 +222,10 @@ From CLAUDE.md, restated for any agent continuing this work:
 
 **Library expanded:**
 - 3,473 of 3,477 zip files extracted (4 corrupted, logged)
-- Library went from 62,142 → **65,672 paired songs**
+- Library went from 62,142 → **65,832 paired songs** (+3,690 from the zips;
+  verified 2026-07-09 — extraction re-run clean, fresh `FORCE_RESCAN` rebuild
+  matches. Earlier 65,672 figure was a stale mid-session number. Parse-rate
+  stats below were measured against 65,672 and left as-is.)
 - Extraction script lives at `karaoke-app/scripts/extract-zips.js` — safe to re-run
 
 **Phase 3a shipped (smart parser, no external deps):**
