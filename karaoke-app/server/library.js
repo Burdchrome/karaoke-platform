@@ -298,6 +298,56 @@ function buildIndex(filePaths) {
   return songs;
 }
 
+// ---- manual overrides (spec §3) ----
+// overrides.json at the app root: file id (or filename) → { artist, title }.
+// Applied in memory on every load — cached or fresh — so corrections take
+// effect on restart without a rescan, and a rescan can never wipe them.
+// This is the mechanism issue #8's manual rescue feeds.
+
+const OVERRIDES_FILE = path.join(process.cwd(), 'overrides.json');
+
+/**
+ * Load the overrides map. Missing file → empty map (the normal case until
+ * issue #8 lands corrections). Malformed file → warn loudly, empty map.
+ */
+export async function loadOverrides(filePath = OVERRIDES_FILE) {
+  let raw;
+  try {
+    raw = await fs.readFile(filePath, 'utf8');
+  } catch {
+    return {}; // no overrides file — clean no-op
+  }
+  try {
+    const parsed = JSON.parse(raw);
+    if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) return parsed;
+    logger.warn(`Ignoring overrides file ${filePath}: expected a JSON object map, got ${Array.isArray(parsed) ? 'an array' : typeof parsed}`);
+  } catch (err) {
+    logger.warn(`Ignoring overrides file ${filePath}: invalid JSON`, { error: err.message });
+  }
+  return {};
+}
+
+/**
+ * Apply manual corrections in place: matched songs get the override's
+ * artist/title and a recomputed songKey/versionLabel, so they group under
+ * the corrected identity. Matches by file id first, then filename.
+ */
+export function applyOverrides(songs, overrides) {
+  let appliedCount = 0;
+  for (const song of songs) {
+    const override = overrides[song.id] || overrides[song.filename];
+    if (!override) continue;
+    song.artist = override.artist;
+    song.title = override.title;
+    const { songKey, versionLabel } = makeSongKey(song.artist, song.title);
+    song.songKey = songKey;
+    song.versionLabel = versionLabel;
+    appliedCount++;
+  }
+  if (appliedCount > 0) logger.info(`Applied ${appliedCount} manual overrides from overrides.json`);
+  return songs;
+}
+
 // Bump whenever the parser or song schema changes: a version mismatch on load
 // forces a full rescan, so parser upgrades self-apply on next start (spec §4).
 export const CACHE_VERSION = 2;
@@ -341,12 +391,14 @@ async function saveCache(payload) {
 export async function loadLibrary() {
   const forceRescan = process.env.FORCE_RESCAN === '1' || process.argv.includes('--rescan');
 
+  const overrides = await loadOverrides();
+
   if (!forceRescan) {
     const cached = await loadCache();
     if (cached) {
       logger.info(`Loaded ${cached.songs.length} songs from cache (${CACHE_FILE})`);
       logger.info(`Run "npm run rescan" (or set FORCE_RESCAN=1) to rebuild the cache.`);
-      return cached.songs;
+      return applyOverrides(cached.songs, overrides);
     }
   }
 
@@ -360,8 +412,10 @@ export async function loadLibrary() {
   const elapsed = ((Date.now() - start) / 1000).toFixed(1);
   logger.info(`Indexed ${songs.length} paired songs in ${elapsed}s`);
 
+  // Cache the raw parse; overrides stay a live layer on top so editing
+  // overrides.json never requires a rescan to take effect.
   await saveCache({ version: CACHE_VERSION, generatedAt: new Date().toISOString(), root: LIBRARY_ROOT, songs });
   logger.info(`Cache written to ${CACHE_FILE}`);
 
-  return songs;
+  return applyOverrides(songs, overrides);
 }
