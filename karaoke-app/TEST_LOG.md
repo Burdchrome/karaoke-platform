@@ -65,7 +65,7 @@ Verified-in-use 2026-07-10: #10 and #11 both measured against this baseline
 
 ### Follow-ups
 
-- ~~Consolidate `TITLE_FIRST_PREFIXES` + name-shape regex~~ — done in #10
+- Consolidate `TITLE_FIRST_PREFIXES` + name-shape regex — done in #10
   (16f855f): both live in `library.js`, script imports them.
 
 ---
