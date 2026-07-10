@@ -195,6 +195,20 @@ Don't put URL + creds in the same message.
 4. Sanity check: the startup log prints the new song count, and
    `/api/health` reports it too.
 
+### Fixing a wrongly-labeled song
+
+Edit `overrides.json` (app root) — a map of file id (or exact filename,
+without extension) to the corrected fields:
+
+```json
+{
+  "DKM2014-02 - Wrong Artist - Wrong Title": { "artist": "Fleetwood Mac", "title": "Dreams" }
+}
+```
+
+Overrides apply on every startup — no rescan needed — and survive rescans.
+The startup log prints how many were applied.
+
 ---
 
 ## Firewall

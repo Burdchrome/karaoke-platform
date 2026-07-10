@@ -15,7 +15,12 @@ import {
   makeSongKey,
   isCacheCurrent,
   CACHE_VERSION,
+  applyOverrides,
+  loadOverrides,
 } from './library.js';
+import fs from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
 
 // --- comma-shape heuristic: the three cases from the acceptance criteria ---
 
@@ -220,6 +225,86 @@ test('makeSongKey does not merge distinct songs', () => {
 });
 
 // --- ticket #12: cache schema v2 ---
+
+// --- ticket #13: overrides.json (spec §3) ---
+
+function fakeSong(overrides = {}) {
+  const base = {
+    id: 'abc123def456',
+    filename: 'DKM2014-02 - Wrong Artist - Wrong Title',
+    artist: 'Wrong Artist',
+    title: 'Wrong Title',
+    discCode: 'DKM2014-02',
+    songKey: 'wrong artist|wrong title',
+    versionLabel: '',
+  };
+  return { ...base, ...overrides };
+}
+
+test('an override by file id replaces artist/title and regroups the songKey', () => {
+  const songs = [fakeSong()];
+  applyOverrides(songs, {
+    abc123def456: { artist: 'Fleetwood Mac', title: 'Dreams' },
+  });
+  assert.equal(songs[0].artist, 'Fleetwood Mac');
+  assert.equal(songs[0].title, 'Dreams');
+  assert.equal(songs[0].songKey, 'fleetwood mac|dreams');
+});
+
+test('an override by filename also matches', () => {
+  const songs = [fakeSong()];
+  applyOverrides(songs, {
+    'DKM2014-02 - Wrong Artist - Wrong Title': { artist: 'Fleetwood Mac', title: 'Dreams' },
+  });
+  assert.equal(songs[0].songKey, 'fleetwood mac|dreams');
+});
+
+test('an overridden title with a parens suffix still yields a versionLabel', () => {
+  const songs = [fakeSong()];
+  applyOverrides(songs, {
+    abc123def456: { artist: 'Fleetwood Mac', title: 'Dreams (Live)' },
+  });
+  assert.equal(songs[0].songKey, 'fleetwood mac|dreams');
+  assert.equal(songs[0].versionLabel, 'Live');
+});
+
+test('songs without an override entry are untouched', () => {
+  const songs = [fakeSong()];
+  applyOverrides(songs, { 'someone-else': { artist: 'X', title: 'Y' } });
+  assert.equal(songs[0].artist, 'Wrong Artist');
+  assert.equal(songs[0].songKey, 'wrong artist|wrong title');
+});
+
+test('empty overrides map is a no-op', () => {
+  const songs = [fakeSong()];
+  applyOverrides(songs, {});
+  assert.equal(songs[0].artist, 'Wrong Artist');
+});
+
+test('loadOverrides: missing file is a clean no-op (empty map)', async () => {
+  const missing = path.join(os.tmpdir(), `no-such-overrides-${Date.now()}.json`);
+  assert.deepEqual(await loadOverrides(missing), {});
+});
+
+test('loadOverrides: malformed JSON warns and returns an empty map', async () => {
+  const bad = path.join(os.tmpdir(), `bad-overrides-${Date.now()}.json`);
+  await fs.writeFile(bad, '{ not json', 'utf8');
+  try {
+    assert.deepEqual(await loadOverrides(bad), {});
+  } finally {
+    await fs.rm(bad, { force: true });
+  }
+});
+
+test('loadOverrides: valid file round-trips', async () => {
+  const good = path.join(os.tmpdir(), `good-overrides-${Date.now()}.json`);
+  await fs.writeFile(good, JSON.stringify({ id1: { artist: 'A', title: 'T' } }), 'utf8');
+  try {
+    assert.deepEqual(await loadOverrides(good), { id1: { artist: 'A', title: 'T' } });
+  } finally {
+    await fs.rm(good, { force: true });
+  }
+});
 
 test('isCacheCurrent accepts only the current version with a songs array', () => {
   assert.equal(isCacheCurrent({ version: CACHE_VERSION, songs: [] }), true);
