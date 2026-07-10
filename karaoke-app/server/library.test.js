@@ -228,7 +228,7 @@ test('makeSongKey does not merge distinct songs', () => {
 
 // --- ticket #13: overrides.json (spec §3) ---
 
-function fakeSong(overrides = {}) {
+function fakeSong(fields = {}) {
   const base = {
     id: 'abc123def456',
     filename: 'DKM2014-02 - Wrong Artist - Wrong Title',
@@ -238,8 +238,21 @@ function fakeSong(overrides = {}) {
     songKey: 'wrong artist|wrong title',
     versionLabel: '',
   };
-  return { ...base, ...overrides };
+  return { ...base, ...fields };
 }
+
+test('a malformed override entry (missing title) is skipped, not crashed on', () => {
+  const songs = [fakeSong()];
+  applyOverrides(songs, { abc123def456: { artist: 'Fleetwood Mac' } });
+  assert.equal(songs[0].artist, 'Wrong Artist');
+  assert.equal(songs[0].songKey, 'wrong artist|wrong title');
+});
+
+test('a string-valued override entry is skipped, not crashed on', () => {
+  const songs = [fakeSong()];
+  applyOverrides(songs, { abc123def456: 'Fleetwood Mac - Dreams' });
+  assert.equal(songs[0].artist, 'Wrong Artist');
+});
 
 test('an override by file id replaces artist/title and regroups the songKey', () => {
   const songs = [fakeSong()];

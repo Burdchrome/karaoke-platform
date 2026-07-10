@@ -314,7 +314,10 @@ export async function loadOverrides(filePath = OVERRIDES_FILE) {
   let raw;
   try {
     raw = await fs.readFile(filePath, 'utf8');
-  } catch {
+  } catch (err) {
+    if (err.code !== 'ENOENT') {
+      logger.warn(`Could not read overrides file ${filePath}`, { error: err.message });
+    }
     return {}; // no overrides file — clean no-op
   }
   try {
@@ -337,6 +340,12 @@ export function applyOverrides(songs, overrides) {
   for (const song of songs) {
     const override = overrides[song.id] || overrides[song.filename];
     if (!override) continue;
+    // overrides.json is hand-edited (system boundary): a half-written entry
+    // must not crash the scan, so skip anything without both string fields.
+    if (typeof override.artist !== 'string' || typeof override.title !== 'string') {
+      logger.warn(`Skipping malformed override for "${song.filename}": needs string artist and title`, { override });
+      continue;
+    }
     song.artist = override.artist;
     song.title = override.title;
     const { songKey, versionLabel } = makeSongKey(song.artist, song.title);
