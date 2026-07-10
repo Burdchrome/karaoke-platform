@@ -7,7 +7,15 @@
 
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { parseFilename, isPersonNameShaped, TITLE_FIRST_PREFIXES } from './library.js';
+import {
+  parseFilename,
+  isPersonNameShaped,
+  TITLE_FIRST_PREFIXES,
+  normalizeSongField,
+  makeSongKey,
+  isCacheCurrent,
+  CACHE_VERSION,
+} from './library.js';
 
 // --- comma-shape heuristic: the three cases from the acceptance criteria ---
 
@@ -160,4 +168,63 @@ test('isPersonNameShaped matches Last, First and rejects non-names', () => {
 test('TITLE_FIRST_PREFIXES is exported for the measurement script', () => {
   assert.equal(TITLE_FIRST_PREFIXES.has('DKM'), true);
   assert.equal(TITLE_FIRST_PREFIXES.has('SC'), false);
+});
+
+// --- ticket #12: songKey normalization (spec §2, ADR 0001) ---
+
+test('normalizeSongField lowercases, trims, and collapses whitespace', () => {
+  assert.equal(normalizeSongField('  Fleetwood   Mac '), 'fleetwood mac');
+});
+
+test('normalizeSongField strips punctuation', () => {
+  assert.equal(normalizeSongField("Don't Stop"), 'dont stop');
+  assert.equal(normalizeSongField('U & Ur Hand'), 'u ur hand');
+});
+
+test('normalizeSongField folds leading "The"', () => {
+  assert.equal(normalizeSongField('The Cranberries'), normalizeSongField('Cranberries'));
+});
+
+test('normalizeSongField folds trailing ", The"', () => {
+  assert.equal(normalizeSongField('Walk, The'), normalizeSongField('The Walk'));
+});
+
+test('makeSongKey joins normalized artist and title with a pipe', () => {
+  const { songKey, versionLabel } = makeSongKey('Fleetwood Mac', 'Dreams');
+  assert.equal(songKey, 'fleetwood mac|dreams');
+  assert.equal(versionLabel, '');
+});
+
+test('makeSongKey groups the same song across formats (multi-disc case)', () => {
+  const a = makeSongKey('Fleetwood Mac', 'Dreams');
+  const b = makeSongKey('Fleetwood  Mac', "DREAMS");
+  assert.equal(a.songKey, b.songKey);
+});
+
+test('makeSongKey strips a trailing parens suffix into versionLabel', () => {
+  const { songKey, versionLabel } = makeSongKey('Pink', 'U + Ur Hand (Radio Version)');
+  assert.equal(songKey, 'pink|u ur hand');
+  assert.equal(versionLabel, 'Radio Version');
+});
+
+test('makeSongKey keeps non-trailing parens in the title', () => {
+  const { songKey, versionLabel } = makeSongKey('Artist', '(I Just) Died In Your Arms');
+  assert.equal(versionLabel, '');
+  assert.equal(songKey, 'artist|i just died in your arms');
+});
+
+test('makeSongKey does not merge distinct songs', () => {
+  const a = makeSongKey('Fleetwood Mac', 'Dreams');
+  const b = makeSongKey('The Cranberries', 'Dreams');
+  assert.notEqual(a.songKey, b.songKey);
+});
+
+// --- ticket #12: cache schema v2 ---
+
+test('isCacheCurrent accepts only the current version with a songs array', () => {
+  assert.equal(isCacheCurrent({ version: CACHE_VERSION, songs: [] }), true);
+  assert.equal(isCacheCurrent({ version: 1, songs: [] }), false);
+  assert.equal(isCacheCurrent({ songs: [] }), false); // unversioned v1 cache
+  assert.equal(isCacheCurrent({ version: CACHE_VERSION }), false);
+  assert.equal(isCacheCurrent(null), false);
 });

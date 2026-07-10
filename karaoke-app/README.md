@@ -188,10 +188,10 @@ Don't put URL + creds in the same message.
    (Needs `unzip` on PATH — Git Bash has it. Safe to re-run; never overwrites.)
 3. Force a library rescan:
    ```
-   FORCE_RESCAN=1 npm start          # Git Bash
-   $env:FORCE_RESCAN=1; npm start    # PowerShell
+   npm run rescan
    ```
-   Or delete `library-cache.json` and start normally.
+   (Works in any shell. `FORCE_RESCAN=1 npm start` in Git Bash still works too,
+   as does deleting `library-cache.json` and starting normally.)
 4. Sanity check: the startup log prints the new song count, and
    `/api/health` reports it too.
 
