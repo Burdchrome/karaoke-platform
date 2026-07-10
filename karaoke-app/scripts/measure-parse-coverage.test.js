@@ -1,8 +1,10 @@
 // Tests for the parse-coverage measurement classifier.
 //
 // Every example here is a real filename from the library (ticket #3 corpus,
-// karaoke-app/unparsed-songs.txt) — the classifier must sort each one into the
-// same bucket the ticket-#3 measurement did.
+// karaoke-app/unparsed-songs.txt). The bucket taxonomy is ticket #3's, but the
+// boundaries were re-derived (the scratchpad classifier is lost) — per-bucket
+// counts differ slightly from the #3 comment; the 875 total is identical. This
+// script's output is the canonical baseline going forward (see its header).
 
 import test from 'node:test';
 import assert from 'node:assert/strict';

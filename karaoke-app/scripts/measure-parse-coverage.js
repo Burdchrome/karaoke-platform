@@ -11,6 +11,13 @@
 //        (defaults to ./library-cache.json — run from karaoke-app/)
 //
 // Read-only: never touches the cache or the drive.
+//
+// CANONICAL BASELINE (this script, 2026-07-10 cache, 65,832 songs):
+//   98.7% artist-present · 875 hard failures · 512 suspected inversions
+//   (DKM 326, ZMP 108, TU 74). Ticket #3's scratchpad reported ~450+ with a
+//   slightly different (lost) regex; per-bucket failure counts were also
+//   re-derived here (total still 875). Later tickets measure against THESE
+//   numbers, not the #3 comment.
 
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -77,18 +84,18 @@ export function discPrefix(discCode) {
   return (discCode.match(/^[A-Za-z]+/) || [''])[0].toUpperCase();
 }
 
-/** First N distinct entries — duplicate files across dirs would drown samples. */
-function sampleOf(names, n = SAMPLES_PER_BUCKET) {
-  return [...new Set(names)].slice(0, n);
+/** First few distinct entries — duplicate files across dirs would drown samples. */
+function sampleOf(names) {
+  return [...new Set(names)].slice(0, SAMPLES_PER_BUCKET);
 }
 
-function pct(part, whole) {
+function percent(part, whole) {
   return whole === 0 ? '0.0%' : `${((part / whole) * 100).toFixed(1)}%`;
 }
 
 export async function measure(cachePath) {
-  const raw = await fs.readFile(cachePath, 'utf8');
-  const cache = JSON.parse(raw);
+  const cacheJson = await fs.readFile(cachePath, 'utf8');
+  const cache = JSON.parse(cacheJson);
   if (!Array.isArray(cache.songs)) {
     throw new Error(`${cachePath} has no songs[] array — not a library cache?`);
   }
@@ -128,10 +135,10 @@ function report({ total, fullParse, artistNoDisc, failures, buckets, perPrefix }
 
   lines.push('=== Parse coverage ===');
   lines.push(`Total songs:              ${total}`);
-  lines.push(`Full parse (artist+disc): ${fullParse.length} (${pct(fullParse.length, total)})`);
-  lines.push(`Artist, no disc code:     ${artistNoDisc.length} (${pct(artistNoDisc.length, total)})`);
-  lines.push(`Artist present:           ${artistPresent} (${pct(artistPresent, total)})`);
-  lines.push(`Hard failures (no artist): ${failures.length} (${pct(failures.length, total)})`);
+  lines.push(`Full parse (artist+disc): ${fullParse.length} (${percent(fullParse.length, total)})`);
+  lines.push(`Artist, no disc code:     ${artistNoDisc.length} (${percent(artistNoDisc.length, total)})`);
+  lines.push(`Artist present:           ${artistPresent} (${percent(artistPresent, total)})`);
+  lines.push(`Hard failures (no artist): ${failures.length} (${percent(failures.length, total)})`);
 
   lines.push('');
   lines.push('=== Hard failures by bucket ===');
@@ -147,7 +154,7 @@ function report({ total, fullParse, artistNoDisc, failures, buckets, perPrefix }
   for (const [prefix, stats] of perPrefix) {
     totalInverted += stats.inverted;
     lines.push(
-      `${prefix.padEnd(7)} ${String(stats.songs).padStart(5)}  ${String(stats.inverted).padStart(5)} (${pct(stats.inverted, stats.songs)})`
+      `${prefix.padEnd(7)} ${String(stats.songs).padStart(5)}  ${String(stats.inverted).padStart(5)} (${percent(stats.inverted, stats.songs)})`
     );
   }
   lines.push(`Total suspected inversions: ${totalInverted}`);
