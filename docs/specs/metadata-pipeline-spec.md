@@ -74,6 +74,12 @@ songKey = normalize(artist) + '|' + normalize(title)
 4. strip trailing `(…)` suffix from the title — the stripped text is **kept**
    on the file entry as `versionLabel` (e.g. `Radio Version`, `Duet`)
 
+> **Errata (2026-07-10, #12):** the numbered order above doesn't execute as
+> written — step 2 removes the comma that step 3's trailing `, the` rule needs,
+> and step 4's parens must come off before the trailing fold can fire. The
+> implementation runs: parens→versionLabel first, then lowercase/collapse →
+> fold The → strip punctuation. Same results the spec intends.
+
 ```
 // ponytail: no fuzzy matching — add when a real ungrouped duplicate is reported
 ```
