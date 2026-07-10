@@ -4,6 +4,36 @@ A running record of manual test sessions against the karaoke server. Each sessio
 
 ---
 
+## Session: 2026-07-10 (ticket #9 — parse-coverage measurement script)
+
+### What changed
+
+1. **`scripts/measure-parse-coverage.js`** — ticket-#3's scratchpad measurement,
+   now permanent. Reads `library-cache.json` (read-only), reports coverage %,
+   six failure buckets with samples, per-prefix inversion table.
+2. **`scripts/measure-parse-coverage.test.js`** — 8 node:test tests at the
+   classifier seam, real corpus filenames.
+3. **`package.json`** — `npm test` and `npm run measure` aliases.
+
+### Test cases
+
+| # | What | Expected | Pass/Fail | Notes |
+|---|------|----------|-----------|-------|
+| 1 | `npm test` | 8/8 pass | ✅ | node:test, zero new deps |
+| 2 | `npm run measure` vs #3 baseline | 98.7% artist-present, 875 failures | ✅ | both exact |
+| 3 | inversion count | ~450 | ⚠️ | **512** (DKM 326, ZMP 108, TU 74) — wider regex than the lost scratchpad; pinned as canonical baseline in the script header |
+
+Verified-in-test (single deliberate run against the real cache). Becomes
+verified-in-use when #10/#11/#15 measure against it.
+
+### Follow-ups
+
+- When #10 edits `parseFilename`: consolidate `TITLE_FIRST_PREFIXES` +
+  name-shape regex duplicated between `server/library.js` and the script
+  (keep-in-sync comments mark both spots).
+
+---
+
 ## Session: 2026-07-07c (dedupe at load)
 
 ### What changed

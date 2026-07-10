@@ -116,7 +116,15 @@ Later phases add queue management, DJ controls, and library cleanup tools.
   Manual rescue of ~120 unfixable files parked as
   [issue #8](https://github.com/Burdchrome/karaoke-platform/issues/8) (post-pipeline).
   Song identity: [ADR 0001](docs/adr/0001-song-identity-per-file-ids-plus-grouping-key.md).
-  Next step: `/to-tickets` against the spec, then implement.
+  **Spec ticketed 2026-07-10** as issues #9–#15 (native blocking; chain in
+  workspace-state). **#9 done same day:** measurement script landed at
+  `karaoke-app/scripts/measure-parse-coverage.js` (+ node:test tests;
+  `npm test` / `npm run measure`). **Canonical baseline = the script's header:
+  98.7% artist-present / 875 hard failures / 512 suspected inversions** —
+  later tickets prove against these numbers, not the ticket-#3 comment.
+  Next step: `/implement` the frontier — #10 (comma-shape fix) ‖ #11 (new
+  parser passes); when #10 touches the parser, consolidate the prefix-table /
+  name-shape regex duplicated between `library.js` and the measurement script.
   The sketch below is kept only as the original problem statement.
 - [ ] Dedupe songs that exist under multiple disc codes (rolled into the metadata pipeline; fingerprinting deferred per the map)
 
@@ -176,9 +184,9 @@ Plus duplicates: same song appears under multiple disc codes (e.g. "Can't Hold U
 
 - **OS:** Windows
 - **Browser:** Firefox
-- **Editor:** None set up yet (suggest VS Code when needed)
+- **Editor:** VS Code installed (Josh works through Claude, not the editor)
 - **Git:** Installed (`2.54.0.windows.1`)
-- **Node:** **Not yet installed** ← current blocker
+- **Node:** v24 installed, npm available
 - **Powershell:** Available
 - **Bash:** Git Bash available
 
@@ -282,7 +290,8 @@ From CLAUDE.md, restated for any agent continuing this work:
 **Operational artifacts now in the project:**
 - `karaoke-app/scripts/extract-zips.js` — zip extractor, safe to re-run
 - `karaoke-app/extract-zips.log` — log from the May 15 extraction run
-- `karaoke-app/unparsed-songs.txt` — 875 filenames that the Phase 3a parser still can't split; grouped by leading-letter prefix
+- `karaoke-app/unparsed-songs.txt` — 875 filenames the parser can't split, clustered by failure pattern (regenerated 2026-07-09, ticket #3)
+- `karaoke-app/scripts/measure-parse-coverage.js` — parse-coverage instrument (ticket #9); `npm run measure`; canonical baseline in its header; tests via `npm test`
 - `karaoke-app/library-cache.json` — auto-generated; delete or set `FORCE_RESCAN=1` to rebuild
 - `karaoke-app/README.md` — operational instructions including the Cloudflare Tunnel + auth flow
 - `karaoke_claude_design_brief.md` — design pass brief for next aesthetic iteration
@@ -343,6 +352,6 @@ All 8 questions from the now-archived `karaoke_shooter_sunday.md` got walked thr
 - **Tighten the audience preview cap** — known leak documented above. Small, contained, would close out the "ready to share more broadly" gap.
 - **Design pass** — `karaoke_claude_design_brief.md` is still the open aesthetic question. Visual shift needed; v3 stalled.
 - **Tier 2 Cloudflare upgrade** — named tunnel + persistent URL. ~10 min one-time setup, free, removes the "URL changes every restart" friction.
-- **Phase 3: build the metadata pipeline** — spec is locked (`docs/specs/metadata-pipeline-spec.md`); run `/to-tickets` and implement. (Lookup pipeline and fingerprinting were both rejected by the map — don't resurrect them.)
+- **Phase 3: build the metadata pipeline** — ticketed as #9–#15; #9 (measurement script) done. Work the frontier: #10 ‖ #11, one ticket per session. (Lookup pipeline and fingerprinting were both rejected by the map — don't resurrect them.)
 - **Polish items** — favicon, queue persistence, play history.
 - **Stop and let it bake** — v1 is now real enough to share with one or two trusted people via the ephemeral tunnel. Use it, find what's broken in practice, *then* decide what to build.
