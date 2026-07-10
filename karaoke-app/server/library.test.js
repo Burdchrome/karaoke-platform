@@ -82,6 +82,72 @@ test('regression: unparseable name falls through to title-only', () => {
   assert.equal(song.title, 'CBEP 454-1-06');
 });
 
+// --- ticket #11: stray-space disc codes (spec §1b) ---
+
+test('stray-space disc code collapses and parses normally', () => {
+  const song = parseFilename('SC 8385-15 - Garth Brooks - The Dance');
+  assert.equal(song.discCode, 'SC8385-15');
+  assert.equal(song.artist, 'Garth Brooks');
+  assert.equal(song.title, 'The Dance');
+});
+
+test('code-only stray-space file still fails cleanly (belongs to #8)', () => {
+  const song = parseFilename('CBEP 454-1-06');
+  assert.equal(song.artist, '');
+  assert.equal(song.title, 'CBEP 454-1-06');
+  assert.equal(song.discCode, '');
+});
+
+test('digits-in-artist name is not mistaken for a stray-space code', () => {
+  // "Blink 182" has no dashed digit group, so the stray-space pass must not
+  // turn it into a disc code. It stays in the digits-in-left caution bucket
+  // (out of scope per spec §1 — still a clean title-only fallback).
+  const song = parseFilename('Blink 182 - All The Small Things');
+  assert.equal(song.discCode, '');
+  assert.equal(song.artist, '');
+  assert.equal(song.title, 'Blink 182 - All The Small Things');
+});
+
+// --- ticket #11: underscore separators (spec §1c) ---
+
+test('underscore-separated filename parses after translation', () => {
+  const song = parseFilename('_Asleep_At_The_Wheel_-_Blues_For_Dixie');
+  assert.equal(song.artist, 'Asleep At The Wheel');
+  assert.equal(song.title, 'Blues For Dixie');
+  assert.equal(song.discCode, '');
+});
+
+test('underscores inside fields are de-underscored on output', () => {
+  // Currently "parses" with underscores intact — ugly-parse cleanup.
+  const song = parseFilename('SC8100-01 - Fleetwood_Mac - Go_Your_Own_Way');
+  assert.equal(song.artist, 'Fleetwood Mac');
+  assert.equal(song.title, 'Go Your Own Way');
+  assert.equal(song.discCode, 'SC8100-01');
+});
+
+test('underscore-in-disc-code files keep parsing after translation', () => {
+  // "CB6084_09" used to ugly-parse via the underscore-tolerant code regex;
+  // after _ → space the code must rejoin as "CB6084-09", not fail.
+  const song = parseFilename('CB6084_09_-_Alabama_-_If_I_Had_You');
+  assert.equal(song.discCode, 'CB6084-09');
+  assert.equal(song.artist, 'Alabama');
+  assert.equal(song.title, 'If I Had You');
+});
+
+test('split code + track number rejoins ("sc_8119_-_02_-_artist_-_title")', () => {
+  const song = parseFilename("sc_8119_-_07_-_linda_ronstadt_&_james_ingram_-_somewhere_out_");
+  assert.equal(song.discCode, 'sc8119-07');
+  assert.equal(song.artist, 'linda ronstadt & james ingram');
+  assert.equal(song.title, 'somewhere out');
+});
+
+test('dashed track suffix after spaced code rejoins ("CB5102_02-11 - …")', () => {
+  const song = parseFilename('CB5102_02-11 - Presley, Elvis - Without Him');
+  assert.equal(song.discCode, 'CB5102-02-11');
+  assert.equal(song.artist, 'Elvis Presley');
+  assert.equal(song.title, 'Without Him');
+});
+
 // --- shared shape helper (consolidated from the measurement script) ---
 
 test('isPersonNameShaped matches Last, First and rejects non-names', () => {

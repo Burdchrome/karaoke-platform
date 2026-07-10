@@ -87,7 +87,40 @@ function normalizeName(s) {
 }
 
 export function parseFilename(basename) {
-  const s = basename.trim();
+  const original = basename.trim();
+  let s = original;
+
+  // ---- Pre-pass: underscore separators (spec §1c) ----
+  // "_Asleep_At_The_Wheel_-_Blues_For_Dixie" and underscores inside fields.
+  // Translate _ → space up front so every later pass sees normal spacing.
+  if (s.includes('_')) {
+    s = s.replace(/_/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+
+  // ---- Pre-pass: rejoin disc codes fragmented by spaces (spec §1b) ----
+  // Each rule needs real content after the code (the lookahead), so code-only
+  // files ("CBEP 454-1-06") keep failing cleanly instead of back-tracking
+  // into a garbage parse. "Blink 182"-style artist names match none of these
+  // (plain digits with no code shape around them).
+  const codeRejoins = [
+    // "SC 8385-15 - …" → "SC8385-15 - …" (stray space before dashed digits;
+    // the body may carry a stray letter, "8191r-02")
+    [/^([A-Za-z]+) (\d[A-Za-z0-9]*(?:-\d+)+)(?= - )/, '$1$2'],
+    // "sc 8795-03-howard…" → "sc8795-03-…" (tight-dash body after the code)
+    [/^([A-Za-z]+) (\d+(?:-\d+)+)(?=-[A-Za-z])/, '$1$2'],
+    // "CB6084 09 - …" / "CB5102 02-11 - …" → "CB6084-09 - …" (space where a
+    // dash belongs, usually left by the underscore translation above)
+    [/^([A-Za-z]+\d+) (\d+(?:-\d+)*)(?= - )/, '$1-$2'],
+    // "sc 8119 - 02 - Artist - Title" → "sc8119-02 - Artist - Title";
+    // needs TWO more segments so a plain "Artist - Title" tail can't be eaten
+    [/^([A-Za-z]+) (\d+) - (\d+)(?= - .+ - )/, '$1$2-$3'],
+  ];
+  for (const [pattern, replacement] of codeRejoins) {
+    if (pattern.test(s)) {
+      s = s.replace(pattern, replacement);
+      break;
+    }
+  }
 
   // ---- Pass 1: disc code at the END (numeric, after the final " - ") ----
   // Examples:
@@ -161,10 +194,11 @@ export function parseFilename(basename) {
     }
   }
 
-  // ---- Pass 4: fallback — give up, dump as title ----
+  // ---- Pass 4: fallback — give up, dump the ORIGINAL name as title ----
+  // (not the pre-normalized one, so failed files stay searchable as-is)
   return {
     artist: '',
-    title: s,
+    title: original,
     discCode: '',
   };
 }
