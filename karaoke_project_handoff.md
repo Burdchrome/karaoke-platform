@@ -1,6 +1,6 @@
 # Karaoke DJ Project — Master Handoff
 
-**Last updated:** 2026-07-09
+**Last updated:** 2026-07-10
 **Supersedes:** `karaoke_dj_handoff.md` (older — pre-inventory, contained open questions now answered)
 **For:** Shooter, a karaoke DJ the user knows personally
 
@@ -122,9 +122,17 @@ Later phases add queue management, DJ controls, and library cleanup tools.
   `npm test` / `npm run measure`). **Canonical baseline = the script's header:
   98.7% artist-present / 875 hard failures / 512 suspected inversions** —
   later tickets prove against these numbers, not the ticket-#3 comment.
-  Next step: `/implement` the frontier — #10 (comma-shape fix) ‖ #11 (new
-  parser passes); when #10 touches the parser, consolidate the prefix-table /
-  name-shape regex duplicated between `library.js` and the measurement script.
+  **#10 done 2026-07-10** (comma-shape fix, 16f855f): inversions **512 → 34**;
+  heuristic scoped to title-first packs — running it globally inverts ~1,100
+  clean-pack comma-shaped titles ("Walk, The"); residual 34 = both-shaped
+  ties → #13/#8. Prefix-table/name-shape consolidation into `library.js` done.
+  **#11 done same day** (stray-space + underscore passes, ebad900): hard
+  failures **875 → 772** (−103); 4-rule code-rejoin pre-pass (naive underscore
+  translation broke 45 garbage-parse files — rejoin parses them correctly);
+  code-only codes still fail cleanly → #8. New dirt found: sc_8537 disc is
+  title-first inside the SC pack — overrides.json candidate (#13).
+  Parser unit tests: `karaoke-app/server/library.test.js`.
+  Next step: `/implement` #12 (songKey + cache v2), then #13 ‖ #14 → #15.
   The sketch below is kept only as the original problem statement.
 - [ ] Dedupe songs that exist under multiple disc codes (rolled into the metadata pipeline; fingerprinting deferred per the map)
 
@@ -352,6 +360,6 @@ All 8 questions from the now-archived `karaoke_shooter_sunday.md` got walked thr
 - **Tighten the audience preview cap** — known leak documented above. Small, contained, would close out the "ready to share more broadly" gap.
 - **Design pass** — `karaoke_claude_design_brief.md` is still the open aesthetic question. Visual shift needed; v3 stalled.
 - **Tier 2 Cloudflare upgrade** — named tunnel + persistent URL. ~10 min one-time setup, free, removes the "URL changes every restart" friction.
-- **Phase 3: build the metadata pipeline** — ticketed as #9–#15; #9 (measurement script) done. Work the frontier: #10 ‖ #11, one ticket per session. (Lookup pipeline and fingerprinting were both rejected by the map — don't resurrect them.)
+- **Phase 3: build the metadata pipeline** — ticketed as #9–#15; #9–#11 done (measurement script, comma-shape fix, stray-space/underscore passes — see Phase 3 section for numbers). Next: #12 (songKey + cache v2), then #13 ‖ #14 → #15. One ticket per session. (Lookup pipeline and fingerprinting were both rejected by the map — don't resurrect them.)
 - **Polish items** — favicon, queue persistence, play history.
 - **Stop and let it bake** — v1 is now real enough to share with one or two trusted people via the ephemeral tunnel. Use it, find what's broken in practice, *then* decide what to build.
