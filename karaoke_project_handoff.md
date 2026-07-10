@@ -1,6 +1,6 @@
 # Karaoke DJ Project — Master Handoff
 
-**Last updated:** 2026-06-23
+**Last updated:** 2026-07-09
 **Supersedes:** `karaoke_dj_handoff.md` (older — pre-inventory, contained open questions now answered)
 **For:** Shooter, a karaoke DJ the user knows personally
 
@@ -106,11 +106,18 @@ Later phases add queue management, DJ controls, and library cleanup tools.
 - [x] Extract the 3,477 zip files — extraction ran 2026-05-15 (`extract-zips.log`); verification + rescan is map ticket #2
 - [ ] Try to match the 52 CDG orphans to MP3s elsewhere on the drive *(ruled out of the pipeline map's scope — own small effort later)*
 - [ ] Decide what to do with the 6 MP4 video karaoke files *(same — out of map scope)*
-- [ ] **Metadata cleanup pipeline** — now being charted as a wayfinder map:
-  [issue #1](https://github.com/Burdchrome/karaoke-platform/issues/1) (tickets #2–#6).
-  The map is the canonical plan; the spec below is superseded by it and kept only
-  as the original problem statement. Song-identity decision locked in
-  [ADR 0001](docs/adr/0001-song-identity-per-file-ids-plus-grouping-key.md).
+- [ ] **Metadata cleanup pipeline** — **spec locked 2026-07-09**, ready to build:
+  [docs/specs/metadata-pipeline-spec.md](docs/specs/metadata-pipeline-spec.md).
+  Wayfinder map [issue #1](https://github.com/Burdchrome/karaoke-platform/issues/1)
+  complete (tickets #2–#6 closed; decision log in the issue). Key outcomes:
+  library verified at 65,832 songs; DB-lookup stage dropped
+  ([research](docs/research/disc-code-lookup-sources.md)); parser plan = comma-shape
+  inversion fix + 2 passes, songKey + versionLabel, cache v2, overrides.json.
+  Manual rescue of ~120 unfixable files parked as
+  [issue #8](https://github.com/Burdchrome/karaoke-platform/issues/8) (post-pipeline).
+  Song identity: [ADR 0001](docs/adr/0001-song-identity-per-file-ids-plus-grouping-key.md).
+  Next step: `/to-tickets` against the spec, then implement.
+  The sketch below is kept only as the original problem statement.
 - [ ] Dedupe songs that exist under multiple disc codes (rolled into the metadata pipeline; fingerprinting deferred per the map)
 
 #### Phase 3 spec — metadata cleanup pipeline (original sketch — superseded by map #1)
@@ -336,6 +343,6 @@ All 8 questions from the now-archived `karaoke_shooter_sunday.md` got walked thr
 - **Tighten the audience preview cap** — known leak documented above. Small, contained, would close out the "ready to share more broadly" gap.
 - **Design pass** — `karaoke_claude_design_brief.md` is still the open aesthetic question. Visual shift needed; v3 stalled.
 - **Tier 2 Cloudflare upgrade** — named tunnel + persistent URL. ~10 min one-time setup, free, removes the "URL changes every restart" friction.
-- **Phase 3: library cleanup** — disc-code lookup pipeline, fingerprinting for the stubborn 1.3%.
+- **Phase 3: build the metadata pipeline** — spec is locked (`docs/specs/metadata-pipeline-spec.md`); run `/to-tickets` and implement. (Lookup pipeline and fingerprinting were both rejected by the map — don't resurrect them.)
 - **Polish items** — favicon, queue persistence, play history.
 - **Stop and let it bake** — v1 is now real enough to share with one or two trusted people via the ephemeral tunnel. Use it, find what's broken in practice, *then* decide what to build.
