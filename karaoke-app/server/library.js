@@ -203,6 +203,48 @@ export function parseFilename(basename) {
   };
 }
 
+// ---- songKey grouping (spec §2, ADR 0001) ----
+// Per-file IDs stay the identity; songKey is the derived field that groups
+// versions of the same song ("Dreams" on SC8199 and DK067 share one key).
+
+/**
+ * Normalize one field (artist or title) for grouping.
+ * Order matters: "The"-folding runs before punctuation stripping because the
+ * trailing form (", The") needs the comma to still be there.
+ */
+export function normalizeSongField(field) {
+  return field
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, ' ')
+    .replace(/^the /, '')
+    .replace(/, the$/, '')
+    .replace(/[^a-z0-9 ]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+/**
+ * Derive the grouping key and version label for a parsed song.
+ * A trailing "(…)" on the title is treated as a version marker ("Radio
+ * Version", "Duet"): stripped from the key, kept as versionLabel.
+ * Returns { songKey, versionLabel }.
+ */
+// ponytail: no fuzzy matching — add when a real ungrouped duplicate is reported
+export function makeSongKey(artist, title) {
+  let baseTitle = title;
+  let versionLabel = '';
+  const parensSuffix = title.match(/^(.*\S)\s*\(([^)]+)\)$/);
+  if (parensSuffix) {
+    baseTitle = parensSuffix[1];
+    versionLabel = parensSuffix[2].trim();
+  }
+  return {
+    songKey: `${normalizeSongField(artist)}|${normalizeSongField(baseTitle)}`,
+    versionLabel,
+  };
+}
+
 /**
  * Generate a stable, short ID from the full path so the same song always has
  * the same URL. SHA-1 truncated to 12 chars is plenty for 62k songs (collision
@@ -239,6 +281,7 @@ function buildIndex(filePaths) {
     if (!cdgPath) continue; // skip audio-only orphans for v0
     const basename = path.basename(mp3Path, path.extname(mp3Path));
     const { artist, title, discCode } = parseFilename(basename);
+    const { songKey, versionLabel } = makeSongKey(artist, title);
     songs.push({
       id: makeId(mp3Path),
       mp3Path,
@@ -247,21 +290,38 @@ function buildIndex(filePaths) {
       artist,
       title,
       discCode,
+      songKey,
+      versionLabel,
     });
   }
 
   return songs;
 }
 
+// Bump whenever the parser or song schema changes: a version mismatch on load
+// forces a full rescan, so parser upgrades self-apply on next start (spec §4).
+export const CACHE_VERSION = 2;
+
+/**
+ * A cache payload is usable only if it was built by the current schema.
+ * Unversioned (v1) caches fail this and trigger a rescan.
+ */
+export function isCacheCurrent(parsed) {
+  return Boolean(parsed) && parsed.version === CACHE_VERSION && Array.isArray(parsed.songs);
+}
+
 /**
  * Try to load a previously-built index from disk.
- * Returns null if cache is missing or unreadable.
+ * Returns null if cache is missing, unreadable, or from an older schema.
  */
 async function loadCache() {
   try {
     const raw = await fs.readFile(CACHE_FILE, 'utf8');
     const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed.songs)) return parsed;
+    if (isCacheCurrent(parsed)) return parsed;
+    if (parsed && parsed.version !== CACHE_VERSION) {
+      logger.info(`Cache is schema v${parsed.version ?? 1}, current is v${CACHE_VERSION} — rescanning.`);
+    }
     return null;
   } catch {
     return null;
@@ -274,15 +334,18 @@ async function saveCache(payload) {
 
 /**
  * Public entrypoint. Loads the song index, scanning the drive only if needed.
+ * Rescan triggers: FORCE_RESCAN=1, a --rescan argument (what `npm run rescan`
+ * uses — npm scripts run under cmd.exe on Windows, where the VAR=1 prefix
+ * doesn't work), or a cache older than CACHE_VERSION.
  */
 export async function loadLibrary() {
-  const forceRescan = process.env.FORCE_RESCAN === '1';
+  const forceRescan = process.env.FORCE_RESCAN === '1' || process.argv.includes('--rescan');
 
   if (!forceRescan) {
     const cached = await loadCache();
     if (cached) {
       logger.info(`Loaded ${cached.songs.length} songs from cache (${CACHE_FILE})`);
-      logger.info(`Set FORCE_RESCAN=1 to rebuild the cache.`);
+      logger.info(`Run "npm run rescan" (or set FORCE_RESCAN=1) to rebuild the cache.`);
       return cached.songs;
     }
   }
@@ -297,7 +360,7 @@ export async function loadLibrary() {
   const elapsed = ((Date.now() - start) / 1000).toFixed(1);
   logger.info(`Indexed ${songs.length} paired songs in ${elapsed}s`);
 
-  await saveCache({ generatedAt: new Date().toISOString(), root: LIBRARY_ROOT, songs });
+  await saveCache({ version: CACHE_VERSION, generatedAt: new Date().toISOString(), root: LIBRARY_ROOT, songs });
   logger.info(`Cache written to ${CACHE_FILE}`);
 
   return songs;

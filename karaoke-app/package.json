@@ -8,7 +8,8 @@
     "start": "node server/index.js",
     "dev": "nodemon server/index.js",
     "test": "node --test \"scripts/*.test.js\" \"server/*.test.js\"",
-    "measure": "node scripts/measure-parse-coverage.js"
+    "measure": "node scripts/measure-parse-coverage.js",
+    "rescan": "node server/index.js --rescan"
   },
   "dependencies": {
     "cdgraphics": "^7.0.0",
