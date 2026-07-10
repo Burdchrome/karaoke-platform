@@ -4,6 +4,43 @@ A running record of manual test sessions against the karaoke server. Each sessio
 
 ---
 
+## Session: 2026-07-10b (tickets #10 + #11 — parser fixes)
+
+### What changed
+
+1. **Comma-shape inversion fix** (`server/library.js`, #10, 16f855f) — within
+   title-first packs, exactly one "Last, First" segment wins as artist over
+   the prefix table. Scoped after a global run misfired on ~1,100 clean-pack
+   comma-shaped titles ("Walk, The").
+2. **Stray-space + underscore passes** (#11, ebad900) — underscores translate
+   to spaces; a 4-rule pre-pass rejoins space-fragmented disc codes
+   ("SC 8385-15", "CB6084 09", "sc 8119 - 02", "sc 8795-03-tight"). Pass-4
+   fallback now returns the original filename.
+3. **Consolidation** — `TITLE_FIRST_PREFIXES` + `isPersonNameShaped` now live
+   only in `library.js`; measurement script imports them. Parser tests in
+   `server/library.test.js`; `npm test` covers `server/` too.
+
+### Test cases
+
+| # | What | Expected | Pass/Fail | Notes |
+|---|------|----------|-----------|-------|
+| 1 | `npm test` | all pass | ✅ | 27/27 (13 parser + 14 measurement) |
+| 2 | cache re-parse: inversions | ≈ 0 | ✅ | 512 → **34**, all both-shaped ties → #13/#8 |
+| 3 | cache re-parse: hard failures | drop ~96 | ✅ | 875 → **772** (−103) |
+| 4 | regression: artist lost | 0 files | ✅ | checked file-by-file vs old cache; 103 gained |
+| 5 | code-only stray-space file | still fails cleanly | ✅ | "CBEP 454-1-06" → #8's list |
+
+Verified-in-test: re-parse of cached filenames in memory — the on-disk cache
+is still v1/stale until the #12 rescan. #15 (acceptance) re-proves against the
+rebuilt cache; becomes verified-in-use at the first real gig after rescan.
+
+### Follow-ups
+
+- sc_8537 disc is title-first order inside the SC pack — parses populated but
+  inverted; overrides.json candidate, spot-check during #13.
+
+---
+
 ## Session: 2026-07-10 (ticket #9 — parse-coverage measurement script)
 
 ### What changed
@@ -23,14 +60,13 @@ A running record of manual test sessions against the karaoke server. Each sessio
 | 2 | `npm run measure` vs #3 baseline | 98.7% artist-present, 875 failures | ✅ | both exact |
 | 3 | inversion count | ~450 | ⚠️ | **512** (DKM 326, ZMP 108, TU 74) — wider regex than the lost scratchpad; pinned as canonical baseline in the script header |
 
-Verified-in-test (single deliberate run against the real cache). Becomes
-verified-in-use when #10/#11/#15 measure against it.
+Verified-in-use 2026-07-10: #10 and #11 both measured against this baseline
+(session 2026-07-10b above).
 
 ### Follow-ups
 
-- When #10 edits `parseFilename`: consolidate `TITLE_FIRST_PREFIXES` +
-  name-shape regex duplicated between `server/library.js` and the script
-  (keep-in-sync comments mark both spots).
+- ~~Consolidate `TITLE_FIRST_PREFIXES` + name-shape regex~~ — done in #10
+  (16f855f): both live in `library.js`, script imports them.
 
 ---
 
