@@ -22,10 +22,11 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
+// Shared with the parser (ticket #10) so the measurement and parseFilename
+// agree on what "title-first pack" and "inverted" mean.
+import { TITLE_FIRST_PREFIXES, isPersonNameShaped } from '../server/library.js';
 
-// Keep in sync with TITLE_FIRST_PREFIXES in server/library.js — the inversion
-// scan only makes sense for packs the parser treats as title-first.
-const TITLE_FIRST_PREFIXES = ['A', 'AD', 'DKM', 'EK', 'G', 'M', 'TU', 'ZMP'];
+export { isPersonNameShaped };
 
 const SAMPLES_PER_BUCKET = 5;
 
@@ -67,17 +68,6 @@ const BUCKET_LABELS = {
   'tight-dash': 'tight-dash only (e.g. "A-B", no spaced dash)',
 };
 
-/**
- * "Last, First" shape — same conservative pattern parseFilename uses to
- * normalize artist names. A parsed *title* with this shape in a title-first
- * pack is a suspected artist/title inversion. Known to slightly overcount
- * ("Walk, The"-style flipped titles also match) — accepted per ticket #3.
- */
-export function isPersonNameShaped(text) {
-  if (!text) return false;
-  return /^[A-Z][A-Za-z'.\- ]+,\s+[A-Z][A-Za-z'.\- ]+$/.test(text);
-}
-
 /** Alphabetic prefix of a disc code ("DKM2014-02" → "DKM"). */
 export function discPrefix(discCode) {
   if (!discCode) return '';
@@ -114,7 +104,7 @@ export async function measure(cachePath) {
 
   // --- Suspected inversions in title-first packs ---
   const perPrefix = new Map(
-    TITLE_FIRST_PREFIXES.map((p) => [p, { songs: 0, inverted: 0, samples: [] }])
+    [...TITLE_FIRST_PREFIXES].map((p) => [p, { songs: 0, inverted: 0, samples: [] }])
   );
   for (const song of songs) {
     const stats = perPrefix.get(discPrefix(song.discCode));

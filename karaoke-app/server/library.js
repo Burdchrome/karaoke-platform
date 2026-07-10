@@ -58,8 +58,9 @@ async function walk(dir, results = []) {
  */
 
 // Disc-code prefixes where the order is DISC - TITLE - ARTIST (not the usual
-// DISC - ARTIST - TITLE). Add to this list as more are discovered.
-const TITLE_FIRST_PREFIXES = new Set([
+// DISC - ARTIST - TITLE). Some of these packs are mixed-order (DKM/ZMP/TU),
+// so within them the comma-shape check in parseFilename overrides the table.
+export const TITLE_FIRST_PREFIXES = new Set([
   'A',     // All-Star Karaoke mainstream
   'AD',    // Adult parodies
   'DKM',   // DK something
@@ -70,16 +71,22 @@ const TITLE_FIRST_PREFIXES = new Set([
   'ZMP',   // Zoom Karaoke
 ]);
 
-function normalizeName(s) {
-  if (!s) return s;
-  // "Last, First" → "First Last". Be conservative: only flip if the comma is
-  // followed by a space and looks like a name (no other commas, no parens).
-  const m = s.match(/^([A-Z][A-Za-z'.\- ]+),\s+([A-Z][A-Za-z'.\- ]+)$/);
-  if (m) return `${m[2]} ${m[1]}`;
-  return s;
+// "Last, First" shape. Conservative: comma followed by a space, looks like a
+// name (no other commas, no parens). Also used by scripts/measure-parse-coverage.js
+// so the parser and the measurement agree on what "inverted" means.
+export function isPersonNameShaped(s) {
+  if (!s) return false;
+  return /^[A-Z][A-Za-z'.\- ]+,\s+[A-Z][A-Za-z'.\- ]+$/.test(s);
 }
 
-function parseFilename(basename) {
+function normalizeName(s) {
+  if (!isPersonNameShaped(s)) return s;
+  // "Last, First" → "First Last".
+  const [last, first] = s.split(/,\s+/);
+  return `${first} ${last}`;
+}
+
+export function parseFilename(basename) {
   const s = basename.trim();
 
   // ---- Pass 1: disc code at the END (numeric, after the final " - ") ----
@@ -116,17 +123,23 @@ function parseFilename(basename) {
     // Find the alphabetic prefix (the letters before the first digit) to look
     // up in our title-first table.
     const prefix = (disc.match(/^[A-Za-z]+/) || [''])[0].toUpperCase();
-    const isTitleFirst = TITLE_FIRST_PREFIXES.has(prefix);
-    if (isTitleFirst) {
-      return {
-        artist: normalizeName(last.trim()),
-        title: middle.trim(),
-        discCode: disc.trim(),
-      };
+    const middleSegment = middle.trim();
+    const lastSegment = last.trim();
+    // ponytail: comma-shape heuristic; per-disc override table only if
+    // post-fix spot-check still shows a specific disc inverted (3-line patch then)
+    const middleIsName = isPersonNameShaped(middleSegment);
+    const lastIsName = isPersonNameShaped(lastSegment);
+    let isTitleFirst = TITLE_FIRST_PREFIXES.has(prefix);
+    // Mixed-order packs (the title-first list) get the comma-shape override:
+    // exactly one "Last, First" segment → that one is the artist. Scoped to
+    // those packs only — clean packs have ~1,100 comma-shaped TITLES
+    // ("Walk, The") that misfire if the rule runs globally (measured 2026-07-10).
+    if (isTitleFirst && middleIsName !== lastIsName) {
+      isTitleFirst = lastIsName;
     }
     return {
-      artist: normalizeName(middle.trim()),
-      title: last.trim(),
+      artist: normalizeName(isTitleFirst ? lastSegment : middleSegment),
+      title: isTitleFirst ? middleSegment : lastSegment,
       discCode: disc.trim(),
     };
   }
