@@ -246,6 +246,65 @@ export function makeSongKey(artist, title) {
 }
 
 /**
+ * Group loaded songs into one entry per song, collapsing duplicate versions.
+ *
+ * The drive has whole folders copied around, so ~1/3 of entries are extra
+ * copies of the same song on different discs. We group by songKey (spec §2)
+ * so "Dreams" on SC8199 and DK067 become one result with two versions.
+ *
+ * Blank-artist files are the exception: their songKey is "|<title>", so
+ * unrelated songs that merely share a title (both parsed to empty artist)
+ * would collapse. Those key on filename instead — same guard the pre-#14
+ * dedupe used.
+ *
+ * Each group carries display fields from its lowest-disc-code version (the
+ * canonical pick) and a `versions` array (every file's id/discCode/label/
+ * filename), sorted by discCode for stable display.
+ *
+ * Returns an array of groups:
+ *   { id, artist, title, discCode, versions: [{ id, artist, title,
+ *     discCode, versionLabel, filename }] }
+ */
+export function groupSongs(songs) {
+  const groups = new Map();
+
+  for (const song of songs) {
+    const hasArtist = song.artist && song.artist.trim();
+    const key = hasArtist ? song.songKey : `filename|${song.filename.toLowerCase()}`;
+
+    const version = {
+      id: song.id,
+      artist: song.artist,
+      title: song.title,
+      discCode: song.discCode,
+      versionLabel: song.versionLabel,
+      filename: song.filename,
+    };
+
+    const existing = groups.get(key);
+    if (existing) {
+      existing.versions.push(version);
+    } else {
+      // Hold the first-seen artist/title as the group's display identity;
+      // id/discCode get finalized from the canonical version after sorting.
+      groups.set(key, { artist: song.artist, title: song.title, versions: [version] });
+    }
+  }
+
+  return [...groups.values()].map(group => {
+    group.versions.sort((a, b) => (a.discCode || '').localeCompare(b.discCode || ''));
+    const canonical = group.versions[0];
+    return {
+      id: canonical.id,
+      artist: group.artist,
+      title: group.title,
+      discCode: canonical.discCode,
+      versions: group.versions,
+    };
+  });
+}
+
+/**
  * Generate a stable, short ID from the full path so the same song always has
  * the same URL. SHA-1 truncated to 12 chars is plenty for 62k songs (collision
  * risk effectively zero).

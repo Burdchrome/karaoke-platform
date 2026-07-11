@@ -350,6 +350,41 @@ ul.songs li:hover { background: var(--red-wash); }
 
 .actions { display: flex; gap: 8px; flex-shrink: 0; }
 
+/* ---- version groups (ticket #14) ----
+   A multi-version group is a flex row (info + toggle) that wraps so its
+   nested version list drops to a full-width second line. */
+ul.songs li.group { flex-wrap: wrap; }
+
+.versions-toggle {
+  background: transparent;
+  color: var(--amber);
+  border: 1px dashed var(--border-warm);
+  font-family: 'Special Elite', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  padding: 6px 11px;
+}
+.versions-toggle:hover {
+  color: var(--ink-bright);
+  border-color: var(--amber);
+  background: rgba(255, 182, 39, 0.06);
+}
+
+ul.versions {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  flex-basis: 100%;
+  border-top: 1px dashed var(--divider);
+}
+ul.versions.hidden { display: none; }
+ul.songs li.version {
+  padding: 8px 6px 8px 20px;
+  border-bottom: 1px dashed var(--divider);
+}
+ul.songs li.version:last-child { border-bottom: none; }
+ul.songs li.version .disc { flex: 1; min-width: 0; }
+
 /* ============================================================
    Buttons — spray-paint stickers
    ============================================================ */

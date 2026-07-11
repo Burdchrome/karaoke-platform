@@ -17,6 +17,7 @@ import {
   CACHE_VERSION,
   applyOverrides,
   loadOverrides,
+  groupSongs,
 } from './library.js';
 import fs from 'node:fs/promises';
 import os from 'node:os';
@@ -325,4 +326,90 @@ test('isCacheCurrent accepts only the current version with a songs array', () =>
   assert.equal(isCacheCurrent({ songs: [] }), false); // unversioned v1 cache
   assert.equal(isCacheCurrent({ version: CACHE_VERSION }), false);
   assert.equal(isCacheCurrent(null), false);
+});
+
+// --- ticket #14: serve-time grouping by songKey (spec §2) ---
+
+// Build a song object shaped like the ones buildIndex/loadLibrary produce,
+// deriving songKey/versionLabel the same way so the grouping tests exercise
+// real keys rather than hand-written ones.
+function songFor(artist, title, { id, discCode = '', filename } = {}) {
+  const { songKey, versionLabel } = makeSongKey(artist, title);
+  return {
+    id: id || makeId(`${artist}-${title}-${discCode}`),
+    filename: filename || `${discCode} - ${artist} - ${title}`,
+    artist,
+    title,
+    discCode,
+    songKey,
+    versionLabel,
+  };
+}
+
+// Tiny deterministic id stand-in for tests (library's makeId is not exported).
+function makeId(seed) {
+  return seed.toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 12) || 'id';
+}
+
+test('groupSongs collapses two versions of the same songKey into one group', () => {
+  const groups = groupSongs([
+    songFor('Fleetwood Mac', 'Dreams', { id: 'a', discCode: 'SC8199' }),
+    songFor('Fleetwood Mac', 'Dreams', { id: 'b', discCode: 'DK067' }),
+  ]);
+  assert.equal(groups.length, 1);
+  assert.equal(groups[0].versions.length, 2);
+});
+
+test('groupSongs merges "Cranberries" and "The Cranberries" into one group', () => {
+  const groups = groupSongs([
+    songFor('The Cranberries', 'Dreams', { id: 'a', discCode: 'SC0001' }),
+    songFor('Cranberries', 'Dreams', { id: 'b', discCode: 'DK0002' }),
+  ]);
+  assert.equal(groups.length, 1);
+  assert.equal(groups[0].versions.length, 2);
+});
+
+test('groupSongs surfaces per-version discCode and versionLabel', () => {
+  const groups = groupSongs([
+    songFor('Pink', 'U + Ur Hand', { id: 'a', discCode: 'SC1000' }),
+    songFor('Pink', 'U + Ur Hand (Radio Version)', { id: 'b', discCode: 'DK2000' }),
+  ]);
+  assert.equal(groups.length, 1);
+  const labels = groups[0].versions.map(v => v.versionLabel).sort();
+  assert.deepEqual(labels, ['', 'Radio Version']);
+  const discs = groups[0].versions.map(v => v.discCode).sort();
+  assert.deepEqual(discs, ['DK2000', 'SC1000']);
+});
+
+test('groupSongs versions are sorted by discCode', () => {
+  const groups = groupSongs([
+    songFor('Adele', 'Hello', { id: 'a', discCode: 'ZZ999' }),
+    songFor('Adele', 'Hello', { id: 'b', discCode: 'AA111' }),
+  ]);
+  assert.deepEqual(groups[0].versions.map(v => v.discCode), ['AA111', 'ZZ999']);
+  // Representative fields come from the first (lowest-disc) version.
+  assert.equal(groups[0].discCode, 'AA111');
+  assert.equal(groups[0].id, 'b');
+});
+
+test('groupSongs does NOT collapse blank-artist songs that share a title', () => {
+  // Both parsed to empty artist with the raw filename dumped as title.
+  // Keying on songKey would merge them (same normalized "|<title>"); keying
+  // on filename keeps unrelated songs apart — preserves pre-#14 behavior.
+  const groups = groupSongs([
+    { id: 'a', filename: 'MYSTERY 1', artist: '', title: 'Intro', discCode: '', songKey: makeSongKey('', 'Intro').songKey, versionLabel: '' },
+    { id: 'b', filename: 'MYSTERY 2', artist: '', title: 'Intro', discCode: '', songKey: makeSongKey('', 'Intro').songKey, versionLabel: '' },
+  ]);
+  assert.equal(groups.length, 2);
+});
+
+test('groupSongs preserves every input id across the version lists', () => {
+  const input = [
+    songFor('Fleetwood Mac', 'Dreams', { id: 'a', discCode: 'SC8199' }),
+    songFor('Fleetwood Mac', 'Dreams', { id: 'b', discCode: 'DK067' }),
+    songFor('The Cranberries', 'Dreams', { id: 'c', discCode: 'SC0001' }),
+  ];
+  const groups = groupSongs(input);
+  const idsOut = groups.flatMap(g => g.versions.map(v => v.id)).sort();
+  assert.deepEqual(idsOut, ['a', 'b', 'c']);
 });

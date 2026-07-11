@@ -70,6 +70,20 @@ function escape(s) {
   }[c]));
 }
 
+// Build the Play (+ Queue on DJ) action cluster for a given file id. The
+// "+ Queue" button is only meaningful on the DJ page — audience never sees it
+// because IS_DJ === false there.
+function actionButtons(id, label) {
+  const queueBtn = IS_DJ
+    ? `<button class="queue-btn" data-id="${id}" title="Add to queue">+ Queue</button>`
+    : '';
+  return `
+    <div class="actions">
+      ${queueBtn}
+      <button class="play-btn" data-id="${id}" data-label="${escape(label)}">&#9654; Play</button>
+    </div>`;
+}
+
 function renderResults(data, query) {
   if (data.matched === 0) {
     $list.innerHTML = `<li class="empty">No songs match "${escape(query)}".</li>`;
@@ -81,24 +95,51 @@ function renderResults(data, query) {
     ? `${data.matched.toLocaleString()} match${data.matched === 1 ? '' : 'es'} (showing ${shown}).`
     : `${data.total.toLocaleString()} songs total (showing ${shown}).`;
 
-  $list.innerHTML = data.results.map(s => {
-    const label = formatSongLabel(s);
-    // The "+ Queue" button is only meaningful on the DJ page. Audience never
-    // sees it because IS_DJ === false there.
-    const queueBtn = IS_DJ
-      ? `<button class="queue-btn" data-id="${s.id}" title="Add to queue">+ Queue</button>`
-      : '';
+  $list.innerHTML = data.results.map(group => {
+    const versions = group.versions || [];
+    // Single-version groups render as a flat row like before — no toggle.
+    if (versions.length <= 1) {
+      const label = formatSongLabel(group);
+      return `
+        <li data-id="${group.id}">
+          <div class="info">
+            <span class="artist">${escape(group.artist || '(unknown)')}</span>
+            <span class="title"> &mdash; ${escape(group.title)}</span>
+          </div>
+          <span class="disc">${escape(group.discCode || '')}</span>
+          ${actionButtons(group.id, label)}
+        </li>
+      `;
+    }
+
+    // Multi-version group: a header row with a count toggle, plus a nested,
+    // collapsed list of versions. Each version keeps its own file id so
+    // play/queue act on the exact disc the user picked.
+    const versionRows = versions.map(v => {
+      // Surface the version label in the "Now Playing" text so the DJ can
+      // tell duet/radio/etc. apart once it's playing.
+      const label = v.versionLabel
+        ? `${formatSongLabel(group)} (${v.versionLabel})`
+        : formatSongLabel(group);
+      const meta = [v.discCode, v.versionLabel].filter(Boolean).map(escape).join(' &middot; ') || '&mdash;';
+      return `
+        <li class="version" data-id="${v.id}">
+          <span class="disc">${meta}</span>
+          ${actionButtons(v.id, label)}
+        </li>
+      `;
+    }).join('');
+
     return `
-      <li data-id="${s.id}">
+      <li class="group" data-id="${group.id}">
         <div class="info">
-          <span class="artist">${escape(s.artist || '(unknown)')}</span>
-          <span class="title"> &mdash; ${escape(s.title)}</span>
+          <span class="artist">${escape(group.artist || '(unknown)')}</span>
+          <span class="title"> &mdash; ${escape(group.title)}</span>
         </div>
-        <span class="disc">${escape(s.discCode || '')}</span>
         <div class="actions">
-          ${queueBtn}
-          <button class="play-btn" data-id="${s.id}" data-label="${escape(label)}">&#9654; Play</button>
+          <button class="versions-toggle" aria-expanded="false" title="Show all versions">${versions.length} versions &#9662;</button>
         </div>
+        <ul class="versions hidden">${versionRows}</ul>
       </li>
     `;
   }).join('');
@@ -423,8 +464,17 @@ function updateUpNext(entries) {
 
 // Search list click delegation.
 $list.addEventListener('click', (e) => {
+  const toggle   = e.target.closest('button.versions-toggle');
   const playBtn  = e.target.closest('button.play-btn');
   const queueBtn = e.target.closest('button.queue-btn');
+  if (toggle) {
+    const versionList = toggle.closest('li.group')?.querySelector('ul.versions');
+    if (versionList) {
+      const isNowHidden = versionList.classList.toggle('hidden');
+      toggle.setAttribute('aria-expanded', String(!isNowHidden));
+    }
+    return;
+  }
   if (playBtn)  return openPlayer(playBtn.dataset.id, playBtn.dataset.label);
   if (queueBtn) return addToQueue(queueBtn.dataset.id);
 });
