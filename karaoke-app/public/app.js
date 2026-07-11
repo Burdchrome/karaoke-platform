@@ -84,6 +84,16 @@ function actionButtons(id, label) {
     </div>`;
 }
 
+// Player label for one version of a group. Appends the versionLabel so the
+// DJ can tell duet/radio/etc. apart once it's playing — unless the raw title
+// still carries the "(…)" suffix itself (single-file groups keep it), which
+// would print the label twice.
+function versionLabelFor(group, versionLabel) {
+  const base = formatSongLabel(group);
+  if (!versionLabel || group.title.includes(`(${versionLabel})`)) return base;
+  return `${base} (${versionLabel})`;
+}
+
 function renderResults(data, query) {
   if (data.matched === 0) {
     $list.innerHTML = `<li class="empty">No songs match "${escape(query)}".</li>`;
@@ -98,15 +108,19 @@ function renderResults(data, query) {
   $list.innerHTML = data.results.map(group => {
     const versions = group.versions || [];
     // Single-version groups render as a flat row like before — no toggle.
+    // A lone file can still carry a versionLabel (e.g. a solitary
+    // "(Radio Version)" rip), so surface it the same way version rows do.
     if (versions.length <= 1) {
-      const label = formatSongLabel(group);
+      const only = versions[0] || group;
+      const label = versionLabelFor(group, only.versionLabel);
+      const meta = [group.discCode, only.versionLabel].filter(Boolean).map(escape).join(' &middot; ');
       return `
         <li data-id="${group.id}">
           <div class="info">
             <span class="artist">${escape(group.artist || '(unknown)')}</span>
             <span class="title"> &mdash; ${escape(group.title)}</span>
           </div>
-          <span class="disc">${escape(group.discCode || '')}</span>
+          <span class="disc">${meta}</span>
           ${actionButtons(group.id, label)}
         </li>
       `;
@@ -116,11 +130,7 @@ function renderResults(data, query) {
     // collapsed list of versions. Each version keeps its own file id so
     // play/queue act on the exact disc the user picked.
     const versionRows = versions.map(v => {
-      // Surface the version label in the "Now Playing" text so the DJ can
-      // tell duet/radio/etc. apart once it's playing.
-      const label = v.versionLabel
-        ? `${formatSongLabel(group)} (${v.versionLabel})`
-        : formatSongLabel(group);
+      const label = versionLabelFor(group, v.versionLabel);
       const meta = [v.discCode, v.versionLabel].filter(Boolean).map(escape).join(' &middot; ') || '&mdash;';
       return `
         <li class="version" data-id="${v.id}">

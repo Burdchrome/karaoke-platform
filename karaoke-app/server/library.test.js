@@ -403,6 +403,17 @@ test('groupSongs does NOT collapse blank-artist songs that share a title', () =>
   assert.equal(groups.length, 2);
 });
 
+test('groupSongs keeps the versionLabel on a single-version group', () => {
+  // A solitary "(Radio Version)" rip must still expose its label so the
+  // frontend can show it on the flat single-version row (review fix, #14).
+  const groups = groupSongs([
+    songFor('Pink', 'U + Ur Hand (Radio Version)', { id: 'a', discCode: 'SC1000' }),
+  ]);
+  assert.equal(groups.length, 1);
+  assert.equal(groups[0].versions.length, 1);
+  assert.equal(groups[0].versions[0].versionLabel, 'Radio Version');
+});
+
 test('groupSongs preserves every input id across the version lists', () => {
   const input = [
     songFor('Fleetwood Mac', 'Dreams', { id: 'a', discCode: 'SC8199' }),
