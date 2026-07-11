@@ -4,6 +4,44 @@ A running record of manual test sessions against the karaoke server. Each sessio
 
 ---
 
+## Session: 2026-07-10c (tickets #12 + #13 — songKey, cache v2, overrides)
+
+### What changed
+
+1. **songKey + versionLabel** (`server/library.js`, #12, ed7eac1) —
+   `normalizeSongField` (lowercase/collapse → fold The both positions →
+   strip punctuation) + `makeSongKey` (trailing title parens → versionLabel).
+   Every cache entry carries both fields.
+2. **Cache schema v2** (#12) — `"version": 2` written; v1/unversioned cache
+   on load → auto full rescan. `npm run rescan` alias (`--rescan` flag;
+   cmd.exe can't do the `VAR=1` prefix). Spec §2 errata: literal normalize
+   order can't execute (punct-strip eats the comma `, The` needs).
+3. **overrides.json consumed** (#13, 4439bc1 + 9c7bd51) — id/filename →
+   `{artist, title}`, applied in memory on both load paths; cache stays raw.
+   Review fix: half-written entries (missing title / string value) skip with
+   a warning instead of crashing makeSongKey; non-ENOENT read errors logged.
+
+### Test cases
+
+| # | What | Expected | Pass/Fail | Notes |
+|---|------|----------|-----------|-------|
+| 1 | `npm test` | all pass | ✅ | 47/47 (was 27) |
+| 2 | `npm run rescan` (real E:\karaoke) | v2 cache, all fields | ✅ | 65,832 songs, 0 missing songKey/versionLabel, 39,313 unique keys |
+| 3 | v1 cache on load | auto-rescan | ✅ | fixture library end-to-end: stale cache ignored, v2 written |
+| 4 | "Dreams" grouping | multi-disc group, no merges | ✅ | Fleetwood Mac ×3 grouped; 9 distinct "Dreams" separate |
+| 5 | `npm run measure` post-rescan | 772 / 34 unchanged | ✅ | exact — no regressions |
+| 6 | live override (sc_8537-01, cached load) | applied + regrouped | ✅ | log "Applied 1 manual overrides"; songKey → `don williams\|stay young`; test entry reverted, ships `{}` |
+
+Verified-in-test throughout; becomes verified-in-use at the first real gig
+on the v2 cache. #15 (acceptance) is the formal re-proof.
+
+### Follow-ups
+
+- `library.js` ~460 lines — split the overrides functions into their own
+  module next time the file is open for other work.
+
+---
+
 ## Session: 2026-07-10b (tickets #10 + #11 — parser fixes)
 
 ### What changed
@@ -36,8 +74,9 @@ rebuilt cache; becomes verified-in-use at the first real gig after rescan.
 
 ### Follow-ups
 
-- sc_8537 disc is title-first order inside the SC pack — parses populated but
-  inverted; overrides.json candidate, spot-check during #13.
+- sc_8537 disc is title-first order inside the SC pack — mechanism proven in
+  #13 (session 2026-07-10c, test 6, verified-in-test on track 01); actually
+  populating overrides for the disc is issue #8's manual-rescue work.
 
 ---
 

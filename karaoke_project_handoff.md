@@ -132,7 +132,22 @@ Later phases add queue management, DJ controls, and library cleanup tools.
   code-only codes still fail cleanly → #8. New dirt found: sc_8537 disc is
   title-first inside the SC pack — overrides.json candidate (#13).
   Parser unit tests: `karaoke-app/server/library.test.js`.
-  Next step: `/implement` #12 (songKey + cache v2), then #13 ‖ #14 → #15.
+  **#12 done 2026-07-10** (songKey + versionLabel + cache v2, ed7eac1): every
+  cache entry carries `songKey` (normalize both fields, pipe-joined) and
+  `versionLabel` (trailing parens on the title); cache is `"version": 2` and
+  a v1/unversioned cache auto-triggers a rescan, so parser upgrades
+  self-apply. Real rescan: 65,832 songs, 39,313 unique songKeys, nine
+  distinct "Dreams" stayed separate. `npm run rescan` added (uses a
+  `--rescan` flag — cmd.exe can't do the `VAR=1` prefix). Spec §2 got an
+  errata: its literal normalize order can't execute; working order noted.
+  **#13 done same day** (overrides.json, 4439bc1 + 9c7bd51): file id (or
+  filename) → `{artist, title}`, applied in memory on both load paths —
+  cache stays raw parse, so edits take effect on restart without a rescan
+  and rescans can't wipe corrections. Malformed files *and* half-written
+  entries warn and skip, never crash. Ships `{}`; issue #8 populates it.
+  Next step: `/implement` #14 (serve-time grouping → songKey) → #15
+  (acceptance). Watch item: `library.js` ~460 lines — split the overrides
+  functions into their own module next time we're in there.
   The sketch below is kept only as the original problem statement.
 - [ ] Dedupe songs that exist under multiple disc codes (rolled into the metadata pipeline; fingerprinting deferred per the map)
 
@@ -300,7 +315,8 @@ From CLAUDE.md, restated for any agent continuing this work:
 - `karaoke-app/extract-zips.log` — log from the May 15 extraction run
 - `karaoke-app/unparsed-songs.txt` — 875 filenames the parser can't split, clustered by failure pattern (regenerated 2026-07-09, ticket #3)
 - `karaoke-app/scripts/measure-parse-coverage.js` — parse-coverage instrument (ticket #9); `npm run measure`; canonical baseline in its header; tests via `npm test`
-- `karaoke-app/library-cache.json` — auto-generated; delete or set `FORCE_RESCAN=1` to rebuild
+- `karaoke-app/library-cache.json` — auto-generated, schema v2 (songKey + versionLabel); rebuild with `npm run rescan`
+- `karaoke-app/overrides.json` — manual metadata corrections (file id or filename → artist/title); applied at startup, no rescan needed; ships empty until issue #8
 - `karaoke-app/README.md` — operational instructions including the Cloudflare Tunnel + auth flow
 - `karaoke_claude_design_brief.md` — design pass brief for next aesthetic iteration
 - `karaoke_shooter_sunday.md` — questions to ask Shooter in person
@@ -360,6 +376,6 @@ All 8 questions from the now-archived `karaoke_shooter_sunday.md` got walked thr
 - **Tighten the audience preview cap** — known leak documented above. Small, contained, would close out the "ready to share more broadly" gap.
 - **Design pass** — `karaoke_claude_design_brief.md` is still the open aesthetic question. Visual shift needed; v3 stalled.
 - **Tier 2 Cloudflare upgrade** — named tunnel + persistent URL. ~10 min one-time setup, free, removes the "URL changes every restart" friction.
-- **Phase 3: build the metadata pipeline** — ticketed as #9–#15; #9–#11 done (measurement script, comma-shape fix, stray-space/underscore passes — see Phase 3 section for numbers). Next: #12 (songKey + cache v2), then #13 ‖ #14 → #15. One ticket per session. (Lookup pipeline and fingerprinting were both rejected by the map — don't resurrect them.)
+- **Phase 3: build the metadata pipeline** — ticketed as #9–#15; #9–#13 done (measurement script, comma-shape fix, stray-space/underscore passes, songKey + cache v2, overrides.json — see Phase 3 section for numbers). Next: #14 (serve-time grouping → songKey) → #15 (acceptance). One ticket per session. (Lookup pipeline and fingerprinting were both rejected by the map — don't resurrect them.)
 - **Polish items** — favicon, queue persistence, play history.
 - **Stop and let it bake** — v1 is now real enough to share with one or two trusted people via the ephemeral tunnel. Use it, find what's broken in practice, *then* decide what to build.
