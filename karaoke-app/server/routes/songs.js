@@ -1,15 +1,18 @@
 // /api/songs — search and list.
 //
 // Accepts: search (string), limit (number, default 50, max 200)
-// Returns: { total, matched, results: [{ id, artist, title, discCode, filename }] }
+// Returns: { total, matched, results: [{ id, artist, title, discCode, versions:
+//           [{ id, artist, title, discCode, versionLabel, filename }] }] }
 //
-// Matching is a case-insensitive substring search across artist, title, filename,
-// and disc code. We search the filename too so that the v0 filename-parsing
+// Results are one entry per song group (grouped by songKey — see groupSongs in
+// library.js). Matching is still a case-insensitive substring search PER FILE
+// across artist, title, filename, and disc code: a match on ANY version of a
+// group surfaces the whole group. We search the filename too so filename-parsing
 // imperfections (artist/title sometimes swapped) don't hide songs from users.
 
 import express from 'express';
 
-export function makeSongsRouter(songs) {
+export function makeSongsRouter(songGroups) {
   const router = express.Router();
 
   router.get('/', (req, res) => {
@@ -18,21 +21,23 @@ export function makeSongsRouter(songs) {
 
     let matches;
     if (!q) {
-      matches = songs;
+      matches = songGroups;
     } else {
-      matches = songs.filter(s =>
-        s.artist.toLowerCase().includes(q) ||
-        s.title.toLowerCase().includes(q) ||
-        s.filename.toLowerCase().includes(q) ||
-        s.discCode.toLowerCase().includes(q)
+      matches = songGroups.filter(group =>
+        group.versions.some(v =>
+          v.artist.toLowerCase().includes(q) ||
+          v.title.toLowerCase().includes(q) ||
+          v.filename.toLowerCase().includes(q) ||
+          v.discCode.toLowerCase().includes(q)
+        )
       );
     }
 
     res.json({
-      total: songs.length,
+      total: songGroups.length,
       matched: matches.length,
-      results: matches.slice(0, limit).map(({ id, artist, title, discCode, filename, versions }) => ({
-        id, artist, title, discCode, filename, versions,
+      results: matches.slice(0, limit).map(({ id, artist, title, discCode, versions }) => ({
+        id, artist, title, discCode, versions,
       })),
     });
   });

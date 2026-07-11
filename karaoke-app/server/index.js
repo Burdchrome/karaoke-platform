@@ -6,7 +6,7 @@ import express from 'express';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { logger } from './logger.js';
-import { loadLibrary } from './library.js';
+import { loadLibrary, groupSongs } from './library.js';
 import { makeSongsRouter } from './routes/songs.js';
 import { makeStreamRouter } from './routes/stream.js';
 import { makeQueueRouter } from './routes/queue.js';
@@ -80,36 +80,29 @@ const allSongs = (await loadLibrary()).sort((a, b) =>
   (a.artist || '￿').localeCompare(b.artist || '￿') || a.title.localeCompare(b.title)
 );
 
-// Dedupe at load: the drive has whole folders copied around, so ~1/3 of
-// entries are extra copies of the same artist+title. Keep the first copy,
-// count the rest as `versions`. Blank-artist entries key on filename so
-// unrelated songs that share a title don't collapse into each other.
-// The cache keeps every copy — rescan-free and reversible by deleting this block.
-// ponytail: picks an arbitrary version; add a version picker if Shooter
-// ever asks for a specific disc.
-const seen = new Map();
-for (const s of allSongs) {
-  const key = `${(s.artist || s.filename).toLowerCase()}|${s.title.toLowerCase()}`;
-  const first = seen.get(key);
-  if (first) first.versions++;
-  else seen.set(key, Object.assign(s, { versions: 1 }));
-}
-const songs = [...seen.values()];
-logger.info(`Deduped ${allSongs.length} entries → ${songs.length} unique songs`);
+// Group at load: the drive has whole folders copied around, so ~1/3 of
+// entries are extra copies of the same song on different discs. groupSongs
+// collapses them by songKey into one entry per song, each carrying its list
+// of versions (spec §2, ticket #14). The cache keeps every copy — grouping
+// happens in memory, rescan-free and reversible.
+const songGroups = groupSongs(allSongs);
+logger.info(`Grouped ${allSongs.length} entries → ${songGroups.length} unique songs`);
 
-// O(1) lookup by id for the stream route. The array is for ordered iteration
-// (search), the map is for direct addressing (streaming).
-const songsById = new Map(songs.map(s => [s.id, s]));
+// O(1) lookup by id for streaming/queue. Keyed off EVERY file (allSongs),
+// not just group representatives, so play/queue of any expanded version's id
+// still resolves. The groups array is for ordered iteration (search); this
+// map is for direct addressing.
+const songsById = new Map(allSongs.map(s => [s.id, s]));
 
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'ok',
     uptimeSeconds: Math.round(process.uptime()),
-    songCount: songs.length,
+    songCount: songGroups.length,
   });
 });
 
-app.use('/api/songs', makeSongsRouter(songs));
+app.use('/api/songs', makeSongsRouter(songGroups));
 app.use('/api/stream', makeStreamRouter(songsById));
 app.use('/api/queue',  djAuth, makeQueueRouter(songsById));
 app.use('/api/events', djAuth, makeEventsRouter(songsById));
