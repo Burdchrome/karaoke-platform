@@ -257,9 +257,11 @@ export function makeSongKey(artist, title) {
  * would collapse. Those key on filename instead — same guard the pre-#14
  * dedupe used.
  *
- * Each group carries display fields from its lowest-disc-code version (the
- * canonical pick) and a `versions` array (every file's id/discCode/label/
- * filename), sorted by discCode for stable display.
+ * Each group carries display fields from its lowest-disc-code version — an
+ * arbitrary-but-stable representative (not a quality pick; same honesty as
+ * the old dedupe's "picks an arbitrary version") — and a `versions` array
+ * (every file's id/discCode/label/filename), sorted by discCode for stable
+ * display.
  *
  * Returns an array of groups:
  *   { id, artist, title, discCode, versions: [{ id, artist, title,
