@@ -342,7 +342,7 @@ From CLAUDE.md, restated for any agent continuing this work:
 - No play history yet
 - `/dj` is unguarded by default locally (security through obscurity); gated by Basic Auth when `DJ_USER`/`DJ_PASS` are set — required before exposing via Cloudflare Tunnel
 - Firefox 404s a `favicon.ico` request — purely cosmetic
-- **Audience preview cap is leaky.** The 30s pause uses a one-shot `previewCapped` flag and only checks on `timeupdate`. Scrubbing past 30s or hitting play again after the pause both bypass the cap — audio plays unbounded. Fix is small: drop the one-shot flag (always pause when `currentTime >= 30`), and also pause on `seeking` if the seek target is past the cap. Noted 2026-05-29; not urgent for prototype sharing but should be tightened before any real public exposure.
+- ~~Audience preview cap is leaky~~ — **fixed 2026-07-12.** Dropped the one-shot `previewCapped` flag; the cap re-fires on every `timeupdate` and `play`, and `seeking` past 30s clamps back to the boundary. Verified in-browser: scrub-past and replay-after-pause both re-pause at 30s. Still client-side only (DevTools can bypass) — acceptable per the original design note.
 
 ---
 
@@ -365,7 +365,7 @@ All 8 questions from the now-archived `karaoke_shooter_sunday.md` got walked thr
 
 - [x] **Flip auto-advance off** (Q5) — done 2026-05-29. Removed the `'ended'` listener in `public/app.js`; updated hint text in `public/dj.html`. Skip button is now the only way to advance. Marker comment left in the JS for easy re-enable.
 - [x] **Soften the audience 30s cutoff** — done 2026-05-29. Replaced the hard `closePlayer()` with `$audio.pause()` + a hint-text swap. New `id="preview-hint"` on the audience hint paragraph; `resetPreviewHint()` runs in `openPlayer()` so each new song re-arms the cap.
-- [ ] **Tighten the audience preview cap** — known leak (see "Known issues"). Scrubbing past 30s or replaying after the pause bypasses the cap. Small fix, future session.
+- [x] **Tighten the audience preview cap** — done 2026-07-12. Flag removed; `play` + `seeking` handlers added in `public/app.js`. Both bypass paths verified closed in-browser.
 - [x] **Tier 1 Cloudflare tunnel verified** — `cloudflared tunnel --url http://localhost:3000` issues an ephemeral `*.trycloudflare.com` URL. DJ side gated by `DJ_USER`/`DJ_PASS` env vars (returns 401 without). Audience side open. URL dies on tunnel restart. Tier 2 (named tunnel via free Cloudflare account) is the next step if/when a stable URL becomes worth the 10-min setup.
 - [ ] **QR-code-to-audience-page** (Q4) — parked, no due date. Trivial when ready: generate a QR pointing to the audience URL, render on a `/qr` page or printable card.
 - [x] With auto-advance flipped, the rest of v1 matches Shooter's mental model.
@@ -373,7 +373,6 @@ All 8 questions from the now-archived `karaoke_shooter_sunday.md` got walked thr
 ---
 
 **Next session can pick any of:**
-- **Tighten the audience preview cap** — known leak documented above. Small, contained, would close out the "ready to share more broadly" gap.
 - **Design pass** — `karaoke_claude_design_brief.md` is still the open aesthetic question. Visual shift needed; v3 stalled.
 - **Tier 2 Cloudflare upgrade** — named tunnel + persistent URL. ~10 min one-time setup, free, removes the "URL changes every restart" friction.
 - **Phase 3: build the metadata pipeline** — ticketed as #9–#15; #9–#13 done (measurement script, comma-shape fix, stray-space/underscore passes, songKey + cache v2, overrides.json — see Phase 3 section for numbers). Next: #14 (serve-time grouping → songKey) → #15 (acceptance). One ticket per session. (Lookup pipeline and fingerprinting were both rejected by the map — don't resurrect them.)
