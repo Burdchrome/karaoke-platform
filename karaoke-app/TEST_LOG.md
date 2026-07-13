@@ -4,6 +4,40 @@ A running record of manual test sessions against the karaoke server. Each sessio
 
 ---
 
+## Session: 2026-07-12 (preview cap leak fix + standalone sharing stack)
+
+### What changed
+
+1. **Preview cap leak closed** (`public/app.js`, f45b51e) — one-shot
+   `previewCapped` flag removed; `enforcePreviewCap` runs on every
+   `timeupdate` and `play`, and `seeking` past 30s clamps back to the
+   boundary. Cap remains client-side by design (DJ side untouched).
+2. **Standalone sharing scripts** (`start-sharing.cmd` / `stop-sharing.cmd`)
+   — server + Cloudflare tunnel as independent windows, decoupled from any
+   Claude session (the session-tied dev server died twice mid-share and
+   502'd the tunnel; that's what motivated these).
+
+### Test cases
+
+| # | What | Expected | Pass/Fail | Notes |
+|---|------|----------|-----------|-------|
+| 1 | Audience: scrub to 45s during preview | Clamp to 30s, pause, hint swaps | ✅ | in-browser JS: `currentTime` 45→30, `paused: true`, "Preview ended" hint |
+| 2 | Audience: press play again after cap pause | Re-pauses immediately at 30s | ✅ | old replay bypass closed |
+| 3 | `start-sharing.cmd` end-to-end | Server + tunnel up, URL printed | ✅ | audience 200 via tunnel; needed ~15s for tunnel to register |
+| 4 | `/dj` through tunnel, no creds | 401 | ✅ | with creds: 200 |
+| 5 | `stop-sharing.cmd` teardown path | Tunnel + port 3000 clear | ✅ | verified via taskkill/netstat (same commands the script runs) |
+
+Verified-in-test; becomes verified-in-use after a real multi-hour share
+session (the cap under real audience behavior, the stack under a gig).
+
+### Follow-ups
+
+- DJ Basic Auth creds live in `dj-creds.cmd` (gitignored, machine-local;
+  `start-sharing.cmd` calls it and errors helpfully if it's missing).
+  Recreate it on any new machine before sharing.
+
+---
+
 ## Session: 2026-07-10c (tickets #12 + #13 — songKey, cache v2, overrides)
 
 ### What changed
