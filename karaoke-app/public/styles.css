@@ -6,6 +6,34 @@
    eat the content.
    ============================================================ */
 
+/* ============================================================
+   Self-hosted fonts (latin subsets) — no CDN dependency.
+   The app runs on bar LANs that may have no internet; fonts must
+   load from this server or the whole aesthetic falls back.
+   Inter is a variable font: one file covers weights 400–600.
+   ============================================================ */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url('/fonts/inter-latin.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Permanent Marker';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/permanent-marker-latin.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Special Elite';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/special-elite-latin.woff2') format('woff2');
+}
+
 :root {
   /* ---- palette ---- */
   --bg:           #0a0807;
@@ -19,7 +47,7 @@
   --ink:          #f5e8d1;
   --ink-bright:   #ffffff;
   --ink-muted:    #c4ad88;
-  --ink-faint:    #806e54;
+  --ink-faint:    #9c8968; /* was #806e54 — 4.07:1 failed WCAG at small sizes; this is ~5.8:1 */
   --ink-stamp:    #a18c6f;
 
   --red:          #ff3b2f;
@@ -328,7 +356,8 @@ ul.songs li {
   transition: background-color 100ms;
 }
 ul.songs li:last-child { border-bottom: none; }
-ul.songs li:hover { background: var(--red-wash); }
+ul.songs li:hover,
+ul.songs li:active { background: var(--red-wash); } /* :active = touch feedback; hover never fires on phones */
 
 .info { flex: 1; min-width: 0; overflow: hidden; }
 .artist {
@@ -360,9 +389,10 @@ ul.songs li.group { flex-wrap: wrap; }
   color: var(--amber);
   border: 1px dashed var(--border-warm);
   font-family: 'Special Elite', monospace;
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.08em;
-  padding: 6px 11px;
+  min-height: 44px;
+  padding: 6px 12px;
 }
 .versions-toggle:hover {
   color: var(--ink-bright);
@@ -404,12 +434,15 @@ button {
 button:active { transform: translateY(1px); }
 
 .play-btn {
-  background: var(--red);
+  /* --red-deep bg: white text is 6.2:1 (passes WCAG); pure --red was 3.55:1.
+     The neon read comes from the glow shadows, not the fill. */
+  background: var(--red-deep);
   color: #fff;
   font-family: 'Permanent Marker', cursive;
   letter-spacing: 0.05em;
-  font-size: 13px;
-  padding: 7px 14px 6px;
+  font-size: 14px;
+  min-height: 44px; /* touch-target floor — tapped 50× down the page in a bar */
+  padding: 7px 16px 6px;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.2),
     inset 0 -1px 0 rgba(0, 0, 0, 0.3),
@@ -417,23 +450,23 @@ button:active { transform: translateY(1px); }
   transform: rotate(-1deg);
 }
 .play-btn:hover {
-  background: var(--red-bright);
+  background: var(--red-deep);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.25),
     0 0 18px var(--red-glow),
     0 2px 6px rgba(0, 0, 0, 0.6);
   transform: rotate(-1deg) translateY(-1px);
 }
-.play-btn.small { padding: 4px 10px; font-size: 11px; }
+.play-btn.small { padding: 4px 10px; font-size: 11px; min-height: 0; } /* DJ queue rows: laptop pointer, not touch */
 
 .queue-btn {
   background: transparent;
   color: var(--red-bright);
   border: 1.5px solid var(--red-deep);
   font-family: 'Permanent Marker', cursive;
-  font-size: 12px;
-  letter-spacing: 0.05em;
-  padding: 6px 12px;
+  font-size: 13px;
+  min-height: 44px;
+  padding: 6px 14px;
   transform: rotate(1deg);
 }
 .queue-btn:hover {
@@ -710,9 +743,9 @@ body.player-open { overflow: hidden; }
 @media (max-width: 520px) {
   main { padding: 24px 16px 100px; }
   .wordmark h1 { letter-spacing: -0.01em; }
-  ul.songs li { gap: 8px; padding: 11px 8px; }
+  ul.songs li { gap: 8px; padding: 12px 8px; }
   .actions { flex-direction: column; }
-  .play-btn, .queue-btn { padding: 6px 10px; font-size: 11px; }
+  /* Phones are where targets matter MOST — never shrink below the 44px floor here. */
   .disc { display: none; }
   section.queue { padding: 22px 12px 18px; }
   .role-pill { display: block; margin: 0 auto 12px; width: fit-content; }
