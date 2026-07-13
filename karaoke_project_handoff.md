@@ -1,6 +1,6 @@
 # Karaoke DJ Project — Master Handoff
 
-**Last updated:** 2026-07-10
+**Last updated:** 2026-07-13
 **Supersedes:** `karaoke_dj_handoff.md` (older — pre-inventory, contained open questions now answered)
 **For:** Shooter, a karaoke DJ the user knows personally
 
@@ -114,8 +114,15 @@ Later phases add queue management, DJ controls, and library cleanup tools.
   ([research](docs/research/disc-code-lookup-sources.md)); parser plan = comma-shape
   inversion fix + 2 passes, songKey + versionLabel, cache v2, overrides.json.
   Manual rescue of ~120 unfixable files parked as
-  [issue #8](https://github.com/Burdchrome/karaoke-platform/issues/8) (post-pipeline).
+  [issue #8](https://github.com/Burdchrome/karaoke-platform/issues/8) —
+  **ON HOLD 2026-07-13:** more songs still haven't been transferred to the
+  external drive; rescue waits for a complete library (freedb download also
+  deferred).
   Song identity: [ADR 0001](docs/adr/0001-song-identity-per-file-ids-plus-grouping-key.md).
+  Venue preferences (Shooter: no key changes / no version-shopping) land as
+  config flags, never a fork: [ADR 0002](docs/adr/0002-venue-config-not-fork.md)
+  ([PR #17](https://github.com/Burdchrome/karaoke-platform/pull/17)) —
+  `enableKeyChange` is the first flag when settings get built.
   **Spec ticketed 2026-07-10** as issues #9–#15 (native blocking; chain in
   workspace-state). **#9 done same day:** measurement script landed at
   `karaoke-app/scripts/measure-parse-coverage.js` (+ node:test tests;
@@ -145,8 +152,19 @@ Later phases add queue management, DJ controls, and library cleanup tools.
   cache stays raw parse, so edits take effect on restart without a rescan
   and rescans can't wipe corrections. Malformed files *and* half-written
   entries warn and skip, never crash. Ships `{}`; issue #8 populates it.
-  Next step: `/implement` #14 (serve-time grouping → songKey) → #15
-  (acceptance). Watch item: `library.js` ~460 lines — split the overrides
+  **#14 done 2026-07-10** (serve-time grouping → songKey, a66be34 + 23f982c):
+  version counting in `server/index.js` consumes `songKey` instead of its own
+  ad-hoc grouping.
+  **#15 ACCEPTANCE PASSED 2026-07-13 — PIPELINE DONE.** Fresh rescan
+  (65,832 songs, cache v2) + `npm run measure` + spot checks; full results in
+  [issue #15](https://github.com/Burdchrome/karaoke-platform/issues/15).
+  **New canonical baseline: 98.8% artist-present / 772 hard failures /
+  34 flagged inversions (all 34 verified correct parses — real inversions ≈ 0).**
+  songKey sanity held (39,313 keys; nine "Dreams" separate; multi-disc copies
+  group). 40-song spot-check: 37 clean, 1 known failure bucket, 2 known-class
+  residuals for overrides.json (`PHM0204-08` title-first outside the prefix
+  table, ≤25 PHM candidates; `TU067-16` artist-first in mixed-order TU pack).
+  Watch item: `library.js` ~460 lines — split the overrides
   functions into their own module next time we're in there.
   The sketch below is kept only as the original problem statement.
 - [ ] Dedupe songs that exist under multiple disc codes (rolled into the metadata pipeline; fingerprinting deferred per the map)
@@ -375,6 +393,6 @@ All 8 questions from the now-archived `karaoke_shooter_sunday.md` got walked thr
 **Next session can pick any of:**
 - **Design pass** — `karaoke_claude_design_brief.md` is still the open aesthetic question. Visual shift needed; v3 stalled.
 - **Tier 2 Cloudflare upgrade** — named tunnel + persistent URL. ~10 min one-time setup, free, removes the "URL changes every restart" friction.
-- **Phase 3: build the metadata pipeline** — ticketed as #9–#15; #9–#13 done (measurement script, comma-shape fix, stray-space/underscore passes, songKey + cache v2, overrides.json — see Phase 3 section for numbers). Next: #14 (serve-time grouping → songKey) → #15 (acceptance). One ticket per session. (Lookup pipeline and fingerprinting were both rejected by the map — don't resurrect them.)
+- **Phase 3 metadata pipeline: DONE 2026-07-13** — all tickets #9–#15 closed-or-passed; acceptance numbers in the Phase 3 section are the new baseline. Remaining metadata work is issue #8 (manual rescue, ON HOLD until the library transfer to E:\ is complete). (Lookup pipeline and fingerprinting were both rejected by the map — don't resurrect them.)
 - **Polish items** — favicon, queue persistence, play history.
 - **Stop and let it bake** — v1 is now real enough to share with one or two trusted people via the ephemeral tunnel. Use it, find what's broken in practice, *then* decide what to build.
