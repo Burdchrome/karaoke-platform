@@ -288,7 +288,7 @@ From CLAUDE.md, restated for any agent continuing this work:
 - `cloudflared` installed on the dev PC (`C:\Program Files (x86)\cloudflared\`, added to user PATH).
 - Server now supports HTTP Basic Auth on the DJ surfaces (`/dj`, `/api/queue*`, `/api/events`) via `DJ_USER` and `DJ_PASS` env vars. If `DJ_PASS` is unset, auth is disabled (local-dev default; server logs a warning).
 - Audience pages remain unauthenticated by design (Shooter wants the audience flow to be a frictionless catalog).
-- Workflow for sharing: start server with `DJ_USER=shooter DJ_PASS=... npm start`, run `cloudflared tunnel --url http://localhost:3000` in another terminal, send the `trycloudflare.com` URL + creds in separate messages.
+- Workflow for sharing (since 2026-07-12): double-click `karaoke-app/start-sharing.cmd` — starts the server (auth on) and the tunnel in their own windows, prints the `trycloudflare.com` URL + DJ login when ready. `stop-sharing.cmd` tears both down. Runs standalone — survives any Claude session. Send URL + creds in separate messages.
 - Full instructions in `karaoke-app/README.md` under "Sharing a remote preview".
 - Ephemeral mode chosen (no Cloudflare account needed). URL changes on every tunnel restart.
 
