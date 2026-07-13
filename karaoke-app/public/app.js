@@ -388,19 +388,28 @@ const $previewHint = document.getElementById('preview-hint');
 const PREVIEW_HINT_DEFAULT = $previewHint ? $previewHint.innerHTML : '';
 const PREVIEW_HINT_ENDED =
   'Preview ended (30s sample). Press <strong>Esc</strong> to close.';
-let previewCapped = false;
 
 function resetPreviewHint() {
-  previewCapped = false;
   if ($previewHint) $previewHint.innerHTML = PREVIEW_HINT_DEFAULT;
 }
 
 if (!IS_DJ) {
-  $audio.addEventListener('timeupdate', () => {
-    if (!previewCapped && $audio.currentTime >= PREVIEW_SECONDS) {
-      previewCapped = true;
+  // No one-shot flag here: the cap must re-fire every time playback reaches
+  // it, otherwise pressing play again after the pause resumes unbounded audio.
+  const enforcePreviewCap = () => {
+    if ($audio.currentTime >= PREVIEW_SECONDS) {
       $audio.pause();
       if ($previewHint) $previewHint.innerHTML = PREVIEW_HINT_ENDED;
+    }
+  };
+  $audio.addEventListener('timeupdate', enforcePreviewCap);
+  // Catches play pressed while already at/past the cap, before any timeupdate.
+  $audio.addEventListener('play', enforcePreviewCap);
+  // Scrubbing past the cap: clamp the seek back to the cap boundary.
+  $audio.addEventListener('seeking', () => {
+    if ($audio.currentTime > PREVIEW_SECONDS) {
+      $audio.currentTime = PREVIEW_SECONDS;
+      enforcePreviewCap();
     }
   });
 }
