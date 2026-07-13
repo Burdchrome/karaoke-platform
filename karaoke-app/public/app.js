@@ -73,14 +73,16 @@ function escape(s) {
 // Build the Play (+ Queue on DJ) action cluster for a given file id. The
 // "+ Queue" button is only meaningful on the DJ page — audience never sees it
 // because IS_DJ === false there.
-function actionButtons(id, label) {
+// data-disc rides along so the audience request slip can show the disc code
+// at preview end — that's what patrons write on the paper request.
+function actionButtons(id, label, disc) {
   const queueBtn = IS_DJ
     ? `<button class="queue-btn" data-id="${id}" title="Add to queue">+ Queue</button>`
     : '';
   return `
     <div class="actions">
       ${queueBtn}
-      <button class="play-btn" data-id="${id}" data-label="${escape(label)}">&#9654; Play</button>
+      <button class="play-btn" data-id="${id}" data-label="${escape(label)}" data-disc="${escape(disc || '')}">&#9654; Play</button>
     </div>`;
 }
 
@@ -121,7 +123,7 @@ function renderResults(data, query) {
             <span class="title"> &mdash; ${escape(group.title)}</span>
           </div>
           <span class="disc">${meta}</span>
-          ${actionButtons(group.id, label)}
+          ${actionButtons(group.id, label, group.discCode)}
         </li>
       `;
     }
@@ -135,7 +137,7 @@ function renderResults(data, query) {
       return `
         <li class="version" data-id="${v.id}">
           <span class="disc">${meta}</span>
-          ${actionButtons(v.id, label)}
+          ${actionButtons(v.id, label, v.discCode)}
         </li>
       `;
     }).join('');
@@ -323,9 +325,10 @@ function resetAudio() {
   ctx.clearRect(0, 0, $canvas.width, $canvas.height);
 }
 
-async function openPlayer(id, label) {
+async function openPlayer(id, label, disc) {
   resetAudio();
   resetPreviewHint();
+  currentSong = { label, disc: disc || '' };
 
   $now.textContent = label;
   $player.classList.remove('hidden');
@@ -386,11 +389,30 @@ $audio.addEventListener('seeked', () => drawFrame($audio.currentTime));
 const PREVIEW_SECONDS = 30;
 const $previewHint = document.getElementById('preview-hint');
 const PREVIEW_HINT_DEFAULT = $previewHint ? $previewHint.innerHTML : '';
-const PREVIEW_HINT_ENDED =
-  'Preview ended (30s sample). Press <strong>Esc</strong> to close.';
+
+// The song currently in the player, kept for the request slip.
+let currentSong = { label: '', disc: '' };
+
+// Request slip (audience page only; null on DJ). Shown at preview end —
+// this is the hand-off moment: the patron decides, and the slip shows
+// exactly what to write on the paper request for the DJ.
+const $slip      = document.getElementById('request-slip');
+const $slipSong  = document.getElementById('slip-song');
+const $slipDisc  = document.getElementById('slip-disc');
 
 function resetPreviewHint() {
   if ($previewHint) $previewHint.innerHTML = PREVIEW_HINT_DEFAULT;
+  if ($slip) $slip.classList.add('hidden');
+  $player.classList.remove('preview-ended');
+}
+
+function showRequestSlip() {
+  if (!$slip) return;
+  $slipSong.textContent = currentSong.label;
+  $slipDisc.textContent = currentSong.disc ? `Disc ${currentSong.disc}` : '';
+  $slip.classList.remove('hidden');
+  $player.classList.add('preview-ended');
+  if ($previewHint) $previewHint.innerHTML = '';
 }
 
 if (!IS_DJ) {
@@ -399,7 +421,7 @@ if (!IS_DJ) {
   const enforcePreviewCap = () => {
     if ($audio.currentTime >= PREVIEW_SECONDS) {
       $audio.pause();
-      if ($previewHint) $previewHint.innerHTML = PREVIEW_HINT_ENDED;
+      showRequestSlip();
     }
   };
   $audio.addEventListener('timeupdate', enforcePreviewCap);
@@ -494,11 +516,13 @@ $list.addEventListener('click', (e) => {
     }
     return;
   }
-  if (playBtn)  return openPlayer(playBtn.dataset.id, playBtn.dataset.label);
+  if (playBtn)  return openPlayer(playBtn.dataset.id, playBtn.dataset.label, playBtn.dataset.disc);
   if (queueBtn) return addToQueue(queueBtn.dataset.id);
 });
 
 $close.addEventListener('click', closePlayer);
+const $slipDone = document.getElementById('slip-done');
+if ($slipDone) $slipDone.addEventListener('click', closePlayer);
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape' && !$player.classList.contains('hidden')) closePlayer();
 });

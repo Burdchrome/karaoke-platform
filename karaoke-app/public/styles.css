@@ -724,6 +724,86 @@ ul.queue-list { list-style: none; padding: 0; margin: 0; }
     0 2px 6px rgba(0, 0, 0, 0.55);
 }
 .player .skip-btn:hover { background: #ffc94d; transform: rotate(-2deg) translateY(-1px); }
+/* ---- Request slip (audience, preview end) ----
+   A cream paper slip "taped" over the dark player — the same physical
+   object patrons hand the DJ. Dark ink on light paper: max contrast at
+   the exact moment that matters. */
+.request-slip {
+  position: relative;
+  margin-top: 20px;
+  padding: 18px 22px 14px;
+  max-width: min(92vw, 480px);
+  background: var(--ink); /* cream = paper */
+  color: #16120d;
+  border-radius: 1px;
+  text-align: center;
+  transform: rotate(-1.2deg);
+  box-shadow:
+    0 8px 30px rgba(0, 0, 0, 0.8),
+    0 0 40px rgba(255, 59, 47, 0.15);
+}
+.request-slip.hidden { display: none; }
+.request-slip::before {
+  /* Tape strip, same trick as the queue panel */
+  content: '';
+  position: absolute;
+  top: -10px; left: 50%;
+  width: 60px; height: 16px;
+  transform: translateX(-50%) rotate(-3deg);
+  background: rgba(245, 232, 209, 0.45);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
+}
+.slip-tag {
+  font-family: 'Special Elite', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: #6b5b43;
+  margin-bottom: 8px;
+}
+.slip-song {
+  font-family: 'Permanent Marker', cursive;
+  font-size: clamp(18px, 5vw, 24px);
+  line-height: 1.2;
+  color: #16120d;
+  overflow-wrap: break-word;
+}
+.slip-disc {
+  font-family: 'Special Elite', monospace;
+  font-size: 14px;
+  letter-spacing: 0.12em;
+  color: var(--red-deep);
+  margin-top: 6px;
+}
+.slip-disc:empty { display: none; }
+.slip-cta {
+  font-family: 'Special Elite', monospace;
+  font-size: 13px;
+  font-style: italic;
+  color: #4a3d2c;
+  margin-top: 12px;
+}
+.slip-done-btn {
+  margin-top: 14px;
+  min-height: 44px;
+  padding: 8px 32px;
+  background: var(--red-deep);
+  color: #fff;
+  font-family: 'Permanent Marker', cursive;
+  font-size: 15px;
+  letter-spacing: 0.05em;
+  transform: rotate(0.8deg);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.2),
+    0 0 16px var(--red-glow),
+    0 2px 6px rgba(0, 0, 0, 0.5);
+}
+.slip-done-btn:hover { background: var(--red); }
+
+/* When the preview has ended, quiet the canvas so the slip owns the moment */
+.player.preview-ended canvas { opacity: 0.35; }
+
 .player .hint {
   color: var(--ink-faint);
   font-family: 'Special Elite', monospace;

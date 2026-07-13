@@ -35,7 +35,18 @@
     <div id="now-playing" class="now">&mdash;</div>
     <canvas id="canvas" width="300" height="216"></canvas>
     <audio id="audio" controls preload="auto"></audio>
-    <p id="preview-hint" class="hint">Press <strong>Esc</strong> to close.</p>
+
+    <!-- Request slip: shown when the 30s preview ends. The hand-off moment —
+         requests happen on paper to the DJ, so show exactly what to write. -->
+    <div id="request-slip" class="request-slip hidden">
+      <div class="slip-tag">That was the 30-second preview</div>
+      <div class="slip-song" id="slip-song"></div>
+      <div class="slip-disc" id="slip-disc"></div>
+      <div class="slip-cta">Like it? Write it down &mdash; go tell the DJ.</div>
+      <button id="slip-done" class="slip-done-btn">Done</button>
+    </div>
+
+    <p id="preview-hint" class="hint">Tap the Close button (top right) when you're done.</p>
   </section>
 
   <script type="module" src="/app.js"></script>
