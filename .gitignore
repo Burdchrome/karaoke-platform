@@ -12,3 +12,10 @@ karaoke-architecture-VIEW.url
 # OS
 .DS_Store
 Thumbs.db
+
+# impeccable working files (keep config + critique snapshots)
+.impeccable/*
+!.impeccable/live/
+.impeccable/live/*
+!.impeccable/live/config.json
+!.impeccable/critique/

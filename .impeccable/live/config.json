@@ -1,0 +1,6 @@
+{
+  "files": ["karaoke-app/public/*.html"],
+  "insertBefore": "</body>",
+  "commentSyntax": "html",
+  "cspChecked": true
+}
