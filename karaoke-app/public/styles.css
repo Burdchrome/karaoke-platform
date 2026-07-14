@@ -1,9 +1,11 @@
 /* ============================================================
-   Karaoke List — visual system v3
-   "Scrappy / graffiti / home-grown." Photos of The Brewery as the
-   actual background (collage), marker-handwritten wordmark, spray-
-   paint accents, readable UI in the middle so the room doesn't
-   eat the content.
+   Karaoke List — visual system v4 "the scratched wall"
+   Direction shift from v3: the actual graffiti walls (Brew 4/6)
+   are SILVER scratch-marker on matte black — not warm cream.
+   So: ink goes chalk-silver, the red neon becomes the only glow
+   in the room, amber survives only as the Coors-script yellow
+   (tiny DJ moments), and cream is reserved for literal paper
+   objects (request slip, tape strips). Readability still wins.
    ============================================================ */
 
 /* ============================================================
@@ -35,20 +37,20 @@
 }
 
 :root {
-  /* ---- palette ---- */
-  --bg:           #0a0807;
-  --surface:      #16120d;
-  --surface-2:    #1f1a12;
+  /* ---- palette: neutral black wall, silver scrawl, one red neon ---- */
+  --bg:           #0b0a0a;
+  --surface:      #141312;
+  --surface-2:    #1c1a18;
 
-  --divider:      rgba(255, 255, 255, 0.06);
-  --border:       rgba(255, 235, 200, 0.12);
-  --border-warm:  rgba(255, 200, 150, 0.18);
+  --divider:      rgba(255, 255, 255, 0.07);
+  --border:       rgba(232, 230, 226, 0.14);   /* silver scratch, not warm */
+  --border-warm:  rgba(232, 230, 226, 0.2);    /* kept name; now the brighter scratch */
 
-  --ink:          #f5e8d1;
+  --ink:          #eceae6;  /* chalk — the wall's marker color */
   --ink-bright:   #ffffff;
-  --ink-muted:    #c4ad88;
-  --ink-faint:    #9c8968; /* was #806e54 — 4.07:1 failed WCAG at small sizes; this is ~5.8:1 */
-  --ink-stamp:    #a18c6f;
+  --ink-muted:    #b6b2ab;  /* worn silver */
+  --ink-faint:    #918d85;  /* ~5.5:1 on --bg at small sizes */
+  --ink-stamp:    #9c978e;  /* scratched-in disc codes */
 
   --red:          #ff3b2f;
   --red-bright:   #ff5346;
@@ -56,15 +58,19 @@
   --red-glow:     rgba(255, 59, 47, 0.6);
   --red-wash:     rgba(255, 59, 47, 0.1);
 
+  /* Coors-script yellow — the second neon tube in Brew 5. DJ-only moments. */
   --amber:        #ffb627;
   --amber-deep:   #c98800;
   --amber-glow:   rgba(255, 182, 39, 0.45);
 
   --danger:       #ff5c54;
+
+  /* paper — real objects only (request slip, tape) */
+  --paper:        #f0e7d4;
 }
 
 /* ============================================================
-   Base — photo collage background
+   Base — matte black wall, red neon spill from above
    ============================================================ */
 
 html, body {
@@ -78,26 +84,23 @@ html, body {
 }
 
 /*
-   The collage is built from three fixed-position layers so it scales
-   to any viewport and the content scrolls over a stable backdrop.
    Z-stack:
-     0  body bg (warm black fallback)
-     1  body::before  Brew 5 neon — the dominant mood, full bleed, dim
-     1  body::after   dark vignette/overlay over Brew 5 for readability
-     0  fixed decorations (.bg-deco-*)  scratched walls at corners
+     0  body bg (matte black fallback)
+     0  body::before  neon spill + vignette
+     1  main::before  scratched-wall texture overlay
      2  main content
+     5  .logo (pinned photo)
 */
 
-/* Body backdrop — flat warm gradient + faint red glow from the top.
-   No more full-bleed photo; the photo lives in the logo (top-left). */
+/* Neon spill: the room is black; the only light is the sign. */
 body::before {
   content: "";
   position: fixed; inset: 0;
   z-index: 0;
   background:
-    radial-gradient(ellipse 70% 50% at 50% -10%, rgba(255, 59, 47, 0.14), transparent 55%),
-    radial-gradient(ellipse 100% 80% at 50% 30%, transparent 40%, rgba(0,0,0,0.5) 90%, rgba(0,0,0,0.8) 100%),
-    #0a0807;
+    radial-gradient(ellipse 70% 50% at 50% -10%, rgba(255, 59, 47, 0.16), transparent 55%),
+    radial-gradient(ellipse 100% 80% at 50% 30%, transparent 40%, rgba(0,0,0,0.5) 90%, rgba(0,0,0,0.85) 100%),
+    #0b0a0a;
 }
 
 /* Decoration divs from earlier passes are no longer used. Hidden in case
@@ -105,9 +108,7 @@ body::before {
 .bg-deco { display: none !important; }
 
 /* ============================================================
-   Logo — the Rocky + Shooter neon as a small framed photo, top-left.
-   Replaces the photo collage backdrop. ~100x same content, ~1% the
-   rendering cost.
+   Logo — the Rocky + Shooter neon as a small pinned photo, top-left.
    ============================================================ */
 .logo {
   position: fixed;
@@ -119,8 +120,8 @@ body::before {
   filter: brightness(0.9) saturate(1.15) contrast(1.05);
   box-shadow:
     0 0 0 1px rgba(255, 59, 47, 0.4),
-    0 0 0 4px rgba(15, 10, 8, 0.95),
-    0 0 0 5px rgba(80, 60, 45, 0.5),
+    0 0 0 4px rgba(10, 9, 9, 0.95),
+    0 0 0 5px rgba(120, 116, 108, 0.35),
     0 6px 20px rgba(0, 0, 0, 0.7),
     0 0 24px rgba(255, 59, 47, 0.18);
   transform: rotate(-3deg);
@@ -134,8 +135,8 @@ body::before {
   top: -8px; left: 50%;
   width: 36px; height: 12px;
   transform: translateX(-50%) rotate(-4deg);
-  background: rgba(245, 232, 209, 0.22);
-  border: 1px solid rgba(245, 232, 209, 0.1);
+  background: rgba(240, 231, 212, 0.22);
+  border: 1px solid rgba(240, 231, 212, 0.1);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
 }
 
@@ -143,15 +144,15 @@ body::before {
   .logo { width: 62px; height: 62px; top: 12px; left: 12px; }
 }
 
-/* Spray-paint noise overlay above everything — final scratched-wall layer */
+/* Scratched-wall texture: thin silver scrawl lines at odd angles,
+   like years of keys and markers. Replaces v3's soft spray grain. */
 body > main::before {
   content: "";
   position: fixed; inset: 0;
   pointer-events: none;
   z-index: 1;
-  opacity: 0.1;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' seed='9'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 0.95  0 0 0 0 0.85  0 0 0 0.9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='420' height='420'><g stroke='%23e8e6e2' stroke-width='0.7' fill='none' stroke-linecap='round' opacity='0.9'><path d='M20 60 L90 40'/><path d='M130 200 L200 260 L215 250'/><path d='M300 80 Q 330 60, 370 90'/><path d='M40 330 L110 310'/><path d='M240 380 L310 340'/><path d='M350 250 L400 290'/><path d='M60 150 Q 90 170, 80 200'/><path d='M180 30 L210 70'/><path d='M390 160 L360 130'/><path d='M150 300 L140 340 L165 335'/></g><g stroke='%23e8e6e2' stroke-width='0.4' fill='none' opacity='0.6'><path d='M10 250 L60 270'/><path d='M270 150 L320 180'/><path d='M100 400 L160 380'/><path d='M330 20 L380 45'/><path d='M220 110 L260 95'/></g></svg>");
 }
 
 main {
@@ -162,7 +163,7 @@ main {
 }
 
 /* ============================================================
-   Wordmark — Sharpie on the wall
+   Wordmark — chalk marker scrawled on the wall, lit by the neon
    ============================================================ */
 
 .wordmark {
@@ -180,13 +181,25 @@ main {
   margin: 0;
   line-height: 0.95;
   color: var(--ink-bright);
-  /* Marker on a wall: chunky, slightly bled, with a tiny red drip-glow */
+  /* Chalk marker catching the red light — glow is spill, not paint */
   text-shadow:
-    0 0 1px rgba(255, 255, 255, 0.4),
-    0 2px 0 rgba(0, 0, 0, 0.5),
-    0 0 14px rgba(255, 59, 47, 0.35),
-    0 0 30px rgba(255, 59, 47, 0.18);
-  transform: rotate(-1.5deg);
+    0 0 1px rgba(255, 255, 255, 0.45),
+    0 2px 0 rgba(0, 0, 0, 0.55),
+    0 0 14px rgba(255, 59, 47, 0.3),
+    0 0 34px rgba(255, 59, 47, 0.16);
+  transform: rotate(-1.8deg);
+}
+/* Year tag, like every name on the wall gets one ("NOODLE '16") */
+.wordmark h1::after {
+  content: "'26";
+  font-size: 0.32em;
+  color: var(--ink-stamp);
+  margin-left: 0.25em;
+  vertical-align: 0.9em;
+  letter-spacing: 0;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.6);
+  display: inline-block;
+  transform: rotate(4deg);
 }
 .wordmark h1 .apostrophe {
   color: var(--red);
@@ -196,7 +209,7 @@ main {
     0 0 24px rgba(255, 59, 47, 0.5);
 }
 
-/* Spray-paint "circle" around the wordmark — like a tag underline */
+/* Marker underline — one confident scrawl stroke, neon red */
 .wordmark::after {
   content: "";
   position: absolute;
@@ -227,7 +240,7 @@ main {
   font-family: 'Permanent Marker', cursive;
   font-size: 16px;
   background: transparent;
-  color: var(--amber);
+  color: var(--amber); /* Coors-script yellow — the DJ's badge */
   padding: 0 6px;
   vertical-align: 0.4em;
   margin-right: 14px;
@@ -254,15 +267,6 @@ main {
 }
 
 /* ============================================================
-   Content surface — semi-transparent dark card so the photos
-   peek through the background without eating the content
-   ============================================================ */
-
-main {
-  /* A subtle inner panel so search/list don't float on chaos */
-}
-
-/* ============================================================
    Search input
    ============================================================ */
 
@@ -272,7 +276,7 @@ input.search {
   padding: 14px 18px;
   font-size: 16px;
   font-family: inherit;
-  background: rgba(10, 7, 5, 0.92);
+  background: rgba(11, 10, 10, 0.92);
   color: var(--ink);
   border: 1px solid var(--border);
   border-radius: 1px;
@@ -284,7 +288,8 @@ input.search {
 }
 input.search::placeholder { color: var(--ink-faint); font-style: italic; }
 
-/* Singer-name input on the DJ page. Smaller, less prominent than search. */
+/* Singer-name input on the DJ page. Smaller, less prominent than search.
+   Amber = the DJ's own marker; nobody else writes in this color. */
 input.singer {
   width: 100%;
   box-sizing: border-box;
@@ -292,7 +297,7 @@ input.singer {
   margin-bottom: 10px;
   font-size: 14px;
   font-family: 'Permanent Marker', cursive;
-  background: rgba(28, 24, 18, 0.85);
+  background: rgba(22, 20, 18, 0.85);
   color: var(--amber);
   border: 1px dashed var(--border-warm);
   border-radius: 1px;
@@ -347,12 +352,12 @@ input.search:focus {
 }
 
 /* ============================================================
-   Search results — dark glass-paneled list
+   Search results — dark panel, silver scrawl, red hover
    ============================================================ */
 
 ul.songs {
   list-style: none; padding: 0; margin: 0;
-  background: rgba(10, 7, 5, 0.88);
+  background: rgba(11, 10, 10, 0.88);
   border: 1px solid var(--border);
   border-radius: 1px;
   box-shadow: 0 4px 18px rgba(0, 0, 0, 0.6);
@@ -397,8 +402,8 @@ ul.songs li.group { flex-wrap: wrap; }
 
 .versions-toggle {
   background: transparent;
-  color: var(--amber);
-  border: 1px dashed var(--border-warm);
+  color: var(--ink-muted);
+  border: 1px dashed var(--border);
   font-family: 'Special Elite', monospace;
   font-size: 12px;
   letter-spacing: 0.08em;
@@ -407,8 +412,8 @@ ul.songs li.group { flex-wrap: wrap; }
 }
 .versions-toggle:hover {
   color: var(--ink-bright);
-  border-color: var(--amber);
-  background: rgba(255, 182, 39, 0.06);
+  border-color: var(--ink-muted);
+  background: rgba(232, 230, 226, 0.05);
 }
 
 ul.versions {
@@ -427,7 +432,7 @@ ul.songs li.version:last-child { border-bottom: none; }
 ul.songs li.version .disc { flex: 1; min-width: 0; }
 
 /* ============================================================
-   Buttons — spray-paint stickers
+   Buttons — marker-drawn, neon-lit
    ============================================================ */
 
 button {
@@ -505,8 +510,8 @@ button:active { transform: translateY(1px); }
 section.queue {
   margin-top: 40px;
   padding: 22px 18px 20px;
-  background: rgba(28, 24, 18, 0.97);
-  border: 1px solid var(--border-warm);
+  background: rgba(24, 22, 20, 0.97);
+  border: 1px solid var(--border);
   border-radius: 1px;
   position: relative;
   box-shadow:
@@ -523,8 +528,8 @@ section.queue::after {
   position: absolute;
   width: 50px; height: 18px;
   top: -10px;
-  background: rgba(245, 232, 209, 0.18);
-  border: 1px solid rgba(245, 232, 209, 0.1);
+  background: rgba(240, 231, 212, 0.18);
+  border: 1px solid rgba(240, 231, 212, 0.1);
   transform: rotate(-8deg);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
 }
@@ -695,7 +700,7 @@ ul.queue-list { list-style: none; padding: 0; margin: 0; }
   box-shadow:
     0 0 0 1px rgba(255, 59, 47, 0.3),
     0 0 0 6px rgba(0, 0, 0, 0.9),
-    0 0 0 7px rgba(84, 64, 45, 0.4),
+    0 0 0 7px rgba(110, 106, 98, 0.35),
     0 18px 80px rgba(0, 0, 0, 0.9),
     0 0 100px rgba(255, 59, 47, 0.1);
 }
@@ -729,7 +734,7 @@ ul.queue-list { list-style: none; padding: 0; margin: 0; }
 .progress-track {
   flex: 1;
   height: 10px;
-  background: rgba(245, 232, 209, 0.12);
+  background: rgba(232, 230, 226, 0.12);
   border: 1px solid var(--border);
   border-radius: 1px;
   overflow: hidden;
@@ -764,7 +769,7 @@ ul.queue-list { list-style: none; padding: 0; margin: 0; }
   right: 22px;
   background: transparent;
   color: var(--ink-muted);
-  border: 1px solid var(--border-warm);
+  border: 1px solid var(--border);
   transform: rotate(1deg);
 }
 .player .close-btn:hover {
@@ -787,13 +792,14 @@ ul.queue-list { list-style: none; padding: 0; margin: 0; }
 /* ---- Request slip (audience, preview end) ----
    A cream paper slip "taped" over the dark player — the same physical
    object patrons hand the DJ. Dark ink on light paper: max contrast at
-   the exact moment that matters. */
+   the exact moment that matters. The ONLY warm surface in the app —
+   paper stays paper-colored, walls stay black. */
 .request-slip {
   position: relative;
   margin-top: 20px;
   padding: 18px 22px 14px;
   max-width: min(92vw, 480px);
-  background: var(--ink); /* cream = paper */
+  background: var(--paper);
   color: #16120d;
   border-radius: 1px;
   text-align: center;
@@ -810,7 +816,7 @@ ul.queue-list { list-style: none; padding: 0; margin: 0; }
   top: -10px; left: 50%;
   width: 60px; height: 16px;
   transform: translateX(-50%) rotate(-3deg);
-  background: rgba(245, 232, 209, 0.45);
+  background: rgba(240, 231, 212, 0.45);
   border: 1px solid rgba(0, 0, 0, 0.15);
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
 }

@@ -1,26 +1,27 @@
 # Design
 
-Visual system for Karaoke List (v3 — "scrappy / graffiti / home-grown"). Source of truth for tokens is `karaoke-app/public/styles.css` `:root`; this document describes the system those tokens implement.
+Visual system for Karaoke List (v4 — "the scratched wall"). Source of truth for tokens is `karaoke-app/public/styles.css` `:root`; this document describes the system those tokens implement.
 
 ## Theme
 
-Warm-black dive-bar room lit by red neon. The Rocky + Shooter Coors Light neon photo (`/img/brew5.jpg`) is the visual anchor — used as a small taped-up polaroid logo (top-left) and as the player-overlay backdrop, not as a full-bleed background. Surfaces read as paper and tape on a graffiti wall: slight rotations (−3° to +1°), tape-strip pseudo-elements, dashed dividers, an SVG spray-paint noise overlay at 10% opacity. Readability always wins over texture.
+The actual Brewery graffiti walls (Brew 4/6) are silver scratch-marker on matte black — so v4 desaturates v3's warm-cream cast: ink is chalk-silver, the background is neutral black, and the red neon is the only light in the room. Amber survives only as the Coors-script yellow (DJ-only moments: role pill, singer input, skip, drag states). Cream is reserved for literal paper objects (request slip, tape strips). The Rocky + Shooter neon photo (`/img/brew5.jpg`) stays the visual anchor — small taped-up polaroid logo (top-left) and the player-overlay backdrop. Texture is an SVG of thin scratched lines at odd angles (7% opacity), like years of keys and markers; the wordmark carries a `'26` year tag like every name on the wall. Slight rotations (−3° to +1°), tape-strip pseudo-elements, dashed dividers. Readability always wins over texture.
 
 ## Color
 
 | Token | Value | Role |
 |---|---|---|
-| `--bg` | `#0a0807` | warm black page background |
-| `--surface` / `--surface-2` | `#16120d` / `#1f1a12` | panels |
-| `--ink` | `#f5e8d1` | body text (cream) |
+| `--bg` | `#0b0a0a` | matte black wall (neutral, not warm) |
+| `--surface` / `--surface-2` | `#141312` / `#1c1a18` | panels |
+| `--ink` | `#eceae6` | body text (chalk — the wall's marker color) |
 | `--ink-bright` | `#ffffff` | emphasis, artist names, headings |
-| `--ink-muted` / `--ink-faint` / `--ink-stamp` | `#c4ad88` / `#806e54` / `#a18c6f` | secondary text, hints, disc codes |
-| `--red` / `--red-bright` / `--red-deep` | `#ff3b2f` / `#ff5346` / `#c01a10` | primary accent — Coors neon red |
+| `--ink-muted` / `--ink-faint` / `--ink-stamp` | `#b6b2ab` / `#918d85` / `#9c978e` | worn silver: secondary text, hints, disc codes |
+| `--red` / `--red-bright` / `--red-deep` | `#ff3b2f` / `#ff5346` / `#c01a10` | primary accent — Coors neon red, the only glow |
 | `--red-glow` | `rgba(255,59,47,0.6)` | neon glow shadows |
-| `--amber` / `--amber-deep` | `#ffb627` / `#c98800` | secondary accent (skip button, DJ inputs, drag states) |
+| `--amber` / `--amber-deep` | `#ffb627` / `#c98800` | Coors-script yellow — DJ-only (role pill, singer input, skip, drag states) |
 | `--danger` | `#ff5c54` | destructive hover (remove, clear) |
+| `--paper` | `#f0e7d4` | real paper objects only (request slip, tape) |
 
-Red is the neon: it glows (`text-shadow`/`box-shadow` with `--red-glow`), it marks primary actions and focus. Amber is the DJ's marker: secondary actions and queue affordances. Translucent dark rgba panels (`rgba(10,7,5,0.88–0.92)`) over the backdrop — **never `backdrop-filter`** (rejected for performance).
+Red is the neon: it glows (`text-shadow`/`box-shadow` with `--red-glow`), it marks primary actions and focus. Amber is the second neon tube — the DJ's color; the audience view never shows it. Translucent dark rgba panels (`rgba(11,10,10,0.88–0.92)`) over the backdrop — **never `backdrop-filter`** (rejected for performance).
 
 ## Typography
 
@@ -30,7 +31,7 @@ Red is the neon: it glows (`text-shadow`/`box-shadow` with `--red-glow`), it mar
 | `Inter` | body and list content — the readability workhorse |
 | `Special Elite` (typewriter) | small caps labels, taglines, disc codes, hints, secondary buttons |
 
-Wordmark: `clamp(48px, 10vw, 84px)`, rotated −1.5°, red-glow text-shadow, spray-paint SVG underline. Labels run uppercase with wide letter-spacing (0.14–0.5em).
+Wordmark: `clamp(48px, 10vw, 84px)`, rotated −1.8°, chalk-white with red-glow spill, marker SVG underline, plus a small silver `'26` year tag (CSS `::after`) like the wall tags. Labels run uppercase with wide letter-spacing (0.14–0.5em).
 
 ## Components
 

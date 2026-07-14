@@ -4,6 +4,36 @@ A running record of manual test sessions against the karaoke server. Each sessio
 
 ---
 
+## Session: 2026-07-14 (design v4 "the scratched wall")
+
+### What changed
+
+1. **`public/styles.css` fully replaced (v3 → v4)** — chalk-silver ink on
+   neutral black, red neon as the only glow, amber demoted to DJ-only,
+   cream reserved for paper objects, scratched-line texture, `'26` wordmark
+   year tag. All selectors preserved; no HTML/JS touched. System doc:
+   root `DESIGN.md`.
+
+### Test cases
+
+| # | What | Expected | Pass/Fail | Notes |
+|---|------|----------|-----------|-------|
+| 1 | Server boot + audience page load | No console errors, list renders | ✅ | 65,832 songs from cache |
+| 2 | New tokens live | chalk ink / neutral bg / silver borders / `'26` tag computed | ✅ | via computed-style JS check |
+| 3 | Search "fleetwood mac" | Results + version groups render | ✅ | 49 matches, toggles present |
+| 4 | 360px viewport | No horizontal overflow; wordmark fits; play-btn ≥44px | ✅ | scrollWidth 360, btn 45.5px |
+
+Verified-in-test, structurally only — the Browser pane's screenshot capture
+hung all session, so nobody has *seen* v4 rendered. Not verified-in-eyeball.
+
+### Follow-ups
+
+- **Josh's visual verdict on v4** — open `http://localhost:3000` in Firefox
+  (start the server first). Keep / tune / redirect is his call; this entry
+  closes when he's looked at it.
+
+---
+
 ## Session: 2026-07-12 (preview cap leak fix + standalone sharing stack)
 
 ### What changed

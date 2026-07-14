@@ -1,6 +1,6 @@
 # Karaoke DJ Project — Master Handoff
 
-**Last updated:** 2026-07-13
+**Last updated:** 2026-07-14
 **Supersedes:** `karaoke_dj_handoff.md` (older — pre-inventory, contained open questions now answered)
 **For:** Shooter, a karaoke DJ the user knows personally
 
@@ -268,13 +268,11 @@ From CLAUDE.md, restated for any agent continuing this work:
 - Audio scrubbing keeps lyrics in sync
 - **Phone access over Wi-Fi:** verified from a phone on The Pointe Wi-Fi. The Pointe uses CGNAT (`100.64.x.x` per device) but does not isolate intra-unit traffic. Windows Firewall auto-allowed Node on the Private network profile. Gotcha: Firefox mobile defaults to HTTPS-Only Mode and silently upgrades `http://` to `https://`, which fails against our plain-HTTP server. Either disable HTTPS-Only Mode on the phone or click "Advanced → Continue to site" on the warning.
 
-**Visual design (v3, in progress):**
-- "Shooter's List" wordmark in Permanent Marker (Sharpie) font
-- Photo collage backdrop: Brew 5 neon as full-bleed background, Brew 1/4/6 tilted at corners
-- Spray-paint accents, marker-style buttons, taped-paper queue panel
-- Three rounds done; user feedback: "closer but still not my aesthetic"
-- **Removed `backdrop-filter: blur()` everywhere — perf killer on hover.** Translucent surfaces now use solid rgba.
-- **Next:** see `karaoke_claude_design_brief.md` — a self-contained prompt to paste into Claude (with the 6 photos attached) for a sharper design direction. Open to a real visual shift, not incremental tweaks.
+**Visual design (v4 "the scratched wall", shipped 2026-07-14 — awaiting Josh's eyeball verdict):**
+- Direction shift from v3's warm-cream cast: the real graffiti walls (Brew 4/6) are silver scratch-marker on neutral black, so ink went chalk-silver, background neutral black, red neon = the only glow. Amber demoted to DJ-only (Coors-script yellow: role pill, singer input, skip, drag states); cream reserved for paper objects (request slip, tape). Wordmark gained a `'26` year tag; texture is scratched lines, not spray grain.
+- Tokens + full system documented in `DESIGN.md` (root); brand/product context in `PRODUCT.md`. `karaoke_claude_design_brief.md` is the historical v3-era brief (predates the "Karaoke List" rename — kept for reference).
+- **No `backdrop-filter` anywhere** (perf) — translucent surfaces are solid rgba.
+- All selectors preserved; verified structurally (see TEST_LOG 2026-07-14). Josh hasn't seen it rendered yet — that's the open loop.
 
 **Library expanded:**
 - 3,473 of 3,477 zip files extracted (4 corrupted, logged)
@@ -391,7 +389,7 @@ All 8 questions from the now-archived `karaoke_shooter_sunday.md` got walked thr
 ---
 
 **Next session can pick any of:**
-- **Design pass** — `karaoke_claude_design_brief.md` is still the open aesthetic question. Visual shift needed; v3 stalled.
+- **Design v4 verdict** — v4 "scratched wall" shipped 2026-07-14; Josh opens `http://localhost:3000` in Firefox and calls it (keep / tune tokens / redirect). See Visual design section + DESIGN.md.
 - **Tier 2 Cloudflare upgrade** — named tunnel + persistent URL. ~10 min one-time setup, free, removes the "URL changes every restart" friction.
 - **Phase 3 metadata pipeline: DONE 2026-07-13** — all tickets #9–#15 closed-or-passed; acceptance numbers in the Phase 3 section are the new baseline. Remaining metadata work is issue #8 (manual rescue, ON HOLD until the library transfer to E:\ is complete). (Lookup pipeline and fingerprinting were both rejected by the map — don't resurrect them.)
 - **Polish items** — favicon, queue persistence, play history.
