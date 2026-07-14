@@ -337,6 +337,14 @@ input.search:focus {
   letter-spacing: 0.18em;
   margin: 12px 2px 14px;
 }
+.status.error {
+  /* Network failure is the one status that must not whisper */
+  color: var(--danger);
+  font-size: 13px;
+  text-transform: none;
+  letter-spacing: 0.06em;
+  text-shadow: 0 0 8px rgba(255, 92, 84, 0.35);
+}
 
 /* ============================================================
    Search results — dark glass-paneled list
@@ -744,7 +752,8 @@ ul.queue-list { list-style: none; padding: 0; margin: 0; }
 .player .close-btn,
 .player .skip-btn {
   position: absolute; top: 18px;
-  padding: 8px 14px;
+  min-height: 44px; /* same touch floor as everything else patrons tap */
+  padding: 8px 16px;
   border-radius: 1px;
   font-family: 'Permanent Marker', cursive;
   font-size: 14px;
@@ -856,9 +865,10 @@ ul.queue-list { list-style: none; padding: 0; margin: 0; }
 .player.preview-ended canvas { opacity: 0.35; }
 
 .player .hint {
-  color: var(--ink-faint);
+  /* Navigation help can't be the least readable text in the app (dim bar) */
+  color: var(--ink-muted);
   font-family: 'Special Elite', monospace;
-  font-size: 11px;
+  font-size: 13px;
   letter-spacing: 0.14em;
   margin-top: 18px;
   text-align: center;

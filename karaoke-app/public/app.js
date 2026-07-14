@@ -164,14 +164,24 @@ async function search(query) {
     const r = await fetch(url);
     const data = await r.json();
     if (reqId !== lastReqId) return; // stale response
+    $status.classList.remove('error');
     renderResults(data, query);
   } catch (err) {
-    $status.textContent = 'Error: ' + err.message;
+    if (reqId !== lastReqId) return; // a newer request owns the status line
+    // In-voice, actionable copy — not a raw fetch error. The next keystroke
+    // retries for free (debounced input), so say so.
+    console.warn('search failed:', err);
+    $status.classList.add('error');
+    $status.textContent = "Can't reach the songbook — check the Wi-Fi, then type again to retry.";
   }
 }
 
 $q.addEventListener('input', () => {
   clearTimeout(debounceTimer);
+  // Immediate feedback: on slow Wi-Fi the old behavior showed the previous
+  // result count while a new search was in flight — silence reads as broken.
+  $status.classList.remove('error');
+  $status.textContent = 'Searching…';
   debounceTimer = setTimeout(() => search($q.value.trim()), 150);
 });
 
