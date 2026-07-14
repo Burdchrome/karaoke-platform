@@ -415,6 +415,37 @@ function showRequestSlip() {
   if ($previewHint) $previewHint.innerHTML = '';
 }
 
+// ---- custom audio bar (audience page only; DJ keeps native controls) ----
+// Play/pause + progress toward the 30s cap. Deliberately no seek: the native
+// scrubber invited scrubbing that the preview clamp then silently fought.
+const $pp           = document.getElementById('pp');
+const $progressFill = document.getElementById('progress-fill');
+const $timeLabel    = document.getElementById('time-label');
+
+function fmtTime(s) {
+  const m = Math.floor(s / 60);
+  return `${m}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+}
+
+function updateAudioUi() {
+  if (!$pp) return;
+  const t = Math.min($audio.currentTime, PREVIEW_SECONDS);
+  $progressFill.style.width = `${(t / PREVIEW_SECONDS) * 100}%`;
+  $timeLabel.textContent = `${fmtTime(t)} / ${fmtTime(PREVIEW_SECONDS)}`;
+  $pp.innerHTML = $audio.paused ? '&#9654;' : '&#10074;&#10074;';
+}
+
+if ($pp) {
+  $pp.addEventListener('click', () => {
+    if ($audio.paused) $audio.play().catch(() => {});
+    else $audio.pause();
+  });
+  $audio.addEventListener('timeupdate', updateAudioUi);
+  $audio.addEventListener('play', updateAudioUi);
+  $audio.addEventListener('pause', updateAudioUi);
+  $audio.addEventListener('emptied', updateAudioUi);
+}
+
 if (!IS_DJ) {
   // No one-shot flag here: the cap must re-fire every time playback reaches
   // it, otherwise pressing play again after the pause resumes unbounded audio.
@@ -518,6 +549,26 @@ $list.addEventListener('click', (e) => {
   }
   if (playBtn)  return openPlayer(playBtn.dataset.id, playBtn.dataset.label, playBtn.dataset.disc);
   if (queueBtn) return addToQueue(queueBtn.dataset.id);
+
+  // Audience: the whole row is the button. On a 360px phone the row is the
+  // natural full-width target; the ▶ Play sticker stays as the visual cue.
+  // Group headers toggle their version list instead (they have no song of
+  // their own to play). DJ keeps button-only clicks — precise pointer, and
+  // row-taps while managing the queue would cause accidental playback.
+  if (IS_DJ) return;
+  const row = e.target.closest('li[data-id]');
+  if (!row) return;
+  if (row.classList.contains('group')) {
+    const versionList = row.querySelector('ul.versions');
+    const rowToggle = row.querySelector('button.versions-toggle');
+    if (versionList && rowToggle) {
+      const isNowHidden = versionList.classList.toggle('hidden');
+      rowToggle.setAttribute('aria-expanded', String(!isNowHidden));
+    }
+    return;
+  }
+  const rowPlay = row.querySelector('button.play-btn');
+  if (rowPlay) openPlayer(rowPlay.dataset.id, rowPlay.dataset.label, rowPlay.dataset.disc);
 });
 
 $close.addEventListener('click', closePlayer);

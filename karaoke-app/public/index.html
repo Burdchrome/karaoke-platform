@@ -34,7 +34,16 @@
     <button id="close" class="close-btn" title="Close (Esc)">&times; Close</button>
     <div id="now-playing" class="now">&mdash;</div>
     <canvas id="canvas" width="300" height="216"></canvas>
-    <audio id="audio" controls preload="auto"></audio>
+    <!-- No `controls`: the audience gets a custom bar below. The native
+         scrubber invited seeking that the 30s preview clamp then fought;
+         this one is play/pause + progress only. DJ page keeps native controls. -->
+    <audio id="audio" preload="auto"></audio>
+
+    <div id="audio-ui" class="audio-ui">
+      <button id="pp" class="pp-btn" aria-label="Play or pause">&#9654;</button>
+      <div class="progress-track" aria-hidden="true"><div id="progress-fill" class="progress-fill"></div></div>
+      <span id="time-label" class="time-label">0:00 / 0:30</span>
+    </div>
 
     <!-- Request slip: shown when the 30s preview ends. The hand-off moment —
          requests happen on paper to the DJ, so show exactly what to write. -->
