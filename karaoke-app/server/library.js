@@ -318,7 +318,7 @@ function makeId(fullPath) {
 /**
  * Pair MP3s with sibling CDGs and build the song index.
  */
-function buildIndex(filePaths) {
+export function buildIndex(filePaths) {
   const mp3Map = new Map(); // key: dir + basename (lowercase), value: mp3 path
   const cdgMap = new Map();
 
@@ -331,6 +331,9 @@ function buildIndex(filePaths) {
     if (ext !== '.mp3' && ext !== '.cdg') continue;
     const dir = path.dirname(filePath);
     const base = path.basename(filePath, rawExt).toLowerCase();
+    // macOS AppleDouble sidecars ("._Song.mp3") are resource-fork junk that
+    // pairs up like real songs — the real file sits beside them. Skip.
+    if (base.startsWith('._')) continue;
     const key = `${dir.toLowerCase()}|${base}`;
     if (ext === '.mp3') mp3Map.set(key, filePath);
     else cdgMap.set(key, filePath);

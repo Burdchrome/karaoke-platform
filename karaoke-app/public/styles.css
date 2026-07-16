@@ -111,7 +111,9 @@ body::before {
    Logo — the Rocky + Shooter neon as a small pinned photo, top-left.
    ============================================================ */
 .logo {
-  position: fixed;
+  /* absolute, not fixed: pinned to the wall, so it scrolls away with the page
+     (fixed made it tail the scroll and cover the wordmark on phones) */
+  position: absolute;
   top: 18px; left: 18px;
   width: 88px; height: 88px;
   z-index: 5;

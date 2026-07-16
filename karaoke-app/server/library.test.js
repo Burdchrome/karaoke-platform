@@ -18,6 +18,7 @@ import {
   applyOverrides,
   loadOverrides,
   groupSongs,
+  buildIndex,
 } from './library.js';
 import fs from 'node:fs/promises';
 import os from 'node:os';
@@ -326,6 +327,20 @@ test('isCacheCurrent accepts only the current version with a songs array', () =>
   assert.equal(isCacheCurrent({ songs: [] }), false); // unversioned v1 cache
   assert.equal(isCacheCurrent({ version: CACHE_VERSION }), false);
   assert.equal(isCacheCurrent(null), false);
+});
+
+// --- issue #19: AppleDouble sidecars must not become songs ---
+
+test('buildIndex skips macOS AppleDouble ._ sidecar pairs', () => {
+  const dir = String.raw`E:\karaoke\pack`;
+  const songs = buildIndex([
+    path.join(dir, 'Carrie Underwood - I Aint In Checotah Anymore - 28605.mp3'),
+    path.join(dir, 'Carrie Underwood - I Aint In Checotah Anymore - 28605.cdg'),
+    path.join(dir, '._Carrie Underwood - I Aint In Checotah Anymore - 28605.mp3'),
+    path.join(dir, '._Carrie Underwood - I Aint In Checotah Anymore - 28605.cdg'),
+  ]);
+  assert.equal(songs.length, 1);
+  assert.equal(songs[0].artist, 'Carrie Underwood');
 });
 
 // --- ticket #14: serve-time grouping by songKey (spec §2) ---
