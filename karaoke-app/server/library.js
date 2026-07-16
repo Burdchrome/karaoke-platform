@@ -114,12 +114,32 @@ export function parseFilename(basename) {
     // "sc 8119 - 02 - Artist - Title" → "sc8119-02 - Artist - Title";
     // needs TWO more segments so a plain "Artist - Title" tail can't be eaten
     [/^([A-Za-z]+) (\d+) - (\d+)(?= - .+ - )/, '$1$2-$3'],
+    // "sc8155-09 elvis presley-cant help…" → "sc8155-09-elvis presley-…"
+    // (complete code glued to the content by a bare space; prefix may carry
+    // its own dash, "SC-8807-01"). Tight-join so the greedy pass can't
+    // re-split the code; the non-greedy fallback parses it.
+    [/^([A-Za-z]+-?\d+(?:-\d+)+)\s+(?=[A-Za-z])/, '$1-'],
   ];
+  let gluedCode = false;
   for (const [pattern, replacement] of codeRejoins) {
     if (pattern.test(s)) {
+      gluedCode = pattern === codeRejoins[codeRejoins.length - 1][0];
       s = s.replace(pattern, replacement);
       break;
     }
+  }
+
+  // ---- Pre-pass: bare leading track number ("01  Girl Happy - Elvis Presley",
+  // "07 - Elvis - I Gotta Know") — rip-tool output with no disc code. Strip the
+  // track token; the remainder carries no artist-order signal, so flag it and
+  // let buildIndex's library-frequency check settle the order (beets-style).
+  // ponytail: only 00-19 with a separator counts as a track — "98 Degrees",
+  // "50 Cent", "10cc" never match; a real "21 …" track stays broken → overrides.
+  let orderSuspect = false;
+  const bareTrack = s.match(/^[01]\d[ .-]+\s*(\S.*)$/);
+  if (bareTrack) {
+    s = bareTrack[1];
+    orderSuspect = s.includes(' - ');
   }
 
   // ---- Pass 1: disc code at the END (numeric, after the final " - ") ----
@@ -152,7 +172,38 @@ export function parseFilename(basename) {
     startMatch = s.match(/^([A-Za-z0-9_-]*\d[A-Za-z0-9_-]*)\s*-\s*(.+?)\s*-\s*(.+)$/);
   }
   if (startMatch) {
-    const [, disc, middle, last] = startMatch;
+    let [, disc, middle, last] = startMatch;
+    // "SC7534 - 01 - BJ Thomas - Raindrops…": the greedy split leaves the
+    // track token glued to the artist. Fold it into the disc code instead.
+    let trackGlue = middle.trim().match(/^(\d{1,2}) - (\S.*)$/);
+    // Space-glued variant ("sc8190 - 01 turtles - …") only when the disc code
+    // carries no track yet AND the digits are 00-19 — so "4 Seasons",
+    // "20 Fingers", "12 Stones"-style artists after a full code never match.
+    if (!trackGlue && !/-\d+$/.test(disc.trim())) {
+      trackGlue = middle.trim().match(/^([01]\d) (\S.*)$/);
+    }
+    if (trackGlue) {
+      disc = `${disc.trim()}-${trackGlue[1]}`;
+      middle = trackGlue[2];
+    }
+    // Pure-digit middle ("Cb9076-02 - You're The Best Thing…") means the
+    // backtracking split mistook the track for the artist. Fold it into the
+    // disc code; re-split the tail if it still has a dash, else it's the
+    // glued-blob class — no artist to extract, fail clean and keep the code.
+    if (/^\d{1,2}$/.test(middle.trim())) {
+      const foldedDisc = `${disc.trim()}-${middle.trim()}`;
+      // tail with its own dash ("Elvis- Here Come Santa Claus") still splits;
+      // a dashless tail is the glued-blob class — no artist to extract.
+      const tailSplit = last.trim().match(/^(.+?)\s*-\s*(.+)$/);
+      if (tailSplit) {
+        return {
+          artist: normalizeName(tailSplit[1].trim()),
+          title: tailSplit[2].trim(),
+          discCode: foldedDisc,
+        };
+      }
+      return { artist: '', title: last.trim(), discCode: foldedDisc };
+    }
     // Find the alphabetic prefix (the letters before the first digit) to look
     // up in our title-first table.
     const prefix = (disc.match(/^[A-Za-z]+/) || [''])[0].toUpperCase();
@@ -174,6 +225,9 @@ export function parseFilename(basename) {
       artist: normalizeName(isTitleFirst ? lastSegment : middleSegment),
       title: isTitleFirst ? middleSegment : lastSegment,
       discCode: disc.trim(),
+      // Glued or track-folded files came from rip tools with no order
+      // convention — let buildIndex's frequency check double-check the order.
+      orderSuspect: orderSuspect || gluedCode || !!trackGlue,
     };
   }
 
@@ -190,6 +244,9 @@ export function parseFilename(basename) {
         artist: normalizeName(left.trim()),
         title: right.trim(),
         discCode: '',
+        // Only set for stripped-track files: "01  Girl Happy - Elvis Presley"
+        // could be either order; buildIndex resolves it by library frequency.
+        orderSuspect,
       };
     }
   }
@@ -340,13 +397,14 @@ export function buildIndex(filePaths) {
   }
 
   const songs = [];
+  const suspects = []; // stripped-track parses with ambiguous artist order
   for (const [key, mp3Path] of mp3Map) {
     const cdgPath = cdgMap.get(key);
     if (!cdgPath) continue; // skip audio-only orphans for v0
     const basename = path.basename(mp3Path, path.extname(mp3Path));
-    const { artist, title, discCode } = parseFilename(basename);
+    const { artist, title, discCode, orderSuspect } = parseFilename(basename);
     const { songKey, versionLabel } = makeSongKey(artist, title);
-    songs.push({
+    const song = {
       id: makeId(mp3Path),
       mp3Path,
       cdgPath,
@@ -356,7 +414,35 @@ export function buildIndex(filePaths) {
       discCode,
       songKey,
       versionLabel,
-    });
+    };
+    songs.push(song);
+    if (orderSuspect) suspects.push(song);
+  }
+
+  // ---- artist-order fix for stripped-track files (beets-style) ----
+  // "01  Girl Happy - Elvis Presley" parses as artist "Girl Happy"; the only
+  // reliable signal is the rest of the library. If the TITLE side is a known
+  // artist elsewhere and the artist side never is, the file is inverted: swap.
+  // ponytail: threshold 3, no fuzzy match — one-off artists stay inverted and
+  // go to overrides.json like every other tie.
+  if (suspects.length > 0) {
+    const artistCounts = new Map();
+    const suspectSet = new Set(suspects);
+    for (const song of songs) {
+      if (suspectSet.has(song) || !song.artist) continue;
+      const k = song.artist.toLowerCase();
+      artistCounts.set(k, (artistCounts.get(k) || 0) + 1);
+    }
+    for (const song of suspects) {
+      const titleKnown = (artistCounts.get(song.title.toLowerCase()) || 0) >= 3;
+      const artistKnown = artistCounts.has(song.artist.toLowerCase());
+      if (titleKnown && !artistKnown) {
+        [song.artist, song.title] = [song.title, song.artist];
+        const { songKey, versionLabel } = makeSongKey(song.artist, song.title);
+        song.songKey = songKey;
+        song.versionLabel = versionLabel;
+      }
+    }
   }
 
   return songs;
@@ -423,7 +509,7 @@ export function applyOverrides(songs, overrides) {
 
 // Bump whenever the parser or song schema changes: a version mismatch on load
 // forces a full rescan, so parser upgrades self-apply on next start (spec §4).
-export const CACHE_VERSION = 2;
+export const CACHE_VERSION = 3;
 
 /**
  * A cache payload is usable only if it was built by the current schema.

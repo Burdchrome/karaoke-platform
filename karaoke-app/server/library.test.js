@@ -329,6 +329,88 @@ test('isCacheCurrent accepts only the current version with a songs array', () =>
   assert.equal(isCacheCurrent(null), false);
 });
 
+// --- trackNN parsing (post-#19 nitpick round) ---
+
+test('code glued by bare space gets its separator ("sc8155-09 elvis…")', () => {
+  const p = parseFilename('sc8155-09 elvis presley-cant help falling in love');
+  assert.equal(p.discCode, 'sc8155-09');
+  assert.equal(p.artist.toLowerCase(), 'elvis presley');
+  assert.equal(p.title, 'cant help falling in love');
+});
+
+test('track token after a real disc code folds into the code', () => {
+  const p = parseFilename('SC7534 - 01 - BJ Thomas - Raindrops Keep Falling On My Head');
+  assert.equal(p.discCode, 'SC7534-01');
+  assert.equal(p.artist, 'BJ Thomas');
+  assert.equal(p.title, 'Raindrops Keep Falling On My Head');
+});
+
+test('bare leading track number is stripped and flagged order-suspect', () => {
+  const p = parseFilename('01  Girl Happy - Elvis Presley');
+  assert.equal(p.discCode, '');
+  assert.equal(p.orderSuspect, true);
+  assert.deepEqual([p.artist, p.title], ['Girl Happy', 'Elvis Presley']);
+});
+
+test('space-glued track after a bare disc code folds into the code', () => {
+  const p = parseFilename("sc8190_-_01_turtles_-_she'd_rather_be_with_me");
+  assert.equal(p.discCode, 'sc8190-01');
+  assert.equal(p.artist, 'turtles');
+  assert.equal(p.title, "she'd rather be with me");
+});
+
+test('dashed code prefix glued by spaces still rejoins ("SC-8807-01  …")', () => {
+  const p = parseFilename("SC-8807-01  There's More To Me Than You - Jessica Andrews");
+  assert.equal(p.discCode, 'SC-8807-01');
+  assert.equal(p.orderSuspect, true); // frequency check settles the order
+  assert.deepEqual([p.artist, p.title], ["There's More To Me Than You", 'Jessica Andrews']);
+});
+
+test('pure-digit middle folds into the disc code (backtracked track)', () => {
+  // glued-blob tail: no artist to extract — clean failure, code kept
+  const blob = parseFilename('SC7583-01 - Damn_I_Wish_I_Was_Your_Lover_Sophie_B_Hawkins.');
+  assert.equal(blob.artist, '');
+  assert.equal(blob.discCode, 'SC7583-01');
+  // tail with its own dash: re-split recovers the artist
+  const elvis = parseFilename('dw19_01 - Elvis- Here Come Santa Claus');
+  assert.equal(elvis.artist, 'Elvis');
+  assert.equal(elvis.title, 'Here Come Santa Claus');
+  assert.equal(elvis.discCode, 'dw19-01');
+});
+
+test('numeric-prefix artist after a full code is NOT treated as a track', () => {
+  const p = parseFilename('SC7205-08 - 4 Seasons - December, 1963 Oh, What A Night');
+  assert.equal(p.artist, '4 Seasons');
+  assert.equal(p.discCode, 'SC7205-08');
+});
+
+test('numeric-prefix artists are NOT mistaken for track numbers', () => {
+  assert.equal(parseFilename('98 Degrees - Because Of You').artist, '98 Degrees');
+  assert.equal(parseFilename('50 Cent - In Da Club').artist, '50 Cent');
+  assert.equal(parseFilename('10cc - The Things We Do For Love').artist, '10cc');
+});
+
+test('buildIndex flips order-suspect files when the title is a known artist', () => {
+  const dir = String.raw`E:\karaoke\pack`;
+  const files = [];
+  // three clean files establish "Elvis Presley" as a known artist
+  for (const t of ['Hound Dog', 'Blue Suede Shoes', 'Suspicious Minds']) {
+    files.push(path.join(dir, `SC1000-01 - Elvis Presley - ${t}.mp3`));
+    files.push(path.join(dir, `SC1000-01 - Elvis Presley - ${t}.cdg`));
+  }
+  files.push(path.join(dir, '01  Girl Happy - Elvis Presley.mp3'));
+  files.push(path.join(dir, '01  Girl Happy - Elvis Presley.cdg'));
+  // control: suspect whose right side is NOT a known artist stays as parsed
+  files.push(path.join(dir, '03 - Allan Sherman - Hello Muddah.mp3'));
+  files.push(path.join(dir, '03 - Allan Sherman - Hello Muddah.cdg'));
+  const songs = buildIndex(files);
+  const flipped = songs.find(s => s.filename.includes('Girl Happy'));
+  assert.equal(flipped.artist, 'Elvis Presley');
+  assert.equal(flipped.title, 'Girl Happy');
+  const control = songs.find(s => s.filename.includes('Allan Sherman'));
+  assert.equal(control.artist, 'Allan Sherman');
+});
+
 // --- issue #19: AppleDouble sidecars must not become songs ---
 
 test('buildIndex skips macOS AppleDouble ._ sidecar pairs', () => {
