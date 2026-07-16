@@ -4,6 +4,47 @@ A running record of manual test sessions against the karaoke server. Each sessio
 
 ---
 
+## Session: 2026-07-15 (v4 approved; mobile nitpicks #18–#20)
+
+### What changed
+
+1. **`.logo` fixed → absolute** (`public/styles.css`, 8cd2c4d, #18) — polaroid
+   no longer tails the scroll on mobile.
+2. **AppleDouble `._` sidecars skipped in `buildIndex`** (8cd2c4d, #19) —
+   14 junk songs gone; rescan 65,832 → 65,818.
+3. **overrides.json: first 6 real entries** (8cd2c4d + 0b17646) — sc8811-01
+   slug → U2; SC2421-06 → Eva Cassidy; the two #15 spot-check residuals
+   (PHM0204-08 → Natalie Imbruglia, TU067-16 → Neil Diamond).
+4. **trackNN parser round** (`server/library.js`, f28c39d, #20) — 4 shapes
+   (~640 files): track folded into disc code, space-glued codes rejoined
+   (dashed prefixes too), bare 00–19 track stripped with artist order
+   resolved by a library-frequency check in `buildIndex`, backtracked
+   pure-digit artists fail clean. CACHE_VERSION 2 → 3.
+
+### Test cases
+
+| # | What | Expected | Pass/Fail | Notes |
+|---|------|----------|-----------|-------|
+| 1 | `npm test` | all green | ✅ | 64/64 (was 55) |
+| 2 | Rescan + measure | no inversion regression | ✅ | 839 hard failures (768 + 71 junk artists like "01" now failing honestly), 34 flagged inversions unchanged |
+| 3 | Grouping | fixed files merge with real versions | ✅ | 39,308 → 39,135 unique songKeys |
+| 4 | List top via API | real artists, no "01 —" junk | ✅ | 'Til Tuesday → 10,000 Maniacs → 10cc; 3 stragglers noted in #20 close |
+| 5 | Overrides live | corrected artist/title in search API | ✅ | "Applied 6 manual overrides" + both #15 residuals verified |
+| 6 | Logo scroll on 375px | off-viewport after scroll | ✅ | getBoundingClientRect check |
+| 7 | Numeric-artist guards | 98 Degrees / 50 Cent / 10cc untouched | ✅ | unit-tested + eyeballed in list |
+
+Verified-in-test + verified-in-eyeball (Josh, phone via tunnel — v4 look and
+the fixed list). Browser-pane screenshot capture confirmed broken at the app
+level (input/read actions fine, capture hangs) — see memory
+`browser-pane-capture-hang`; verify via read_page/JS until fixed.
+
+### Follow-ups
+
+- 3 list stragglers (`04' - John Anderson`, 2× "Hits From Hair") — overrides
+  candidates if they bother anyone; logged in #20's close comment.
+
+---
+
 ## Session: 2026-07-14 (design v4 "the scratched wall")
 
 ### What changed
@@ -28,9 +69,9 @@ hung all session, so nobody has *seen* v4 rendered. Not verified-in-eyeball.
 
 ### Follow-ups
 
-- **Josh's visual verdict on v4** — open `http://localhost:3000` in Firefox
-  (start the server first). Keep / tune / redirect is his call; this entry
-  closes when he's looked at it.
+- **Josh's visual verdict on v4** — CLOSED 2026-07-15: viewed on his phone
+  via tunnel, verdict "the look is great." Two nitpicks became #18/#19
+  (fixed same day — see the 2026-07-15 session above).
 
 ---
 

@@ -1,6 +1,6 @@
 # Karaoke DJ Project — Master Handoff
 
-**Last updated:** 2026-07-14
+**Last updated:** 2026-07-15
 **Supersedes:** `karaoke_dj_handoff.md` (older — pre-inventory, contained open questions now answered)
 **For:** Shooter, a karaoke DJ the user knows personally
 
@@ -164,7 +164,19 @@ Later phases add queue management, DJ controls, and library cleanup tools.
   group). 40-song spot-check: 37 clean, 1 known failure bucket, 2 known-class
   residuals for overrides.json (`PHM0204-08` title-first outside the prefix
   table, ≤25 PHM candidates; `TU067-16` artist-first in mixed-order TU pack).
-  Watch item: `library.js` ~460 lines — split the overrides
+  **Post-acceptance round 2026-07-15 (issues #18–#20, commits 8cd2c4d /
+  0b17646 / f28c39d):** mobile review surfaced junk at the top of the list.
+  Fixed: AppleDouble `._` sidecars skipped at scan (65,832 → 65,818 songs);
+  overrides.json now carries its **first 6 real entries** (incl. both #15
+  spot-check residuals); and a trackNN parser round fixed ~640 files across
+  4 shapes — track tokens folded into disc codes, space-glued codes rejoined,
+  bare 00–19 tracks stripped with **artist order resolved by a library-
+  frequency check in `buildIndex`** (beets-style; flips only when the title
+  side is a known artist ≥3× and the artist side never is). CACHE_VERSION
+  2 → 3. **Current numbers: 839 hard failures (768 + 71 junk-artist parses
+  now failing honestly), 34 flagged inversions (unchanged), 39,135 unique
+  songKeys.** Details: TEST_LOG 2026-07-15 + issue #20.
+  Watch item: `library.js` now ~530 lines — split the overrides
   functions into their own module next time we're in there.
   The sketch below is kept only as the original problem statement.
 - [ ] Dedupe songs that exist under multiple disc codes (rolled into the metadata pipeline; fingerprinting deferred per the map)
@@ -268,11 +280,11 @@ From CLAUDE.md, restated for any agent continuing this work:
 - Audio scrubbing keeps lyrics in sync
 - **Phone access over Wi-Fi:** verified from a phone on The Pointe Wi-Fi. The Pointe uses CGNAT (`100.64.x.x` per device) but does not isolate intra-unit traffic. Windows Firewall auto-allowed Node on the Private network profile. Gotcha: Firefox mobile defaults to HTTPS-Only Mode and silently upgrades `http://` to `https://`, which fails against our plain-HTTP server. Either disable HTTPS-Only Mode on the phone or click "Advanced → Continue to site" on the warning.
 
-**Visual design (v4 "the scratched wall", shipped 2026-07-14 — awaiting Josh's eyeball verdict):**
+**Visual design (v4 "the scratched wall", shipped 2026-07-14, APPROVED by Josh 2026-07-15 on mobile):**
 - Direction shift from v3's warm-cream cast: the real graffiti walls (Brew 4/6) are silver scratch-marker on neutral black, so ink went chalk-silver, background neutral black, red neon = the only glow. Amber demoted to DJ-only (Coors-script yellow: role pill, singer input, skip, drag states); cream reserved for paper objects (request slip, tape). Wordmark gained a `'26` year tag; texture is scratched lines, not spray grain.
 - Tokens + full system documented in `DESIGN.md` (root); brand/product context in `PRODUCT.md`. `karaoke_claude_design_brief.md` is the historical v3-era brief (predates the "Karaoke List" rename — kept for reference).
 - **No `backdrop-filter` anywhere** (perf) — translucent surfaces are solid rgba.
-- All selectors preserved; verified structurally (see TEST_LOG 2026-07-14). Josh hasn't seen it rendered yet — that's the open loop.
+- All selectors preserved; verified structurally (TEST_LOG 2026-07-14), then visually by Josh on his phone via tunnel 2026-07-15 ("the look is great"). His two nitpicks became issues #18/#19, fixed same day.
 
 **Library expanded:**
 - 3,473 of 3,477 zip files extracted (4 corrupted, logged)
@@ -323,8 +335,9 @@ From CLAUDE.md, restated for any agent continuing this work:
 - Git repo root is `Karaoke Project/` (the parent of `karaoke-app/`), not `karaoke-app/`.
   Both the app code *and* the root-level docs (this handoff, design brief, inventory,
   architecture diagram) are tracked in one repo.
-- Remote: `github.com/Burdchrome/karaoke-platform` (private), default branch `main`,
-  direct-to-main history (no PR flow).
+- Remote: `github.com/Burdchrome/karaoke-platform` (private), default branch `main`.
+  Mostly direct-to-main; occasional PRs for review-worthy changes (#16, #17 —
+  both merged). Issues are the tracker (docs/agents config, PR #7).
 
 **Operational artifacts now in the project:**
 - `karaoke-app/scripts/extract-zips.js` — zip extractor, safe to re-run
@@ -351,8 +364,8 @@ From CLAUDE.md, restated for any agent continuing this work:
 - Audience preview: 30-second soft cap. At 30s the audio **pauses** and the hint swaps to *"Preview ended (30s sample). Press Esc to close."* — leaves the last lyric frame on screen instead of yanking the player closed (which felt jarring). User closes with Esc or the close button when ready.
 
 **Known issues (not blockers, tracked for later phases):**
-- Artist/title parsing is regex-based, fails on ~30-40% of names — phase 3 fix
-- 3,477 zip packs on the drive are unextracted
+- ~1.3% of files (839) have no parseable artist — the #8 manual-rescue pile,
+  on hold until the library transfer to E:\ completes
 - 52 CDG orphans (matched MP3 missing) and 6 MP4 video karaoke files unaddressed
 - Queue state is lost on server restart (in-memory) — fine for a 4-hour gig
 - No play history yet
@@ -389,7 +402,7 @@ All 8 questions from the now-archived `karaoke_shooter_sunday.md` got walked thr
 ---
 
 **Next session can pick any of:**
-- **Design v4 verdict** — v4 "scratched wall" shipped 2026-07-14; Josh opens `http://localhost:3000` in Firefox and calls it (keep / tune tokens / redirect). See Visual design section + DESIGN.md.
+- **Venue settings flag** — `enableKeyChange` (ADR 0002) next time the UI gets touched.
 - **Tier 2 Cloudflare upgrade** — named tunnel + persistent URL. ~10 min one-time setup, free, removes the "URL changes every restart" friction.
 - **Phase 3 metadata pipeline: DONE 2026-07-13** — all tickets #9–#15 closed-or-passed; acceptance numbers in the Phase 3 section are the new baseline. Remaining metadata work is issue #8 (manual rescue, ON HOLD until the library transfer to E:\ is complete). (Lookup pipeline and fingerprinting were both rejected by the map — don't resurrect them.)
 - **Polish items** — favicon, queue persistence, play history.
