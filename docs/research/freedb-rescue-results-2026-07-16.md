@@ -16,8 +16,8 @@ itself** — most of these discs have *other* tracks that already parsed with re
 artist/title names (`SC8385-01 - Bellamy Brothers - ...`). Those sibling tracks
 are a stronger source than freedb: same physical disc, same track numbering, no
 listening required. Where a disc had ≥1 named sibling, freedb's ordering was
-checked against it before trusting any entry. Script: `find-siblings.js`
-(archived on issue #8). This pass caught one off-by-one error and resolved two
+checked against it before trusting any entry. Script:
+`karaoke-app/scripts/find-siblings.cjs`. This pass caught one off-by-one error and resolved two
 spot-checks outright — see below.
 
 ## Resolved → in overrides.json (10, all library-backed)
@@ -93,5 +93,5 @@ Full filename+id list: `code-only-files-2026-07-16.txt`.
 ## Second-drive note
 
 When the next 2TB lands: rescan, re-run the extractor
-(scratchpad script archived in issue #8), diff against this list. Existing
+(`karaoke-app/scripts/extract-code-only.cjs`), diff against this list. Existing
 overrides keep applying — keys are filenames, which survive drive moves.

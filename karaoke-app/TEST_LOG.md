@@ -4,6 +4,45 @@ A running record of manual test sessions against the karaoke server. Each sessio
 
 ---
 
+## Session: 2026-07-16/17 (#8 rescue round + #21 Stage 0 camera)
+
+### What changed
+
+1. **overrides.json 4 → 17 entries** (bf3d65b, #8) — freedb-dump grep
+   cross-checked against library siblings (method:
+   `docs/research/freedb-rescue-results-2026-07-16.md`); 3 entries confirmed
+   by Josh's ear on CDG title cards (CB 7002 pair = Elvis gospel disc
+   CB70002; esp451-4-04 = George Jones).
+2. **`scripts/cdg-snapshot.js`** (bf3d65b, #21) — CDG → PNG camera; fixed
+   `--times` + change-detection `--scan` modes, no new deps.
+3. **Rescue helper scripts** committed to `scripts/` (extract-code-only /
+   find-siblings / verify-overrides).
+
+### Test cases
+
+| # | What | Expected | Pass/Fail | Notes |
+|---|------|----------|-----------|-------|
+| 1 | `npm test` | all green | ✅ | 64/64, unchanged |
+| 2 | verify-overrides vs cache | every key matches real filenames | ✅ | 17/17 apply; 16/17 have a same-song library twin |
+| 3 | Server load | overrides applied, grouping merges | ✅ | "Applied 34 manual overrides"; Elvis pair groups with CB70002 twins (4 files each) |
+| 4 | Search API + UI | corrected names surface | ✅ | "cb 7002" → 2 correctly-named matches, live in app |
+| 5 | Snapshot camera | frames for all 17 knowns | ✅ | 17/17, 0 failures, seconds of wall time |
+| 6 | Scan mode catches late/early cards | SC title card captured | ✅ | SC card at ~t2s (fixed times missed it); MM cards lack performer artist — comparator caveat |
+
+Verified-in-test (scripts, API) + verified-in-use for the 3 ear-confirmed
+entries (Josh read the CDG screens in the running app). Reader-accuracy
+calibration NOT run — GPU held by llama-server, Josh chose to defer.
+
+### Follow-ups
+
+- #21 Stage 0 gate open: score qwen3-vl against the 17 knowns on a free GPU
+  window (closes at verified-in-test).
+- One freedb-sourced entry (`90210-11` = Bing Crosby / True Love) rests on
+  offset math + a cross-disc twin, not an ear check — #21 Stage 1 will
+  re-verify it for free.
+
+---
+
 ## Session: 2026-07-15 (v4 approved; mobile nitpicks #18–#20)
 
 ### What changed

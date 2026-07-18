@@ -1,6 +1,6 @@
 # Karaoke DJ Project — Master Handoff
 
-**Last updated:** 2026-07-15
+**Last updated:** 2026-07-18
 **Supersedes:** `karaoke_dj_handoff.md` (older — pre-inventory, contained open questions now answered)
 **For:** Shooter, a karaoke DJ the user knows personally
 
@@ -113,11 +113,18 @@ Later phases add queue management, DJ controls, and library cleanup tools.
   library verified at 65,832 songs; DB-lookup stage dropped
   ([research](docs/research/disc-code-lookup-sources.md)); parser plan = comma-shape
   inversion fix + 2 passes, songKey + versionLabel, cache v2, overrides.json.
-  Manual rescue of ~120 unfixable files parked as
-  [issue #8](https://github.com/Burdchrome/karaoke-platform/issues/8) —
-  **ON HOLD 2026-07-13:** more songs still haven't been transferred to the
-  external drive; rescue waits for a complete library (freedb download also
-  deferred).
+  Manual rescue: [issue #8](https://github.com/Burdchrome/karaoke-platform/issues/8),
+  un-held 2026-07-16 (batching is safe: overrides key on filename, so
+  second-drive additions just form a new batch later). **Rescue round
+  2026-07-16/17 (commit bf3d65b):** freedb dump grepped, every candidate
+  cross-checked against library siblings (caught one off-by-one, freedb went
+  1-for-3 on ear-checked guesses), 3 more confirmed by ear on CDG title
+  cards → **overrides.json 4 → 17 entries, all library-backed**. ~41 code-only
+  files remain for listening — unless
+  [issue #21](https://github.com/Burdchrome/karaoke-platform/issues/21)
+  (CDG title-card verification pipeline, plan at
+  `docs/cdg-verification-plan.md`) lands first and reads them mechanically.
+  Method + full results: `docs/research/freedb-rescue-results-2026-07-16.md`.
   Song identity: [ADR 0001](docs/adr/0001-song-identity-per-file-ids-plus-grouping-key.md).
   Venue preferences (Shooter: no key changes / no version-shopping) land as
   config flags, never a fork: [ADR 0002](docs/adr/0002-venue-config-not-fork.md)
@@ -345,7 +352,9 @@ From CLAUDE.md, restated for any agent continuing this work:
 - `karaoke-app/unparsed-songs.txt` — 875 filenames the parser can't split, clustered by failure pattern (regenerated 2026-07-09, ticket #3)
 - `karaoke-app/scripts/measure-parse-coverage.js` — parse-coverage instrument (ticket #9); `npm run measure`; canonical baseline in its header; tests via `npm test`
 - `karaoke-app/library-cache.json` — auto-generated, schema v2 (songKey + versionLabel); rebuild with `npm run rescan`
-- `karaoke-app/overrides.json` — manual metadata corrections (file id or filename → artist/title); applied at startup, no rescan needed; ships empty until issue #8
+- `karaoke-app/overrides.json` — manual metadata corrections (file id or filename → artist/title); applied at startup, no rescan needed; 17 entries as of 2026-07-17 (issue #8 rescue)
+- `karaoke-app/scripts/cdg-snapshot.js` — renders CDG title-card frames to PNG (issue #21 camera); `--scan` change-detection mode is the default choice
+- `karaoke-app/scripts/` rescue helpers (`extract-code-only.cjs`, `find-siblings.cjs`, `verify-overrides.cjs`) — re-run when the second drive lands to build the next rescue batch
 - `karaoke-app/README.md` — operational instructions including the Cloudflare Tunnel + auth flow
 - `karaoke_claude_design_brief.md` — design pass brief for next aesthetic iteration
 - `karaoke_shooter_sunday.md` — questions to ask Shooter in person
@@ -364,8 +373,8 @@ From CLAUDE.md, restated for any agent continuing this work:
 - Audience preview: 30-second soft cap. At 30s the audio **pauses** and the hint swaps to *"Preview ended (30s sample). Press Esc to close."* — leaves the last lyric frame on screen instead of yanking the player closed (which felt jarring). User closes with Esc or the close button when ready.
 
 **Known issues (not blockers, tracked for later phases):**
-- ~1.3% of files (839) have no parseable artist — the #8 manual-rescue pile,
-  on hold until the library transfer to E:\ completes
+- ~1.3% of files (839) have no parseable artist — the #8 manual-rescue pile;
+  17 rescued via overrides so far, the rest is #21's Stage 1 target
 - 52 CDG orphans (matched MP3 missing) and 6 MP4 video karaoke files unaddressed
 - Queue state is lost on server restart (in-memory) — fine for a 4-hour gig
 - No play history yet
@@ -402,8 +411,12 @@ All 8 questions from the now-archived `karaoke_shooter_sunday.md` got walked thr
 ---
 
 **Next session can pick any of:**
+- **Issue #21 reader calibration** — first GPU window with llama-server down:
+  run qwen3-vl over the calibration frames (`--scan --from-overrides`), score
+  against the 17 known answers, decide OCR-vs-vision. Then Stage 1 reads the
+  839 hard failures and most of #8's remaining listening list evaporates.
 - **Venue settings flag** — `enableKeyChange` (ADR 0002) next time the UI gets touched.
 - **Tier 2 Cloudflare upgrade** — named tunnel + persistent URL. ~10 min one-time setup, free, removes the "URL changes every restart" friction.
-- **Phase 3 metadata pipeline: DONE 2026-07-13** — all tickets #9–#15 closed-or-passed; acceptance numbers in the Phase 3 section are the new baseline. Remaining metadata work is issue #8 (manual rescue, ON HOLD until the library transfer to E:\ is complete). (Lookup pipeline and fingerprinting were both rejected by the map — don't resurrect them.)
+- **Phase 3 metadata pipeline: DONE 2026-07-13** — all tickets #9–#15 closed-or-passed; acceptance numbers in the Phase 3 section are the new baseline. Remaining metadata work is issue #8 (~41 files) + issue #21. (Lookup pipeline and fingerprinting were both rejected by the map — don't resurrect them.)
 - **Polish items** — favicon, queue persistence, play history.
 - **Stop and let it bake** — v1 is now real enough to share with one or two trusted people via the ephemeral tunnel. Use it, find what's broken in practice, *then* decide what to build.
