@@ -101,6 +101,7 @@ function isSameArtist(readArtist, truthArtist) {
   return readTokens.length > 0 && readTokens.join(' ') === truthTokens.join(' ');
 }
 
+// Real cards linger across frames, disc banners flash once — most-seen title wins, later frame breaks ties.
 function pickMostSeenTitle(candidates) {
   if (candidates.length < 2) return candidates[0] ?? null;
   const counts = new Map();
@@ -137,6 +138,12 @@ function parseArgs(argv) {
   return args;
 }
 
+// Write tmp-then-rename so a crash mid-write can't truncate the report resume reads.
+function writeReport(outPath, report) {
+  fs.writeFileSync(`${outPath}.tmp`, JSON.stringify(report, null, 2));
+  fs.renameSync(`${outPath}.tmp`, outPath);
+}
+
 function groupFramesByFile(framesDir) {
   const groups = new Map();
   for (const fileName of fs.readdirSync(framesDir)) {
@@ -170,9 +177,11 @@ console.log(
 
 // An overnight Stage 1 run must survive a crash: the report is rewritten after
 // every file, and rerunning with the same --out resumes past what's already read.
-const priorResults = args.out && fs.existsSync(args.out)
+const checkpointed = args.out && fs.existsSync(args.out)
   ? JSON.parse(fs.readFileSync(args.out, 'utf8')).results
   : [];
+// A file with no read AND errors only failed transiently — retry it on resume.
+const priorResults = checkpointed.filter((r) => r.read || !r.errors?.length);
 if (priorResults.length) console.log(`Resuming: ${priorResults.length} file(s) already in ${args.out}`);
 const doneFiles = new Set(priorResults.map((r) => r.file));
 
@@ -213,11 +222,7 @@ for (const [baseName, frames] of frameGroups) {
     }
   }
 
-  // Music Maestro prints songwriters, not the performer, so a title-only card
-  // is still the best available read when no frame yields an artist. Disc
-  // banners can sneak in as title-only candidates, so prefer the title seen
-  // on the most frames (real cards linger, banners flash once), tie-break to
-  // the later frame (banners open the disc, title cards follow).
+  // No artist on any frame (Music Maestro prints songwriters): best title-only read.
   result.read = result.candidates.find((candidate) => candidate.artist)
     ?? pickMostSeenTitle(result.candidates);
   result.cardTime = result.read?.time ?? null;
@@ -236,7 +241,7 @@ for (const [baseName, frames] of frameGroups) {
   console.log(`  ${baseName}: ${readLabel} (t${result.cardTime ?? '-'}, ${result.framesRead} frames, ${result.seconds}s)${scoreLabel}`);
   results.push(result);
   // Checkpoint after every file; the summary lands with the final write below.
-  if (args.out) fs.writeFileSync(args.out, JSON.stringify({ results }, null, 2));
+  if (args.out) writeReport(args.out, { results });
 }
 
 const summary = {
@@ -264,6 +269,6 @@ if (truth) {
 console.log('\nSummary:', JSON.stringify(summary, null, 2));
 
 if (args.out) {
-  fs.writeFileSync(args.out, JSON.stringify({ summary, results }, null, 2));
+  writeReport(args.out, { summary, results });
   console.log(`Report written to ${args.out}`);
 }
