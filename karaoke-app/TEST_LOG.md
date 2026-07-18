@@ -13,7 +13,7 @@ A running record of manual test sessions against the karaoke server. Each sessio
    tie-break to the later frame (`pickMostSeenTitle`), instead of
    `candidates[0]`; prompt no longer treats a logo as disqualifying (Music
    Maestro prints the title under its logo).
-2. **Stage 1 plumbing** (#21) — `cdg-snapshot.js --from-failures` (all 839
+2. **Stage 1 plumbing** (#21) — `--from-failures` on the snapshot camera (all 839
    no-artist songs from the cache); reader `--out` report checkpointed after
    every file (tmp-then-rename, atomic) and resumable — files whose frames
    only errored are retried on resume, not skipped (code-review catch).

@@ -359,7 +359,7 @@ From CLAUDE.md, restated for any agent continuing this work:
 - `karaoke-app/library-cache.json` — auto-generated, schema v2 (songKey + versionLabel); rebuild with `npm run rescan`
 - `karaoke-app/overrides.json` — manual metadata corrections (file id or filename → artist/title); applied at startup, no rescan needed; 17 entries as of 2026-07-17 (issue #8 rescue)
 - `karaoke-app/scripts/cdg-snapshot.js` — renders CDG title-card frames to PNG (issue #21 camera); `--scan` change-detection mode is the default choice
-- `karaoke-app/scripts/cdg-read.js` — reads those frames with local `qwen3-vl:8b` and scores them against a truth file (issue #21 reader + comparator); `--truth overrides.json` is the calibration mode. Needs Ollama up and the GPU free of llama-server
+- `karaoke-app/scripts/cdg-read.js` — reads those frames with local `qwen3-vl:8b` and scores them against a truth file (issue #21 reader + comparator); `--truth overrides.json` is the calibration mode; `--out` report is checkpointed after every file and resumable (rerun with the same `--out` to continue an interrupted batch). Needs Ollama up and the GPU free of llama-server
 - `karaoke-app/scripts/` rescue helpers (`extract-code-only.cjs`, `find-siblings.cjs`, `verify-overrides.cjs`) — re-run when the second drive lands to build the next rescue batch
 - `karaoke-app/README.md` — operational instructions including the Cloudflare Tunnel + auth flow
 - `karaoke_claude_design_brief.md` — design pass brief for next aesthetic iteration
@@ -380,7 +380,10 @@ From CLAUDE.md, restated for any agent continuing this work:
 
 **Known issues (not blockers, tracked for later phases):**
 - ~1.3% of files (839) have no parseable artist — the #8 manual-rescue pile;
-  17 rescued via overrides so far, the rest is #21's Stage 1 target
+  17 rescued via overrides so far. **#21 Stage 1 batch read launched
+  2026-07-18 overnight** — 554 unique filenames (285 of the 839 are
+  cross-folder duplicate copies; overrides key on filename, so one read
+  covers all copies) → `.cache/stage1-reads.json`
 - 52 CDG orphans (matched MP3 missing) and 6 MP4 video karaoke files unaddressed
 - Queue state is lost on server restart (in-memory) — fine for a 4-hour gig
 - No play history yet
@@ -417,14 +420,15 @@ All 8 questions from the now-archived `karaoke_shooter_sunday.md` got walked thr
 ---
 
 **Next session can pick any of:**
-- **Issue #22 — close the #21 Stage 0 gate.** Calibration ran 2026-07-18:
-  reader is clean (15/15 verbatim where the card was found), but strict
-  accuracy is 76.5% because of two pipeline bugs (frame-selection fallback,
-  and a prompt rule that rejects Music Maestro's under-the-logo title).
-  Fix both, re-run the same 17, close the gate. **OCR tier dropped** — vision
-  measured at ~51s/file, so Stage 1 is one overnight, not 35h. Then Stage 1
-  reads the 839 hard failures and most of #8's remaining listening list
-  evaporates. Numbers: TEST_LOG 2026-07-18.
+- **#21 Stage 1 harvest.** The gate closed 2026-07-18 (#22: 15/17 strict,
+  both misses explained + accepted — see the issue close comment) and the
+  overnight batch read over the 554 unique hard-failure filenames was
+  launched the same evening (`.cache/stage1-reads.json`, checkpointed +
+  resumable; log at `.cache/stage1-run.log`). Next: partial-title matching
+  of the raw reads against the library (mandatory — Top Tunes truncates
+  titles on screen), then batch proposals for Josh to ratify into
+  `overrides.json`. That evaporates most of #8's remaining listening list.
+  Numbers: TEST_LOG "2026-07-18 later".
 - **Venue settings flag** — `enableKeyChange` (ADR 0002) next time the UI gets touched.
 - **Tier 2 Cloudflare upgrade** — named tunnel + persistent URL. ~10 min one-time setup, free, removes the "URL changes every restart" friction.
 - **Phase 3 metadata pipeline: DONE 2026-07-13** — all tickets #9–#15 closed-or-passed; acceptance numbers in the Phase 3 section are the new baseline. Remaining metadata work is issue #8 (~41 files) + issue #21. (Lookup pipeline and fingerprinting were both rejected by the map — don't resurrect them.)
