@@ -4,6 +4,54 @@ A running record of manual test sessions against the karaoke server. Each sessio
 
 ---
 
+## Session: 2026-07-18 later (#22 reader fixes — Stage 0 gate CLOSED; Stage 1 launched)
+
+### What changed
+
+1. **`scripts/cdg-read.js` fixes** (branch `issue-22-reader-gate`, #22) —
+   frame-selection fallback now picks the title seen on the most frames,
+   tie-break to the later frame (`pickMostSeenTitle`), instead of
+   `candidates[0]`; prompt no longer treats a logo as disqualifying (Music
+   Maestro prints the title under its logo).
+2. **Stage 1 plumbing** (#21) — `cdg-snapshot.js --from-failures` (all 839
+   no-artist songs from the cache); reader `--out` report checkpointed after
+   every file (tmp-then-rename, atomic) and resumable — files whose frames
+   only errored are retried on resume, not skipped (code-review catch).
+3. **Frames regenerated** for the 17 knowns + **all 839 hard failures
+   snapshotted** (`--from-failures --scan`: 839/839 OK, 3,966 frames,
+   `.cache/stage1-frames/`).
+
+### Test cases
+
+| # | What | Expected | Pass/Fail | Notes |
+|---|------|----------|-----------|-------|
+| 1 | `PHM0204-08` (frame-selection bug) | reads "Wrong Impression" | ✅ | most-seen title beat the t4 "Pop Hits" banner; picked t8 |
+| 2 | `mm6018-04` (logo-rule bug) | reads "My Prayer" | ✅ | title-under-logo card accepted; artist UNCONFIRMED by design (MM prints songwriters) |
+| 3 | Re-score 17 knowns, strict | ≥95% or every miss explained + accepted | ✅ | **15/17 (88.2%)** — the two misses are the known accepted pair: override drops "The" (`sc8574-07` card reads "The Grand Illusion"); `TU067-16` Top Tunes truncation. Josh accepted both this session → **Stage 0 gate CLOSED** |
+| 4 | Throughput | ≤ prior 13.7s/frame | ✅ | **12.9s/frame, 44.7s/file** — Stage 1 projects ~5–10h |
+| 5 | Resume smoke test | skip done files, retry errored, re-read missing | ✅ | doctored checkpoint: 14 skipped, fake-errored file retried, dropped file re-read; final numbers identical (15/17) |
+| 6 | No regressions on the other 13 knowns | all still MATCH | ✅ | every previously-passing file unchanged |
+
+**Verified-in-test.** Promotes to verified-in-use when Stage 1's batch runs
+against real unknowns and Josh ratifies proposals.
+
+Evidence: scored report kept at `.cache/calib-rerun-2026-07-18.json`
+(gitignored, regenerable ~13 min). `overrides.json` and the library never
+written to.
+
+### Follow-ups
+
+- **Stage 1 batch read launched overnight** over the 3,966 frames →
+  `.cache/stage1-reads.json` (checkpointed, resumable). Next session:
+  partial-title matching of the raw reads against the library, then
+  proposals for Josh.
+- `TU067-16`'s card frames consistently return empty model answers (thinking
+  model quirk) — it will retry on every resume; harmless, known truncation
+  limit anyway.
+- Stage 2 comparator must tolerate fuller-than-override cards (leading
+  "The", duet credits) — carried from the previous session's follow-up.
+---
+
 ## Session: 2026-07-18 (#21 Stage 0 reader calibration — vision measured)
 
 ### What changed
