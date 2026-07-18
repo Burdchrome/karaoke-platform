@@ -156,6 +156,7 @@ function parseArgs(argv) {
     if (argv[i] === '--out') args.out = argv[++i];
     else if (argv[i] === '--times') args.times = argv[++i].split(',').map(Number);
     else if (argv[i] === '--from-overrides') args.fromOverrides = true;
+    else if (argv[i] === '--from-failures') args.fromFailures = true;
     else if (argv[i] === '--scan') args.scan = true;
     else if (argv[i] === '--scan-window') args.scanWindow = Number(argv[++i]);
     else args.paths.push(argv[i]);
@@ -184,14 +185,22 @@ function resolveOverridePaths() {
   return resolved;
 }
 
+// Stage 1 population (#21): every song the parser couldn't name an artist for.
+function resolveFailurePaths() {
+  const { songs } = JSON.parse(fs.readFileSync('library-cache.json', 'utf8'));
+  return songs.filter((song) => !song.artist && song.cdgPath).map((song) => song.cdgPath);
+}
+
 const args = parseArgs(process.argv.slice(2));
 if (!args.out) {
-  console.error('Usage: node scripts/cdg-snapshot.js --out DIR [--times 4,8,12,20] [--from-overrides | <cdgPath...>]');
+  console.error('Usage: node scripts/cdg-snapshot.js --out DIR [--times 4,8,12,20] [--from-overrides | --from-failures | <cdgPath...>]');
   process.exit(1);
 }
 fs.mkdirSync(args.out, { recursive: true });
 
-const cdgPaths = args.fromOverrides ? resolveOverridePaths() : args.paths;
+const cdgPaths = args.fromOverrides ? resolveOverridePaths()
+  : args.fromFailures ? resolveFailurePaths()
+  : args.paths;
 const modeLabel = args.scan ? `scan 1..${args.scanWindow}s` : `t=[${args.times}]`;
 console.log(`Snapshotting ${cdgPaths.length} CDG file(s) (${modeLabel}) -> ${args.out}`);
 
