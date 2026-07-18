@@ -73,23 +73,30 @@ hashing solves that. Different problem, don't bundle it here.
 
 ## Time estimates (honest ranges, Stage 0 tightens them)
 
-| Run | OCR route | Vision route |
-|---|---|---|
-| Stage 0 calibration | ~1 h total incl. build | same build + ~1.5 h GPU |
-| Stage 1 (843 files) | **~1 h** | **~35 h GPU ≈ 2 overnights** |
-| Stage 2 full (65,818) | ~1–2 days background | infeasible — sample only |
-| Josh's time, all stages | ~30 min ratifying | same |
+**Measured 2026-07-18 (Stage 0), vision route — the OCR route was dropped:**
 
-Build effort: pieces 1+3+4 are one agent session. Tesseract install is the
-only new dependency, and only on the OCR route.
+| Run | Vision (measured) |
+|---|---|
+| Stage 0 calibration | ~25 min GPU for 17 files |
+| Stage 1 (843 files) | **~5–12 h ≈ one overnight** (was estimated 35 h) |
+| Stage 2 full (65,818) | still infeasible — sample only |
+| Josh's time, all stages | ~30 min ratifying |
 
-## Open questions Stage 0 answers
+Vision measured at 13.7s/frame, 51.4s/file, 2.5 frames/file — one overnight
+for Stage 1, so tesseract was never installed and **the OCR tier is dropped**.
+No new dependency.
 
-- Title-card timing variance (is 4 frames enough? which timestamps?)
-- OCR accuracy on the CDG tile font (the big fork in the timeline)
-- Files with no title card at all (how many, what fallback)
-- Actual vision throughput on simple cards (2.5 min is the dense-input
-  number)
+## Open questions Stage 0 answered
+
+- **Timing variance:** fixed timestamps don't work; `--scan` change detection
+  is the default. Cards land anywhere from t2 (Sound Choice) to t8.
+- **Files with no title card:** none of the 17. Two files had cards the
+  pipeline mishandled (issue #22), not missing ones.
+- **Vision throughput:** 13.7s/frame — the 2.5-min figure was dense-screenshot
+  input, not simple cards.
+- **OCR accuracy:** never measured, and no longer needs to be.
+- **New:** some labels (Top Tunes) **truncate long titles on screen** —
+  unrecoverable from pixels; Stage 1 needs partial-title matching.
 
 ## First step
 

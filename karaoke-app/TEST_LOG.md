@@ -4,6 +4,55 @@ A running record of manual test sessions against the karaoke server. Each sessio
 
 ---
 
+## Session: 2026-07-18 (#21 Stage 0 reader calibration — vision measured)
+
+### What changed
+
+1. **`scripts/cdg-read.js`** (uncommitted, #21) — pipeline pieces 2+3: reads
+   snapshot frames with local `qwen3-vl:8b` via Ollama, compares against a
+   truth file, writes a scored report. No new deps. Read-only over the
+   library; writes only its own `--out` report.
+2. **Frames regenerated** for the 17 known-truth overrides (`--scan
+   --from-overrides`, 120 frames, 3s) — the Stage 0 camera output from
+   2026-07-17 was not kept on disk.
+
+### Test cases
+
+| # | What | Expected | Pass/Fail | Notes |
+|---|------|----------|-----------|-------|
+| 1 | Reader returns parseable JSON per frame | clean JSON every frame | ❌→✅ | Ollama `format:"json"` made this thinking model emit everything as `thinking` and return an empty `response`; fixed by asking for JSON in the prompt and parsing it out |
+| 2 | Score 17 knowns, strict title match | ≥95% (Stage 0 gate) | ❌ | **76.5%** (13/17). Gate not met — but no failure is a misread; see #3 |
+| 3 | Verbatim accuracy where the real card was located | model transcribes what's printed | ✅ | **15/15.** Two "mismatches" are the model being *more* correct than `overrides.json` (card says "The Grand Illusion"; "BING CROSBY with GRACE KELLY") |
+| 4 | Throughput per frame | ~2.5 min (dense-screenshot prior) | ✅ | **13.7s/frame, 51.4s/file, 2.5 frames/file** — Stage 1 (843 files) projects to ~5–12h, one overnight, not 35h |
+| 5 | Re-verify `90210-11` (open follow-up) | card confirms or refutes freedb | ✅ | Card reads TRUE LOVE / BING CROSBY with GRACE KELLY — freedb entry confirmed, duet credit was the part we dropped |
+| 6 | Frame selection picks the real title card | title card, not label banner | ❌ | `PHM0204-08`: model read "Wrong Impression" correctly at t6 **and** t8; the first-candidate fallback picked the t4 "Pop Hits" disc banner |
+| 7 | Music Maestro card readable | title read (artist absent by design) | ❌ | `mm6018-04` frame plainly shows "My Prayer", but the prompt's "a logo means not a title card" rule made the model reject it — MM prints the title *under* its logo |
+
+**Verified-in-test** (controlled run against known truth, GPU free,
+llama-server down). Promotes to verified-in-use when Stage 1 runs against
+real unknowns and Josh ratifies a batch of proposals.
+
+Evidence: the numbers above plus the per-file breakdown in the issue #21
+comment of 2026-07-18. The scored JSON report was a scratch artifact and was
+not kept — re-runnable in ~25 min. `overrides.json` and the library were
+never written to.
+
+### Follow-ups
+
+- **Two reader bugs block the Stage 0 gate** — frame-selection fallback (#6
+  above) and the logo rule (#7). Both fixable without touching the model;
+  tracked as [issue #22](https://github.com/Burdchrome/karaoke-platform/issues/22).
+  Re-run the same 17 after fixing; gate closes at verified-in-test.
+- **Top Tunes discs truncate on screen** — `TU067-16` renders "I Haven't
+  Played This... (Am)". No reader can recover the full title from the
+  pixels; Stage 1 needs a partial-title match against the library or these
+  stay unresolved.
+- **`overrides.json` is a simplification in at least 2 of 17 entries**
+  (missing "The", missing duet credit). Not wrong, but Stage 2's audit will
+  flag cards like these as mismatches — decide then whether the override or
+  the card is canonical.
+---
+
 ## Session: 2026-07-16/17 (#8 rescue round + #21 Stage 0 camera)
 
 ### What changed
@@ -35,11 +84,10 @@ calibration NOT run — GPU held by llama-server, Josh chose to defer.
 
 ### Follow-ups
 
-- #21 Stage 0 gate open: score qwen3-vl against the 17 knowns on a free GPU
-  window (closes at verified-in-test).
-- One freedb-sourced entry (`90210-11` = Bing Crosby / True Love) rests on
-  offset math + a cross-disc twin, not an ear check — #21 Stage 1 will
-  re-verify it for free.
+- #21 Stage 0 gate: qwen3-vl scored against the 17 knowns 2026-07-18 (see
+  that session). Reader is clean; gate still open on two pipeline bugs.
+- `90210-11` (= Bing Crosby / True Love) rested on offset math + a cross-disc
+  twin rather than an ear check — **confirmed 2026-07-18** by its title card.
 
 ---
 

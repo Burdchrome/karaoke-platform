@@ -13,6 +13,10 @@ Issues and PRDs for this repo live as GitHub issues. Use the `gh` CLI for all op
 
 Infer the repo from `git remote -v` — `gh` does this automatically when run inside a clone.
 
+## Commit and PR linking
+
+Every commit and PR that implements an issue references it by number (`#22`) in the message/body — GitHub threads the history so the *why* is traceable from the issue without reading code, and future debugging can walk from a commit to its intent. Work not born from an issue (doc touch-ups, tiny fixes) is exempt.
+
 ## Pull requests as a triage surface
 
 **PRs as a request surface: no.** _(Set to `yes` if this repo treats external PRs as feature requests; `/triage` reads this flag.)_

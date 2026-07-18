@@ -345,6 +345,11 @@ From CLAUDE.md, restated for any agent continuing this work:
 - Remote: `github.com/Burdchrome/karaoke-platform` (private), default branch `main`.
   Mostly direct-to-main; occasional PRs for review-worthy changes (#16, #17 —
   both merged). Issues are the tracker (docs/agents config, PR #7).
+- Conventions (2026-07-18): commits/PRs reference their issue number
+  (`docs/agents/issue-tracker.md` "Commit and PR linking"); karaoke-only code
+  rules in `docs/agents/standards.md` (CACHE_VERSION bump, measure baseline,
+  overrides-not-special-cases, library.js freeze) — project file wins over
+  workspace `code-standards.md` on conflict; /code-review reads both.
 
 **Operational artifacts now in the project:**
 - `karaoke-app/scripts/extract-zips.js` — zip extractor, safe to re-run
@@ -354,6 +359,7 @@ From CLAUDE.md, restated for any agent continuing this work:
 - `karaoke-app/library-cache.json` — auto-generated, schema v2 (songKey + versionLabel); rebuild with `npm run rescan`
 - `karaoke-app/overrides.json` — manual metadata corrections (file id or filename → artist/title); applied at startup, no rescan needed; 17 entries as of 2026-07-17 (issue #8 rescue)
 - `karaoke-app/scripts/cdg-snapshot.js` — renders CDG title-card frames to PNG (issue #21 camera); `--scan` change-detection mode is the default choice
+- `karaoke-app/scripts/cdg-read.js` — reads those frames with local `qwen3-vl:8b` and scores them against a truth file (issue #21 reader + comparator); `--truth overrides.json` is the calibration mode. Needs Ollama up and the GPU free of llama-server
 - `karaoke-app/scripts/` rescue helpers (`extract-code-only.cjs`, `find-siblings.cjs`, `verify-overrides.cjs`) — re-run when the second drive lands to build the next rescue batch
 - `karaoke-app/README.md` — operational instructions including the Cloudflare Tunnel + auth flow
 - `karaoke_claude_design_brief.md` — design pass brief for next aesthetic iteration
@@ -411,10 +417,14 @@ All 8 questions from the now-archived `karaoke_shooter_sunday.md` got walked thr
 ---
 
 **Next session can pick any of:**
-- **Issue #21 reader calibration** — first GPU window with llama-server down:
-  run qwen3-vl over the calibration frames (`--scan --from-overrides`), score
-  against the 17 known answers, decide OCR-vs-vision. Then Stage 1 reads the
-  839 hard failures and most of #8's remaining listening list evaporates.
+- **Issue #22 — close the #21 Stage 0 gate.** Calibration ran 2026-07-18:
+  reader is clean (15/15 verbatim where the card was found), but strict
+  accuracy is 76.5% because of two pipeline bugs (frame-selection fallback,
+  and a prompt rule that rejects Music Maestro's under-the-logo title).
+  Fix both, re-run the same 17, close the gate. **OCR tier dropped** — vision
+  measured at ~51s/file, so Stage 1 is one overnight, not 35h. Then Stage 1
+  reads the 839 hard failures and most of #8's remaining listening list
+  evaporates. Numbers: TEST_LOG 2026-07-18.
 - **Venue settings flag** — `enableKeyChange` (ADR 0002) next time the UI gets touched.
 - **Tier 2 Cloudflare upgrade** — named tunnel + persistent URL. ~10 min one-time setup, free, removes the "URL changes every restart" friction.
 - **Phase 3 metadata pipeline: DONE 2026-07-13** — all tickets #9–#15 closed-or-passed; acceptance numbers in the Phase 3 section are the new baseline. Remaining metadata work is issue #8 (~41 files) + issue #21. (Lookup pipeline and fingerprinting were both rejected by the map — don't resurrect them.)
