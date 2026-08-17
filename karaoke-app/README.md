@@ -255,15 +255,12 @@ karaoke-app/
 
 ## Documentation map
 
-Everything an outside reader needs, in reading order:
+System-level docs live here; everything project-level (product, design,
+architecture diagram, ADRs, specs, roadmap) is mapped in the repo root
+**`../README.md`** — that's the entry point for anyone new.
 
 1. **This README** — what it is, how to run it, HOWTOs, API.
 2. **`TEST_LOG.md`** — what's been manually verified, session by session.
-3. **`../karaoke-architecture.png`** (+ `.drawio` source) — system diagram.
-4. **`../karaoke_project_handoff.md`** — full project state, roadmap, and
-   the *why* behind decisions. Internal working doc; start here if you're
-   picking up development.
-5. **`../karaoke_claude_design_brief.md`** — visual/design direction.
 
 Rule of thumb: the README documents the *system*, the handoff documents the
 *project*. If a fact is about how the app works today, it belongs here; if
