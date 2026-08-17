@@ -33,8 +33,11 @@ flowchart LR
 ```
 
 The full system diagram: **[karaoke-architecture.svg](karaoke-architecture.svg)**
-(source: `karaoke-architecture.drawio` — edit there, then re-export:
-`draw.io --export --format svg --output karaoke-architecture.svg karaoke-architecture.drawio`).
+(source: `karaoke-architecture.drawio` — edit there, then re-export):
+
+```bash
+draw.io --export --format svg --output karaoke-architecture.svg karaoke-architecture.drawio
+```
 
 ---
 
