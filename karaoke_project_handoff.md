@@ -1,6 +1,6 @@
 # Karaoke DJ Project — Master Handoff
 
-**Last updated:** 2026-07-18
+**Last updated:** 2026-08-18
 **Supersedes:** `karaoke_dj_handoff.md` (older — pre-inventory, contained open questions now answered)
 **For:** Shooter, a karaoke DJ the user knows personally
 
@@ -264,7 +264,17 @@ From CLAUDE.md, restated for any agent continuing this work:
 
 ---
 
-## Current state (as of 2026-05-15, end of session)
+## Current state (running log — updated 2026-08-18)
+
+**Repo orientation (2026-08-18):** the repo now has a root `README.md` as
+its single entry point — doc map with reading order, folder layout, Mermaid
+flow diagram, and `karaoke-architecture.svg` exported from the `.drawio`
+(re-export command noted in the README). `karaoke-app/README.md`'s doc map
+was trimmed to system-level docs only; the repo-wide map lives in the root
+README, nowhere else. `karaoke_claude_design_brief.md` is formally flagged
+Historical in that map. Commits `2f9d8e9` + `ffc0aa0` — **local only, not
+pushed yet**; Mermaid renders on GitHub, so push before re-running the
+friend test. Implements `code-standards.md` → Repo Orientation.
 
 **v0 + v1 are SHIPPED.** Phase 0 + Phase 1 + Phase 2 are complete.
 
