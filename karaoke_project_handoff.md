@@ -1,6 +1,6 @@
 # Karaoke DJ Project — Master Handoff
 
-**Last updated:** 2026-08-18
+**Last updated:** 2026-08-26
 **Supersedes:** `karaoke_dj_handoff.md` (older — pre-inventory, contained open questions now answered)
 **For:** Shooter, a karaoke DJ the user knows personally
 
@@ -264,7 +264,20 @@ From CLAUDE.md, restated for any agent continuing this work:
 
 ---
 
-## Current state (running log — updated 2026-08-18)
+## Current state (running log — updated 2026-08-26)
+
+**#21 Stage 1 harvest landed (2026-08-26):** the overnight CDG batch read
+(launched 2026-07-18, silently stopped ~485/554) was finished — 554/554
+files, 542 title cards read. New `scripts/cdg-harvest.js` matches card
+reads against the named library and stages tiered override proposals;
+Josh ratified the auto tier → **290 overrides applied, hard failures
+839 → 419** (unique failing filenames 554 → 251), overrides.json at 307
+entries. Remaining tiers (likely 70 / review 84 / unmatched 97) staged in
+`karaoke-app/.cache/stage1-proposals.json` for a browse-and-rule session;
+promote via `node scripts/cdg-harvest.js --apply <tiers>`. Verification:
+TEST_LOG session 2026-08-26 (verified-in-test: server-path load counted
+post-override failures; not yet walked in the live app). Trail: issue #21
+receipt, commit `949290a` — pushed.
 
 **Repo orientation (2026-08-18):** the repo now has a root `README.md` as
 its single entry point — doc map with reading order, folder layout, Mermaid
@@ -272,9 +285,9 @@ flow diagram, and `karaoke-architecture.svg` exported from the `.drawio`
 (re-export command noted in the README). `karaoke-app/README.md`'s doc map
 was trimmed to system-level docs only; the repo-wide map lives in the root
 README, nowhere else. `karaoke_claude_design_brief.md` is formally flagged
-Historical in that map. Commits `2f9d8e9` + `ffc0aa0` — **local only, not
-pushed yet**; Mermaid renders on GitHub, so push before re-running the
-friend test. Implements `code-standards.md` → Repo Orientation.
+Historical in that map. Commits `2f9d8e9` + `ffc0aa0` pushed (confirmed
+2026-08-26); Mermaid renders on GitHub, so the friend test can re-run.
+Implements `code-standards.md` → Repo Orientation.
 
 **v0 + v1 are SHIPPED.** Phase 0 + Phase 1 + Phase 2 are complete.
 
