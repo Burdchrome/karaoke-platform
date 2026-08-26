@@ -18,7 +18,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const OLLAMA_URL = 'http://localhost:11434/api/generate';
-const FRAME_TIMEOUT_MS = 180_000;
+// Overridable for tail-end sweeps: a warm model answers in seconds, and the
+// generous default lets one hung frame eat 6 minutes (timeout × retry).
+const FRAME_TIMEOUT_MS = Number(process.env.FRAME_TIMEOUT_MS) || 180_000;
 
 // Cards read "IN THE STYLE OF <artist>"; some labels (Music Maestro) print the
 // songwriters instead of the performer, so artist absence is not a mismatch.

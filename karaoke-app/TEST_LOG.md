@@ -4,6 +4,51 @@ A running record of manual test sessions against the karaoke server. Each sessio
 
 ---
 
+## Session: 2026-08-26 (#21 Stage 1 harvest — 290 auto overrides applied, hard failures 839 → 419)
+
+### What changed
+
+1. **Overnight batch read finished** — the 2026-07-18 run had silently stopped at
+   ~485/554; resumed and completed this session (checkpoint made it free).
+   Final: **554/554 files, 542 title cards found, 9.3s/frame**. Six files whose
+   frames the model could never parse were parked as unreadable (they land in
+   the unmatched tier honestly). `scripts/cdg-read.js` gained an env-overridable
+   `FRAME_TIMEOUT_MS` (tail-end sweeps at 75s instead of 180s).
+2. **`scripts/cdg-harvest.js` NEW** (matcher, pipeline piece 4) — matches card
+   reads against the named library (exact title, then prefix for Top Tunes
+   truncation), cross-confirms artist via the file's own filename tokens or the
+   card's "in the style of" line, and stages tiered proposals in
+   `.cache/stage1-proposals.json`. `--apply <tiers>` is the manual promotion
+   gate into overrides.json. Bug caught in spot-check: tokenizing with
+   `normalizeSongField` welded dash-packed filenames into one token — fixed
+   with a spacing tokenizer (Matt Cardle case: review → auto, correctly).
+3. **Josh ratified the auto tier** — 290 proposals merged into overrides.json
+   (17 → 307 entries).
+
+### Test cases
+
+| # | What | Expected | Pass/Fail | Notes |
+|---|------|----------|-----------|-------|
+| 1 | Spread sample of auto tier (every 18th, 16 entries) | all proposals correct on eyeball | ✅ | incl. filename-typo catch: `SC7513_02_Carly_Perkins` → Carl Perkins via card artist |
+| 2 | `--apply auto` dry run | merges then reverts clean via git | ✅ | first attempt exposed unwired `--apply` (ran a harvest instead) — fixed, retested: 275 merged, diff inspected, reverted to 17 |
+| 3 | Post-apply library load (server path: loadOverrides → applyOverrides) | hard failures drop | ✅ | **426 entries corrected; no-artist 839 → 419; unique failing filenames 554 → 251** |
+| 4 | `npm test` | 64 green | ✅ | 64/64 |
+| 5 | `npm run measure` | parser baseline unchanged (overrides aren't parser credit) | ✅ | 839 raw hard failures, 34 flagged inversions — matches canonical baseline |
+
+### Left open
+
+- Tiers awaiting Josh's browse-and-rule: **likely 70** (single candidate,
+  unconfirmed), **review 84** (multiple candidates / truncated match),
+  **unmatched 97** (85 with a card title but no library twin — override
+  material with filename judgment; 12 unreadable). All staged in
+  `.cache/stage1-proposals.json`.
+- Op note: sandbox-backgrounded reader processes get throttled AND my Git Bash
+  `kill -0` liveness checks can't see Windows PIDs — at one point three
+  readers raced on the checkpoint (9 contaminated null-reads purged, re-read
+  clean). Run readers foreground; check liveness via PowerShell.
+
+---
+
 ## Session: 2026-07-18 later (#22 reader fixes — Stage 0 gate CLOSED; Stage 1 launched)
 
 ### What changed
