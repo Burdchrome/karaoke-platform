@@ -4,6 +4,37 @@ A running record of manual test sessions against the karaoke server. Each sessio
 
 ---
 
+## Session: 2026-09-01 (gig-share flow live run + launcher URL-display fix)
+
+### What changed
+
+1. **start-sharing.cmd share-URL display fix** (`e01e896`) — Cloudflare's
+   account-less-tunnel notice (new boilerplate) contains `https://`
+   cloudflare.com links, so the display `findstr "https://"` printed the
+   notice instead of the share URL. Fixed to `findstr "trycloudflare.com"`
+   (same pattern the wait loop already used).
+
+### Test cases
+
+| # | What | Expected | Pass/Fail | Notes |
+|---|------|----------|-----------|-------|
+| 1 | Bare-started server (`node server/index.js`) hit at `/dj` | 200 — auth off, confirms bare start is not tunnel-safe | ✅ | caught pre-tunnel; restarted via launcher |
+| 2 | Launcher run → tunnel URL through real internet | audience page 200, no login | ✅ | verified-live |
+| 3 | `/dj` through the tunnel | 401 until Basic Auth | ✅ | verified-live |
+| 4 | stop-sharing.cmd | port 3000 free, cloudflared gone | ✅ | |
+
+**Tier:** the sharing flow (auth gate + tunnel) is **verified-live**. The
+URL-display fix itself is **verified-in-test** only (the fixed pattern
+matched exactly one line in the live run's tunnel.log; the patched script
+hasn't produced a live run yet).
+
+### Follow-ups
+
+- [ ] Next start-sharing.cmd run: confirm the SHARE THIS URL box prints
+  the actual trycloudflare.com URL (closes the fix at verified-in-use).
+
+---
+
 ## Session: 2026-08-31 (ch.4 lens pass → queue advance + dedupe #23/#24 — all verified-live)
 
 ### What changed
