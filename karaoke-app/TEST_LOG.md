@@ -4,6 +4,60 @@ A running record of manual test sessions against the karaoke server. Each sessio
 
 ---
 
+## Session: 2026-08-31 (ch.4 lens pass → queue advance + dedupe #23/#24 — all verified-live)
+
+### What changed
+
+1. **Server-side atomic queue advance** (`b08d0da`) — Ousterhout ch. 4
+   (deep modules) lens pass finding: "play the next song" was a non-atomic
+   client compound (GET/inspect/DELETE, status unchecked); two DJ tabs
+   hitting Skip could double-play the head. New `advanceQueue()` +
+   `POST /api/queue/advance` (drops stale entries server-side);
+   `djAdvance()` shrank ~33 → ~14 lines. Also unlocks future
+   now-playing/history (server finally learns a song started).
+2. **Grouping key: &/and ignored + artist tokens sorted** (`2369de2`, #23,
+   ADR 0003) — Josh reported real search duplicates. 39,138 → 38,100 raw
+   groups (1,038 dupes gone; 37,794 live with overrides). Full-cache merge
+   sim + human screen of all clusters (0 false merges) + Codex adversarial
+   pass before shipping; fold-&-variant rejected after it split 37 groups.
+   CACHE_VERSION 3 → 4.
+3. **Version lists collapse same-disc copies; blank-disc rows show
+   filename** (`6b9ed9d`, #24) — renamed same-discCode rips across packs
+   showed as duplicate version rows (LG071-02 ×2); bare "—" on blank-disc
+   rows. Dedupe key = non-blank discCode, else filename; lowest-id
+   survivor; per-file ids all stay playable.
+
+### Test cases
+
+| # | What | Expected | Pass/Fail | Notes |
+|---|------|----------|-----------|-------|
+| 1 | `queue.advance.test.js` concurrent-advance race vs old client workflow | red (double-play) | ✅ red pre-fix | "both advances played song-a" |
+| 2 | Same test vs `POST /advance` | green: distinct songs, N advances consume N | ✅ | + stale-skip test |
+| 3 | #23 key tests (name-order, &/and/absent, anti-split, title order kept) | red → green | ✅ | fold-& variant caught splitting 37 groups pre-ship |
+| 4 | #24 dedupe tests (discCode collapse, blank-disc filename fallback, order-independent survivor) | red → green | ✅ | spec iterated once — see below |
+| 5 | Full suite | all green | ✅ 74/74 | was 64 |
+| 6 | `npm run measure` | parser baseline unchanged | ✅ | 839 raw / 34 inversions |
+| 7 | Live: "Endless Love" post-rescan | duet = 1 row / 3 versions; solo Richie flat; no "—" | ✅ | |
+
+**Tier: verified-live** (#23 + #24 confirmed on the running site, issues
+closed at that tier). Queue advance is **verified-in-test** — its live
+half is trivially exercised at the next real Skip.
+
+### Left open
+
+- #21 tiers awaiting Josh's browse-and-rule (unchanged from 08-26).
+- Lens-pass suspicions not yet ratified: `loadLibrary()` returning parts
+  (index.js finishes assembly — small deepening win); `songsById` threading.
+  Deferred with triggers: feat-clause dedupe (~47 dupes, marker in
+  `makeSongKey`); hyphen-variant artists still split.
+- Pipeline note (#24): first full **Fable-tests → Codex-implements →
+  Sonnet-reviews → Fable-verifies** run. Live verify caught a spec miss
+  green tests couldn't (byte-copy vs renamed-copy) — the look-leg stays
+  human/Fable. Codex background mode orphaned once; foreground is the
+  standing rule (memory: codex-background-jobs).
+
+---
+
 ## Session: 2026-08-26 (#21 Stage 1 harvest — 290 auto overrides applied, hard failures 839 → 419)
 
 ### What changed

@@ -1,6 +1,6 @@
 # Karaoke DJ Project — Master Handoff
 
-**Last updated:** 2026-08-26
+**Last updated:** 2026-08-31 (queue advance + search-dedupe #23/#24; TEST_LOG has the session)
 **Supersedes:** `karaoke_dj_handoff.md` (older — pre-inventory, contained open questions now answered)
 **For:** Shooter, a karaoke DJ the user knows personally
 
@@ -443,15 +443,11 @@ All 8 questions from the now-archived `karaoke_shooter_sunday.md` got walked thr
 ---
 
 **Next session can pick any of:**
-- **#21 Stage 1 harvest.** The gate closed 2026-07-18 (#22: 15/17 strict,
-  both misses explained + accepted — see the issue close comment) and the
-  overnight batch read over the 554 unique hard-failure filenames was
-  launched the same evening (`.cache/stage1-reads.json`, checkpointed +
-  resumable; log at `.cache/stage1-run.log`). Next: partial-title matching
-  of the raw reads against the library (mandatory — Top Tunes truncates
-  titles on screen), then batch proposals for Josh to ratify into
-  `overrides.json`. That evaporates most of #8's remaining listening list.
-  Numbers: TEST_LOG "2026-07-18 later".
+- **#21 Stage 1 harvest — auto tier LANDED 2026-08-26** (290 overrides
+  applied; hard failures 839 → 419). Remaining: Josh browse-and-rule on
+  the likely/review/unmatched tiers in `.cache/stage1-proposals.json`,
+  gate `node scripts/cdg-harvest.js --apply <tiers>`. Numbers: TEST_LOG
+  2026-08-26.
 - **Venue settings flag** — `enableKeyChange` (ADR 0002) next time the UI gets touched.
 - **Tier 2 Cloudflare upgrade** — named tunnel + persistent URL. ~10 min one-time setup, free, removes the "URL changes every restart" friction.
 - **Phase 3 metadata pipeline: DONE 2026-07-13** — all tickets #9–#15 closed-or-passed; acceptance numbers in the Phase 3 section are the new baseline. Remaining metadata work is issue #8 (~41 files) + issue #21. (Lookup pipeline and fingerprinting were both rejected by the map — don't resurrect them.)
