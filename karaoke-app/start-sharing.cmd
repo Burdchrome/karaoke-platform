@@ -26,7 +26,7 @@ findstr "trycloudflare.com" tunnel.log >nul 2>nul || goto wait
 
 echo.
 echo ============ SHARE THIS URL ============
-findstr "https://" tunnel.log
+findstr "trycloudflare.com" tunnel.log
 echo ========================================
 echo DJ login: %DJ_USER% / %DJ_PASS%
 echo (Audience page needs no login. URL changes every restart.)
