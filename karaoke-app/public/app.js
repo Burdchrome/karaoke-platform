@@ -133,7 +133,7 @@ function renderResults(data, query) {
     // play/queue act on the exact disc the user picked.
     const versionRows = versions.map(v => {
       const label = versionLabelFor(group, v.versionLabel);
-      const meta = [v.discCode, v.versionLabel].filter(Boolean).map(escape).join(' &middot; ') || '&mdash;';
+      const meta = [v.discCode, v.versionLabel].filter(Boolean).map(escape).join(' &middot; ') || escape(v.filename);
       return `
         <li class="version" data-id="${v.id}">
           <span class="disc">${meta}</span>

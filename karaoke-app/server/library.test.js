@@ -542,6 +542,58 @@ test('groupSongs does NOT collapse blank-artist songs that share a title', () =>
   assert.equal(groups.length, 2);
 });
 
+// #24: the drive has whole folders copied around AND the same disc ripped
+// into several packs under different filename spellings ("LG071-02 - Diana
+// Ross & Lionel Richie" vs "LG071-02 - Ross, Diana & Lionel Richie"). Within
+// a group, a disc-track code identifies the recording: versions sharing a
+// non-blank discCode are the same track and must show as one version row.
+// Blank-discCode versions can't make that claim — they collapse only on
+// identical filename.
+test('groupSongs collapses same-discCode copies, renamed or not (#24)', () => {
+  const groups = groupSongs([
+    songFor('Adele', 'Hello', { id: 'a', discCode: 'AA111-01', filename: 'AA111-01 - Adele - Hello' }),
+    songFor('Adele', 'Hello', { id: 'b', discCode: 'AA111-01', filename: 'AA111-01 - Adkins, Adele - Hello' }),
+    songFor('Adele', 'Hello', { id: 'c', discCode: 'ZZ999-05', filename: 'ZZ999-05 - Adele - Hello' }),
+  ]);
+  assert.equal(groups.length, 1);
+  assert.equal(groups[0].versions.length, 2, 'same disc-track = same recording = one row');
+  assert.deepEqual(groups[0].versions.map(v => v.discCode), ['AA111-01', 'ZZ999-05']);
+});
+
+test('groupSongs blank-discCode versions collapse only on identical filename (#24)', () => {
+  const groups = groupSongs([
+    songFor('Adele', 'Hello', { id: 'a', discCode: '', filename: 'Hello - Adele' }),
+    songFor('Adele', 'Hello', { id: 'b', discCode: '', filename: 'HELLO - ADELE' }),
+    songFor('Adele', 'Hello', { id: 'c', discCode: '', filename: 'Adele - Hello (rip 2)' }),
+  ]);
+  assert.equal(groups.length, 1);
+  assert.equal(groups[0].versions.length, 2,
+    'identical filenames collapse; a distinct blank-disc file stays its own row');
+});
+
+test('groupSongs copy collapse is case-insensitive and order-independent (#24)', () => {
+  const a = songFor('Adele', 'Hello', { id: 'a', discCode: 'AA111', filename: 'AA111-01 - ADELE - HELLO' });
+  const b = songFor('Adele', 'Hello', { id: 'b', discCode: 'AA111', filename: 'aa111-01 - Adele - Hello' });
+  const g1 = groupSongs([a, b]);
+  const g2 = groupSongs([b, a]);
+  assert.equal(g1[0].versions.length, 1);
+  assert.equal(g2[0].versions.length, 1);
+  // Deterministic survivor regardless of input order (stable site ids).
+  assert.equal(g1[0].versions[0].id, g2[0].versions[0].id);
+});
+
+test('groupSongs group collapsing to one unique file behaves as single-version (#24)', () => {
+  // The live "Lionel Richie - Endless Love, 2 versions" case: same disc-track
+  // ripped twice under different filename spellings must become a plain
+  // single-version group (no dropdown on the site).
+  const groups = groupSongs([
+    songFor('Lionel Richie', 'Endless Love', { id: 'a', discCode: 'LG005-14', filename: 'LG005-14 - Richie, Lionel - Endless Love' }),
+    songFor('Lionel Richie', 'Endless Love', { id: 'b', discCode: 'LG005-14', filename: 'LG005-14 - Lionel Richie - Endless Love' }),
+  ]);
+  assert.equal(groups.length, 1);
+  assert.equal(groups[0].versions.length, 1);
+});
+
 test('groupSongs keeps the versionLabel on a single-version group', () => {
   // A solitary "(Radio Version)" rip must still expose its label so the
   // frontend can show it on the flat single-version row (review fix, #14).

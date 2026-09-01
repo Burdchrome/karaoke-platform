@@ -328,8 +328,8 @@ export function makeSongKey(artist, title) {
  * Each group carries display fields from its lowest-disc-code version — an
  * arbitrary-but-stable representative (not a quality pick; same honesty as
  * the old dedupe's "picks an arbitrary version") — and a `versions` array
- * (every file's id/discCode/label/filename), sorted by discCode for stable
- * display.
+ * (each displayed file's id/discCode/label/filename), sorted by discCode for
+ * stable display.
  *
  * Returns an array of groups:
  *   { id, artist, title, discCode, versions: [{ id, artist, title,
@@ -362,14 +362,29 @@ export function groupSongs(songs) {
   }
 
   return [...groups.values()].map(group => {
-    group.versions.sort((a, b) => (a.discCode || '').localeCompare(b.discCode || ''));
-    const canonical = group.versions[0];
+    const versionsByFilename = new Map();
+    for (const version of group.versions) {
+      const discCode = version.discCode && version.discCode.trim();
+      const collapseKey = discCode
+        ? `disc|${discCode.toLowerCase()}`
+        : `filename|${version.filename.toLowerCase()}`;
+      const existing = versionsByFilename.get(collapseKey);
+      if (!existing || version.id.localeCompare(existing.id) < 0) {
+        // A disc-track code identifies one recording even when copied under a
+        // renamed file; uncoded files only collapse on the filename signal.
+        versionsByFilename.set(collapseKey, version);
+      }
+    }
+
+    const versions = [...versionsByFilename.values()]
+      .sort((a, b) => (a.discCode || '').localeCompare(b.discCode || ''));
+    const canonical = versions[0];
     return {
       id: canonical.id,
       artist: group.artist,
       title: group.title,
       discCode: canonical.discCode,
-      versions: group.versions,
+      versions,
     };
   });
 }
