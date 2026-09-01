@@ -185,7 +185,17 @@ test('normalizeSongField lowercases, trims, and collapses whitespace', () => {
 
 test('normalizeSongField strips punctuation', () => {
   assert.equal(normalizeSongField("Don't Stop"), 'dont stop');
+});
+
+// #23: "&", "And", and nothing all agree — "Simon & Garfunkel", "Simon And
+// Garfunkel", and "Simon Garfunkel" are the same artist in this library.
+// Every title pair differing only by "and" was human-screened as the same
+// song before this fold was allowed (issue #23).
+test('normalizeSongField ignores "&" and "and" alike', () => {
   assert.equal(normalizeSongField('U & Ur Hand'), 'u ur hand');
+  assert.equal(normalizeSongField('U And Ur Hand'), 'u ur hand');
+  assert.equal(normalizeSongField('Simon & Garfunkel'), normalizeSongField('Simon And Garfunkel'));
+  assert.equal(normalizeSongField('All That Jazz'), normalizeSongField('And All That Jazz'));
 });
 
 test('normalizeSongField folds leading "The"', () => {
@@ -218,6 +228,38 @@ test('makeSongKey keeps non-trailing parens in the title', () => {
   const { songKey, versionLabel } = makeSongKey('Artist', '(I Just) Died In Your Arms');
   assert.equal(versionLabel, '');
   assert.equal(songKey, 'artist|i just died in your arms');
+});
+
+// #23: the artist half of the key is word-order-insensitive, so the same
+// artist written "Last, First" on one disc pack and "First Last" on another
+// lands in one group. Titles keep their word order — "Piano Man" is not
+// "Man Piano".
+test('makeSongKey groups artist name-order variants (#23)', () => {
+  assert.equal(
+    makeSongKey('Puckett, Gary & The Union Gap', 'Over You').songKey,
+    makeSongKey('Gary Puckett & The Union Gap', 'Over You').songKey,
+  );
+  assert.equal(
+    makeSongKey('White Bryan', 'Look At Me Now').songKey,
+    makeSongKey('Bryan White', 'Look At Me Now').songKey,
+  );
+  assert.equal(
+    makeSongKey('Ross, Diana & Lionel Richie', 'Endless Love').songKey,
+    makeSongKey('Lionel Richie & Diana Ross', 'Endless Love').songKey,
+  );
+  // Anti-split guard: files that omit the "&" entirely must stay grouped
+  // with their punctuated twins (37 real cases in the cache).
+  assert.equal(
+    makeSongKey('Peter, Paul & Mary', 'Puff The Magic Dragon').songKey,
+    makeSongKey('Peter Paul Mary', 'Puff The Magic Dragon').songKey,
+  );
+});
+
+test('makeSongKey keeps title word order significant (#23)', () => {
+  assert.notEqual(
+    makeSongKey('Artist', 'Piano Man').songKey,
+    makeSongKey('Artist', 'Man Piano').songKey,
+  );
 });
 
 test('makeSongKey does not merge distinct songs', () => {

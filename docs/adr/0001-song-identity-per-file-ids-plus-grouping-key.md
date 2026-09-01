@@ -1,6 +1,7 @@
 # ADR 0001 — Song identity: per-file IDs + grouping key
 
-**Status:** accepted (2026-07-09)
+**Status:** accepted (2026-07-09) — amended by ADR 0003 (2026-08-31: grouping
+key ignores "&"/"and" and sorts artist tokens)
 **Context:** wayfinder charting for the metadata cleanup pipeline
 
 ## Decision

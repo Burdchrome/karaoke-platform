@@ -267,7 +267,11 @@ export function parseFilename(basename) {
 /**
  * Normalize one field (artist or title) for grouping.
  * Order matters: "The"-folding runs before punctuation stripping because the
- * trailing form (", The") needs the comma to still be there.
+ * trailing form (", The") needs the comma to still be there. "&" (stripped as
+ * punctuation) and the word "and" are both ignored (#23): disc packs write the
+ * same song as "A & B", "A And B", and plain "A B" — all three must agree.
+ * Every and-only title pair in the library was human-screened as the same
+ * song before this was allowed (evidence in issue #23).
  */
 export function normalizeSongField(field) {
   return field
@@ -277,6 +281,7 @@ export function normalizeSongField(field) {
     .replace(/^the /, '')
     .replace(/, the$/, '')
     .replace(/[^a-z0-9 ]/g, '')
+    .replace(/\band\b/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
 }
@@ -287,7 +292,12 @@ export function normalizeSongField(field) {
  * Version", "Duet"): stripped from the key, kept as versionLabel.
  * Returns { songKey, versionLabel }.
  */
-// ponytail: no fuzzy matching — add when a real ungrouped duplicate is reported
+// The artist half is word-order-insensitive (#23, ADR 0003): disc packs write
+// the same artist as "Puckett, Gary" and "Gary Puckett", so tokens are sorted.
+// Titles keep word order — "Piano Man" is not "Man Piano". Screened against
+// the full 65k cache: zero false merges from sorting (evidence in issue #23).
+// ponytail: no feat-clause stripping — add when the remaining ~47
+// featuring-placement duplicates get reported (issue #23 has the list).
 export function makeSongKey(artist, title) {
   let baseTitle = title;
   let versionLabel = '';
@@ -296,8 +306,9 @@ export function makeSongKey(artist, title) {
     baseTitle = parensSuffix[1];
     versionLabel = parensSuffix[2].trim();
   }
+  const artistKey = normalizeSongField(artist).split(' ').sort().join(' ');
   return {
-    songKey: `${normalizeSongField(artist)}|${normalizeSongField(baseTitle)}`,
+    songKey: `${artistKey}|${normalizeSongField(baseTitle)}`,
     versionLabel,
   };
 }
@@ -509,7 +520,9 @@ export function applyOverrides(songs, overrides) {
 
 // Bump whenever the parser or song schema changes: a version mismatch on load
 // forces a full rescan, so parser upgrades self-apply on next start (spec §4).
-export const CACHE_VERSION = 3;
+// v4: songKey ignores "&"/"and" and sorts artist tokens (#23, ADR 0003) —
+// cached keys from v3 are stale, so the bump forces a rescan.
+export const CACHE_VERSION = 4;
 
 /**
  * A cache payload is usable only if it was built by the current schema.

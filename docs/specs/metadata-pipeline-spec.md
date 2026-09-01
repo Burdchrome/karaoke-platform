@@ -80,8 +80,16 @@ songKey = normalize(artist) + '|' + normalize(title)
 > implementation runs: parens→versionLabel first, then lowercase/collapse →
 > fold The → strip punctuation. Same results the spec intends.
 
+> **Errata (2026-08-31, #23 / ADR 0003):** two additions after real duplicates
+> were reported. (a) `normalize()` also drops the standalone word `and` after
+> punctuation stripping, so `A & B` ≡ `A And B` ≡ `A B`. (b) the **artist**
+> half of `songKey` sorts its tokens (`Puckett, Gary` ≡ `Gary Puckett`);
+> titles keep word order. The original ponytail marker below fired and was
+> replaced — the current marker in `makeSongKey` defers feat-clause stripping.
+
 ```
-// ponytail: no fuzzy matching — add when a real ungrouped duplicate is reported
+// ponytail: no feat-clause stripping — add when the remaining ~47
+// featuring-placement duplicates get reported (issue #23 has the list)
 ```
 
 **UI behavior (follows from rule 4):** search results group by `songKey` — the
