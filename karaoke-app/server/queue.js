@@ -82,6 +82,20 @@ export function moveEntry(entryId, newPosition) {
 }
 
 /**
+ * Advance the queue: remove and return the head entry, or null if empty.
+ * This is the ONE way "play the next song" consumes the queue — the entry is
+ * gone the moment this returns, so no two callers can ever be handed the same
+ * head (each request handler runs this synchronously to completion).
+ */
+export function advanceQueue() {
+  const entry = state.queue.shift();
+  if (!entry) return null;
+  logger.info('queue:advance', { entryId: entry.id, songId: entry.songId, queueLength: state.queue.length });
+  queueEvents.emit('change');
+  return entry;
+}
+
+/**
  * Turn a raw queue entry into the client-shaped payload (with song metadata).
  * Shared between the REST and SSE routes so both serve identical objects —
  * the client doesn't need separate render paths.

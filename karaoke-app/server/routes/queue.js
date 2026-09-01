@@ -5,7 +5,7 @@
 // the SSE endpoint sends.
 
 import express from 'express';
-import { listQueue, addToQueue, removeFromQueue, clearQueue, moveEntry, enrichQueueEntry } from '../queue.js';
+import { listQueue, addToQueue, removeFromQueue, clearQueue, moveEntry, advanceQueue, enrichQueueEntry } from '../queue.js';
 
 export function makeQueueRouter(songsById) {
   const router = express.Router();
@@ -38,6 +38,18 @@ export function makeQueueRouter(songsById) {
     const removed = removeFromQueue(req.params.entryId);
     if (!removed) return res.status(404).json({ error: 'entry not found' });
     res.json({ removed: enrich(removed) });
+  });
+
+  // Atomically take the next playable song off the queue (DJ Skip button).
+  // Stale entries (songId no longer in the library) are dropped here rather
+  // than bounced back to the client — the loop is synchronous, so concurrent
+  // requests can never be handed the same entry.
+  router.post('/advance', (req, res) => {
+    let entry;
+    while ((entry = advanceQueue()) !== null) {
+      if (songsById.has(entry.songId)) break;
+    }
+    res.json({ entry: entry ? enrich(entry) : null });
   });
 
   // Move a queue entry to a new 0-based position. Used by drag-to-reorder.

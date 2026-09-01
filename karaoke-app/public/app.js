@@ -487,37 +487,23 @@ if (IS_DJ) {
   $skipBtn.addEventListener('click', djAdvance);
 }
 
-// Pulls the head of the queue, plays it, removes it from the queue.
-// Called from the Skip button (and previously the audio 'ended' event,
-// before manual advance became the desired behavior).
+// Takes the next song off the queue and plays it. The server's advance
+// operation removes the entry atomically before responding — two DJ tabs
+// hitting Skip can never be handed the same song, stale entries are dropped
+// server-side, and the queue panel only ever shows "what's next."
 async function djAdvance() {
   try {
-    const r = await fetch('/api/queue');
-    if (!r.ok) throw new Error(`queue HTTP ${r.status}`);
-    const { queue } = await r.json();
+    const r = await fetch('/api/queue/advance', { method: 'POST' });
+    if (!r.ok) throw new Error(`advance HTTP ${r.status}`);
+    const { entry } = await r.json();
 
-    if (queue.length === 0) {
+    if (!entry) {
       closePlayer();
       return;
     }
 
-    const head = queue[0];
-
-    if (!head.song) {
-      // Queue entry references a song id we no longer know about (cache stale,
-      // file moved, etc.). Drop it and try again on the next entry.
-      await fetch(`/api/queue/${encodeURIComponent(head.id)}`, { method: 'DELETE' });
-      return djAdvance();
-    }
-
-    const label = formatSongLabel(head.song);
-
-    // Remove the entry first, then start playback. Doing remove-first means
-    // the queue list never shows the song that's currently playing — the
-    // queue panel only ever shows "what's next."
-    await fetch(`/api/queue/${encodeURIComponent(head.id)}`, { method: 'DELETE' });
     refreshQueue();
-    openPlayer(head.song.id, label);
+    openPlayer(entry.song.id, formatSongLabel(entry.song));
   } catch (err) {
     console.error('djAdvance error', err);
     // Don't lock the DJ out — close the player so they can manually pick.
