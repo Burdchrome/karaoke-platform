@@ -27,7 +27,7 @@ export function makeEventsRouter(songsById) {
   function sendEvent(res, eventName, data) {
     try {
       res.write(`event: ${eventName}\ndata: ${JSON.stringify(data)}\n\n`);
-    } catch (err) {
+    } catch {
       // Connection dead; let the close handler clean it up.
       subscribers.delete(res);
     }

@@ -1,0 +1,17 @@
+{
+  // Knip config = the declared topology of this repo.
+  // Anything unreachable from these entry points is dead code.
+  "entry": [
+    // server/index.js is package.json "main" — knip picks it up automatically
+    "public/app.js",       // browser frontend, loaded by index.html + dj.html <script> tags (knip can't see HTML)
+    "scripts/*.js",        // manually-invoked CLI tools (harvest, snapshot, measure, extract)
+    "scripts/*.cjs",
+    "server/*.test.js",    // npm test globs
+    "scripts/*.test.js"
+  ],
+  "project": ["server/**/*.js", "public/**/*.js", "scripts/**/*.{js,cjs}"],
+  // app.js imports these as /libs/ URLs — server/index.js serves them from
+  // node_modules at runtime. Real usage, just invisible to static analysis.
+  "ignoreUnresolved": ["/libs/cdgraphics/cdgraphics.js", "/libs/sortablejs/sortable.esm.js"],
+  "ignoreDependencies": ["sortablejs"]
+}

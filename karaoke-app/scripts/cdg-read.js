@@ -79,7 +79,7 @@ async function readFrame(framePath, model) {
   try {
     read = JSON.parse(jsonMatch[0]);
   } catch (err) {
-    throw new Error(`Unparseable model output for ${path.basename(framePath)}: ${jsonMatch[0].slice(0, 200)}`);
+    throw new Error(`Unparseable model output for ${path.basename(framePath)}: ${jsonMatch[0].slice(0, 200)}`, { cause: err });
   }
   return { ...read, seconds };
 }
