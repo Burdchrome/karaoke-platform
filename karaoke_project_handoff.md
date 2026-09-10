@@ -1,6 +1,6 @@
 # Karaoke DJ Project — Master Handoff
 
-**Last updated:** 2026-08-31 (queue advance + search-dedupe #23/#24; TEST_LOG has the session)
+**Last updated:** 2026-09-10 (deterministic check tooling: ESLint+knip+guard hooks `db8fb25`; TEST_LOG 2026-09-10 has the session)
 **Supersedes:** `karaoke_dj_handoff.md` (older — pre-inventory, contained open questions now answered)
 **For:** Shooter, a karaoke DJ the user knows personally
 

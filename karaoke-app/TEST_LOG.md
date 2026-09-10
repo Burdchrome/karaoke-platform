@@ -4,6 +4,47 @@ A running record of manual test sessions against the karaoke server. Each sessio
 
 ---
 
+## Session: 2026-09-10 (deterministic check tooling: ESLint + knip + workspace guard hooks)
+
+### What changed
+
+1. **Check tooling** (`db8fb25`) — `knip.jsonc` (declares real entry
+   points: HTML-loaded frontend, /libs/ runtime-served deps, CLI
+   scripts), ESLint 9 flat config (js recommended + eslint-plugin-promise
+   + eslint-plugin-n, Node/browser globals split), `engines.node >=24`
+   declared, `no-process-exit` off for `scripts/` only. `npm run check`
+   = `eslint . && knip`; `npm run lint` added.
+2. **Two lint-driven fixes** (same commit) — `cdg-read.js` JSON-parse
+   rethrow now carries `{ cause: err }`; `events.js`
+   intentionally-ignored SSE write failure now a bare `catch`.
+3. **Workspace guard hooks** (workspace root, not this repo) —
+   PostToolUse scoped lint on every agent edit of a check-enabled repo +
+   PreToolUse lock on checker configs. Detail: [[guardrail-hooks-live]]
+   memory + workspace `docs/research/deterministic-guardrails-for-ai-code.md`.
+
+### Test cases
+
+| # | What | Expected | Pass/Fail | Notes |
+|---|------|----------|-----------|-------|
+| 1 | `npm run check` | eslint + knip both green | ✅ | first runs of each tool = 100% false positives until config declared the repo's real topology |
+| 2 | `npm test` post-fixes | 74/74 | ✅ | |
+| 3 | Hook: clean-file edit | silent, ~1.2s | ✅ | within <2s per-edit budget |
+| 4 | Hook: live Write of lint-failing file | blocked, error text fed back to Claude | ✅ | Windows freeze bug (#23766) did not reproduce |
+| 5 | Hook: suppression directive in file | exit 2 + fix-or-ask-Josh policy msg | ✅ | |
+| 6 | Hook: live Edit of eslint.config.js | PreToolUse block before edit lands | ✅ | |
+
+**Tier:** check layer **verified-in-test** (deliberate controlled runs,
+including live in-session hook firings). Graduates to verified-in-use
+when it catches a real finding during feature work.
+
+### Follow-ups
+
+- [ ] Hooks fail open (a broken hook script = silent no-checking) —
+  occasionally poke with a deliberate bad edit to confirm the layer
+  still fires.
+
+---
+
 ## Session: 2026-09-01 (gig-share flow live run + launcher URL-display fix)
 
 ### What changed
