@@ -97,6 +97,22 @@ export function parseFilename(basename) {
     s = s.replace(/_/g, ' ').replace(/\s+/g, ' ').trim();
   }
 
+  // ---- Pre-pass: Sunfly dashes-as-spaces dialect (issue #25) ----
+  // "01.-Lady-Gaga-Teeth-(SF314-01)": NN.- track prefix, dashes standing in
+  // for spaces, disc code in trailing parens. The absence of any spaced " - "
+  // separator is the dialect marker, so normal files with trailing parens can
+  // never match; a non-code parens like "(Duet)" fails the code shape and
+  // falls through. Peel the fixed pieces, space the blob, and flag the file —
+  // buildIndex's library-frequency check finds the artist/title split
+  // (peel-then-split; prior art on issue #25).
+  if (!s.includes(' - ')) {
+    const sunfly = s.match(/^\d{2}\.-(.+)-\(([A-Za-z][A-Za-z0-9]+-\d+)\)$/);
+    if (sunfly) {
+      const blob = sunfly[1].replace(/-/g, ' ').replace(/\s+/g, ' ').trim();
+      return { artist: '', title: blob, discCode: sunfly[2], splitPending: true };
+    }
+  }
+
   // ---- Pre-pass: rejoin disc codes fragmented by spaces (spec §1b) ----
   // Each rule needs real content after the code (the lookahead), so code-only
   // files ("CBEP 454-1-06") keep failing cleanly instead of back-tracking
@@ -424,11 +440,12 @@ export function buildIndex(filePaths) {
 
   const songs = [];
   const suspects = []; // stripped-track parses with ambiguous artist order
+  const pendings = []; // Sunfly dash-blob parses awaiting an artist/title split (#25)
   for (const [key, mp3Path] of mp3Map) {
     const cdgPath = cdgMap.get(key);
     if (!cdgPath) continue; // skip audio-only orphans for v0
     const basename = path.basename(mp3Path, path.extname(mp3Path));
-    const { artist, title, discCode, orderSuspect } = parseFilename(basename);
+    const { artist, title, discCode, orderSuspect, splitPending } = parseFilename(basename);
     const { songKey, versionLabel } = makeSongKey(artist, title);
     const song = {
       id: makeId(mp3Path),
@@ -443,6 +460,7 @@ export function buildIndex(filePaths) {
     };
     songs.push(song);
     if (orderSuspect) suspects.push(song);
+    if (splitPending) pendings.push(song);
   }
 
   // ---- artist-order fix for stripped-track files (beets-style) ----
@@ -451,9 +469,9 @@ export function buildIndex(filePaths) {
   // artist elsewhere and the artist side never is, the file is inverted: swap.
   // ponytail: threshold 3, no fuzzy match — one-off artists stay inverted and
   // go to overrides.json like every other tie.
-  if (suspects.length > 0) {
+  if (suspects.length > 0 || pendings.length > 0) {
     const artistCounts = new Map();
-    const suspectSet = new Set(suspects);
+    const suspectSet = new Set([...suspects, ...pendings]);
     for (const song of songs) {
       if (suspectSet.has(song) || !song.artist) continue;
       const k = song.artist.toLowerCase();
@@ -468,6 +486,55 @@ export function buildIndex(filePaths) {
         song.songKey = songKey;
         song.versionLabel = versionLabel;
       }
+    }
+
+    // ---- artist/title split for Sunfly dash-blob files (#25) ----
+    // "Lady Gaga Teeth" carries no separator at all, so the only split signal
+    // is again the rest of the library: take the longest token prefix that is
+    // a known artist (same threshold-3 bar as the order fix), extend through
+    // duet/feat joiners when the joined name is also in the library, and let
+    // everything else fail clean into the manual tier.
+    const JOINER = /^(feat\.?|featuring|ft\.?|vs\.?|and|&)$/i;
+    // Library spellings like "Ne-Yo" arrive de-dashed in the blob, so a
+    // candidate also matches its dashes-for-spaces spelling.
+    const countFor = (name) => Math.max(
+      artistCounts.get(name) || 0,
+      artistCounts.get(name.replace(/ /g, '-')) || 0,
+    );
+    for (const song of pendings) {
+      const tokens = song.title.split(' ');
+      let split = null;
+      for (let end = tokens.length - 1; end >= 1 && !split; end--) {
+        if (countFor(tokens.slice(0, end).join(' ').toLowerCase()) < 3) continue;
+        let pos = end;
+        let ok = true;
+        while (ok && JOINER.test(tokens[pos])) {
+          // The joined artist needs only one library appearance — the known
+          // base artist already anchors the split.
+          let extended = -1;
+          for (let e2 = tokens.length - 1; e2 > pos + 1; e2--) {
+            if (countFor(tokens.slice(pos + 1, e2).join(' ').toLowerCase()) >= 1) {
+              extended = e2;
+              break;
+            }
+          }
+          if (extended === -1) ok = false;
+          else pos = extended;
+        }
+        // The split must leave a non-empty title.
+        if (ok && pos < tokens.length) {
+          split = {
+            artist: tokens.slice(0, pos).join(' '),
+            title: tokens.slice(pos).join(' '),
+          };
+        }
+      }
+      if (!split) continue; // no library evidence — stays in the failure bucket
+      song.artist = split.artist;
+      song.title = split.title;
+      const { songKey, versionLabel } = makeSongKey(song.artist, song.title);
+      song.songKey = songKey;
+      song.versionLabel = versionLabel;
     }
   }
 
@@ -537,7 +604,9 @@ export function applyOverrides(songs, overrides) {
 // forces a full rescan, so parser upgrades self-apply on next start (spec §4).
 // v4: songKey ignores "&"/"and" and sorts artist tokens (#23, ADR 0003) —
 // cached keys from v3 are stale, so the bump forces a rescan.
-export const CACHE_VERSION = 4;
+// v5: Sunfly dashes-as-spaces dialect (#25) — v4 caches hold those files as
+// unparsed failures, so the bump forces a rescan to pick up the new pass.
+export const CACHE_VERSION = 5;
 
 /**
  * A cache payload is usable only if it was built by the current schema.

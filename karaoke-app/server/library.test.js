@@ -539,6 +539,107 @@ test('buildIndex flips order-suspect files when the title is a known artist', ()
   assert.equal(control.artist, 'Allan Sherman');
 });
 
+// --- issue #25: Sunfly dashes-as-spaces dialect ---
+// "01.-Lady-Gaga-Teeth-(SF314-01)": NN.- track prefix, dashes as spaces, disc
+// code in trailing parens. parseFilename peels the fixed pieces and flags the
+// file; buildIndex's library-frequency check does the artist/title split.
+
+test('Sunfly dialect: track and paren code peel, dashes become spaces', () => {
+  const p = parseFilename('01.-Lady-Gaga-Teeth-(SF314-01)');
+  assert.equal(p.discCode, 'SF314-01');
+  assert.equal(p.artist, '');
+  assert.equal(p.title, 'Lady Gaga Teeth');
+  assert.equal(p.splitPending, true);
+});
+
+test('Sunfly dialect: internal parens survive, only the trailing code peels', () => {
+  const big = parseFilename("01.-Notorious-B.I.G.-Juicy-(It's-All-Good)-(SFDT-1394)");
+  assert.equal(big.discCode, 'SFDT-1394');
+  assert.equal(big.title, "Notorious B.I.G. Juicy (It's All Good)");
+  const clean = parseFilename('05.-Nicki-Minaj-Starships-(Clean)-(SF314-05)');
+  assert.equal(clean.discCode, 'SF314-05');
+  assert.equal(clean.title, 'Nicki Minaj Starships (Clean)');
+});
+
+test('Sunfly dialect: longer disc codes with digits in the prefix parse too', () => {
+  const p = parseFilename('01.-Christina-Aguilera-(Burlesque)-Bound-To-You-(SFKK057-04)');
+  assert.equal(p.discCode, 'SFKK057-04');
+  assert.equal(p.title, 'Christina Aguilera (Burlesque) Bound To You');
+  // letter after the digits ("SF303V") is still a code, not a version label
+  const v = parseFilename('04.-Rihanna-California-King-Bed-(SF303V-04)');
+  assert.equal(v.discCode, 'SF303V-04');
+  assert.equal(v.title, 'Rihanna California King Bed');
+});
+
+test('Sunfly dialect does not fire on spaced-dash or non-code-paren files', () => {
+  // Spaced separators = a different dialect; existing passes own these.
+  const spaced = parseFilename('07 - Elvis - I Gotta Know');
+  assert.equal(spaced.artist, 'Elvis');
+  assert.equal(spaced.splitPending, undefined);
+  // A trailing parens that is not code-shaped (no digits) is a version label,
+  // not a disc code — must fall through unchanged.
+  const version = parseFilename('99.-Some-Blob-(Duet)');
+  assert.equal(version.discCode, '');
+  assert.equal(version.title, '99.-Some-Blob-(Duet)');
+});
+
+test('buildIndex splits a Sunfly blob on a known artist prefix', () => {
+  const dir = String.raw`E:\karaoke\sunfly`;
+  const files = [];
+  for (const t of ['Poker Face', 'Bad Romance', 'Paparazzi']) {
+    files.push(path.join(dir, `SC1000-01 - Lady Gaga - ${t}.mp3`));
+    files.push(path.join(dir, `SC1000-01 - Lady Gaga - ${t}.cdg`));
+  }
+  files.push(path.join(dir, '01.-Lady-Gaga-Teeth-(SF314-01).mp3'));
+  files.push(path.join(dir, '01.-Lady-Gaga-Teeth-(SF314-01).cdg'));
+  const songs = buildIndex(files);
+  const split = songs.find(s => s.discCode === 'SF314-01');
+  assert.equal(split.artist, 'Lady Gaga');
+  assert.equal(split.title, 'Teeth');
+  assert.equal(split.songKey, makeSongKey('Lady Gaga', 'Teeth').songKey);
+});
+
+test('buildIndex extends a Sunfly split through duet/feat joiners', () => {
+  const dir = String.raw`E:\karaoke\sunfly`;
+  const files = [];
+  const establish = (artist, titles) => {
+    for (const t of titles) {
+      files.push(path.join(dir, `SC1000-01 - ${artist} - ${t}.mp3`));
+      files.push(path.join(dir, `SC1000-01 - ${artist} - ${t}.cdg`));
+    }
+  };
+  establish('Brad Paisley', ['Mud On The Tires', 'Whiskey Lullaby', 'She Said Yes']);
+  establish('Carrie Underwood', ['Before He Cheats', 'Jesus Take The Wheel', 'So Small']);
+  establish('Calvin Harris', ['Feel So Close', 'Summer', 'Sweet Nothing']);
+  // hyphenated library spelling must still anchor the de-dashed feat clause
+  establish('Ne-Yo', ['So Sick']);
+  files.push(path.join(dir, '03.-Brad-Paisley-and-Carrie-Underwood-Remind-Me-(SFDT-2436).mp3'));
+  files.push(path.join(dir, '03.-Brad-Paisley-and-Carrie-Underwood-Remind-Me-(SFDT-2436).cdg'));
+  files.push(path.join(dir, "02.-Calvin-Harris-Feat.-Ne-Yo-Let's-Go-(SF314-02).mp3"));
+  files.push(path.join(dir, "02.-Calvin-Harris-Feat.-Ne-Yo-Let's-Go-(SF314-02).cdg"));
+  const songs = buildIndex(files);
+  const duet = songs.find(s => s.discCode === 'SFDT-2436');
+  assert.equal(duet.artist, 'Brad Paisley and Carrie Underwood');
+  assert.equal(duet.title, 'Remind Me');
+  const feat = songs.find(s => s.discCode === 'SF314-02');
+  assert.equal(feat.artist, 'Calvin Harris Feat. Ne Yo');
+  assert.equal(feat.title, "Let's Go");
+});
+
+test('buildIndex leaves an unresolvable Sunfly blob unsplit but readable', () => {
+  const dir = String.raw`E:\karaoke\sunfly`;
+  const songs = buildIndex([
+    path.join(dir, '11.-Goyte-Eyes-Wide-Open-(SF314-11).mp3'),
+    path.join(dir, '11.-Goyte-Eyes-Wide-Open-(SF314-11).cdg'),
+  ]);
+  assert.equal(songs.length, 1);
+  // No library evidence for any split: fail clean, keep the peeled code and
+  // the space-normalized title so the file stays searchable.
+  assert.equal(songs[0].artist, '');
+  assert.equal(songs[0].title, 'Goyte Eyes Wide Open');
+  assert.equal(songs[0].discCode, 'SF314-11');
+});
+
 // --- issue #19: AppleDouble sidecars must not become songs ---
 
 test('buildIndex skips macOS AppleDouble ._ sidecar pairs', () => {
