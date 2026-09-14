@@ -114,6 +114,47 @@ Josh spot-checks a promoted record in the loaded library.
 
 ---
 
+## Session: 2026-09-13 (issue #25 — Sunfly dashes-as-spaces dialect parser fix)
+
+### What changed
+
+1. **`parseFilename` Sunfly pre-pass** (`59becc9`, tests-first) — peels
+   the `NN.-` track prefix and trailing `(CODE-NN)` paren disc code
+   (code shape allows a trailing letter, `SF303V-04`), spaces the
+   dash-blob, flags the file `splitPending`.
+2. **`buildIndex` frequency split** (same commit) — longest known-artist
+   token prefix (threshold 3, same bar as the order fix), extended
+   through `Feat./Featuring/Ft./Vs./and/&` joiners (threshold 1,
+   hyphen-spelling variant so "Ne-Yo" anchors de-dashed blobs). No
+   evidence = clean fail with peeled code + searchable spaced title.
+3. **`CACHE_VERSION` 4 → 5** — pass self-applies on next start; cache
+   rescanned this session.
+
+### Test cases
+
+| # | What | Expected | Pass/Fail | Notes |
+|---|------|----------|-----------|-------|
+| 1 | 7 new dialect tests, red first | 6 fail pre-fix (1 negative guard passes) | ✅ | red confirmed before implementation |
+| 2 | `npm test` post-fix | 81/81 | ✅ | ran twice (regex widened for `SF303V-04` mid-session) |
+| 3 | `npm run check` | eslint + knip green | ✅ | |
+| 4 | full rescan + `measure-parse-coverage` vs canonical baseline | failures drop, nothing else moves | ✅ | 875 → 774 raw failures, artist-present 98.8%; all other buckets + inversion counts unmoved |
+| 5 | dialect files drive-wide | most split | ✅ | 63/85 split incl. multi-feat + duet + internal-parens shapes; 22 fail clean (unknown artists) |
+| 6 | stage1 re-run | tier counts recorded | ✅ | auto 7 / likely 68 / review 80 / unmatched 96 / skipped 303 |
+| 7 | ID3 side check (plan item) | informational | ✅ | 7/96 unmatched tagged, 89 tagless → no fallback ticket; the 7 are hand-promotable exact rescues |
+
+**Tier:** parser fix **verified-in-test** (controlled runs against the
+real 65,818-file cache; not yet exercised in a live gig search).
+Graduates to verified-in-use after real browsing hits the new parses.
+
+### Follow-ups
+
+- Josh browse-and-rule on the residual tiers, then merge
+  `fix/25-sunfly-dialect-parse` to main.
+- During the walk: hand-promote the 7 ID3-tagged unmatched files into
+  `overrides.json` (list reproducible via the ID3 check on issue #25).
+
+---
+
 ## Session: 2026-09-10 (deterministic check tooling: ESLint + knip + workspace guard hooks)
 
 ### What changed
