@@ -21,7 +21,8 @@
 //
 // Usage (from karaoke-app/, needs llama-server up on :8081):
 //   node scripts/llm-judge.js [--limit N] [--report .cache/mb-verify.json]
-//                             [--out .cache/llm-judge.json]
+//                             [--out .cache/llm-judge.json] [--log .cache/llm-judge-log.jsonl]
+// JUDGE_URL env var overrides the llama-server base URL (test seam).
 //
 // Read-only over the library and overrides.json; promotion stays manual.
 
@@ -30,7 +31,9 @@ import { pathToFileURL } from 'node:url';
 import { tokens, containsAllTokens, tokenSetSimilarity } from './fuzzy-match.js';
 import { sameArtist } from './mb-verify.js';
 
-const SERVER_URL = 'http://localhost:8081';
+// Override lets the e2e suite (triage-pipeline.e2e.test.js) point this at an
+// in-test mock server instead of the real llama-server.
+const SERVER_URL = process.env.JUDGE_URL ?? 'http://localhost:8081';
 export const TITLE_MATCH_THRESHOLD = 0.85; // same bar as mb-verify
 
 // Evidence-extraction fields come before the verdict fields on purpose:
@@ -149,11 +152,15 @@ async function callJudge(messages) {
 }
 
 function parseArgs(argv) {
-  const args = { report: '.cache/mb-verify.json', out: '.cache/llm-judge.json', limit: Infinity };
+  const args = {
+    report: '.cache/mb-verify.json', out: '.cache/llm-judge.json', limit: Infinity,
+    log: '.cache/llm-judge-log.jsonl',
+  };
   for (let i = 0; i < argv.length; i++) {
     if (argv[i] === '--report') args.report = argv[++i];
     else if (argv[i] === '--out') args.out = argv[++i];
     else if (argv[i] === '--limit') args.limit = Number(argv[++i]);
+    else if (argv[i] === '--log') args.log = argv[++i];
   }
   return args;
 }
@@ -192,7 +199,7 @@ async function main() {
     let detail;
     try {
       const raw = await callJudge(buildMessages(record));
-      fs.appendFileSync('.cache/llm-judge-log.jsonl', JSON.stringify({ filename, raw, ms: Date.now() - startedAt }) + '\n');
+      fs.appendFileSync(args.log, JSON.stringify({ filename, raw, ms: Date.now() - startedAt }) + '\n');
       const verdict = JSON.parse(raw); // schema-enforced, but never best-effort
       const receiptFailures = validateReceipts(record, verdict);
       if (receiptFailures.length) {

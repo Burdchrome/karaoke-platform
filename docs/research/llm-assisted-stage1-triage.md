@@ -177,6 +177,21 @@ e.g. the model suggested "911" for `911 - Private Number` (plausibly
 right) but MB couldn't corroborate, so it went to the queue with the
 suggestion visible instead of being trusted.
 
+**E2E harness BUILT 2026-09-16** (Sonnet builder + Fable advisor review) —
+`scripts/triage-pipeline.e2e.test.js`: both scripts run as real child
+processes against in-test mock MB + judge servers (offline, <1 s, in the
+`npm test` glob). Proves the wiring end-to-end: tier bucketing, the
+artist-scoped second query (asserts two distinct queries), lookup
+caching, User-Agent policy, receipt demotion with the model verdict
+attached, resume-skip on rerun, full-chain "every record lands in
+exactly one bucket," and before/after hashes proving `overrides.json` /
+`library-cache.json` stay untouched. Seams added for testability:
+`MB_ENDPOINT` / `MB_REQUEST_GAP_MS` / `JUDGE_URL` env vars, `--cache` /
+`--log` flags (defaults unchanged). A live smoke (`RUN_LIVE_JUDGE=1`)
+replays the Alyssa Reid trap against the real :8081 — functionally
+verified in the advisor run (correct verdict, receipts passed); note the
+model may quote artist casing from filename or MB interchangeably.
+
 **Final rollup of the 244:** 126 machine-settled
 (110+2+8 deterministic, 5+1 LLM) · 118 for Josh (57 no-MB-hit,
 45 judge-flagged, 16 receipt-demoted — each with its evidence and any

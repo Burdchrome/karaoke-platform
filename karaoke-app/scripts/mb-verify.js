@@ -22,7 +22,8 @@
 //
 // Usage (from karaoke-app/, needs network):
 //   node scripts/mb-verify.js [--proposals .cache/stage1-proposals.json]
-//                             [--out .cache/mb-verify.json]
+//                             [--out .cache/mb-verify.json] [--cache .cache/mb-cache.json]
+// MB_ENDPOINT env var overrides the MusicBrainz base URL (test seam).
 //
 // Definition of done: every input record lands in exactly one verdict bucket;
 // summary printed; unit tests (mb-verify.test.js) cover the verdict logic
@@ -132,11 +133,15 @@ export function judgeRecord(record, mbCandidates) {
 // ---------------------------------------------------------------------------
 // Everything below is I/O: MB requests (paced + cached) and the report.
 
-const MB_ENDPOINT = 'https://musicbrainz.org/ws/2/recording';
+// Override lets the e2e suite (triage-pipeline.e2e.test.js) point this at an
+// in-test mock server instead of the real MusicBrainz API.
+const MB_ENDPOINT = process.env.MB_ENDPOINT ?? 'https://musicbrainz.org/ws/2/recording';
 // MB policy wants an identifiable client; the repo URL is the contact point.
 const USER_AGENT = 'karaoke-app-mb-verify/1.0 (https://github.com/Burdchrome/karaoke-platform)';
 // 1.1s tripped steady 503s in the 2026-09-16 run; 2s clears MB's limiter.
-const REQUEST_GAP_MS = 2000;
+// Overridable so the e2e suite (a mock server, no real rate limit) doesn't
+// have to sleep between every request.
+const REQUEST_GAP_MS = Number(process.env.MB_REQUEST_GAP_MS ?? 2000);
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -190,10 +195,13 @@ export async function lookupCandidates(record, searchTitle, mbCache, lookup) {
 }
 
 function parseArgs(argv) {
-  const args = { proposals: '.cache/stage1-proposals.json', out: '.cache/mb-verify.json' };
+  const args = {
+    proposals: '.cache/stage1-proposals.json', out: '.cache/mb-verify.json', cache: '.cache/mb-cache.json',
+  };
   for (let i = 0; i < argv.length; i++) {
     if (argv[i] === '--proposals') args.proposals = argv[++i];
     else if (argv[i] === '--out') args.out = argv[++i];
+    else if (argv[i] === '--cache') args.cache = argv[++i];
   }
   return args;
 }
@@ -210,7 +218,7 @@ async function main() {
   }
   console.log(`Verifying ${records.length} records against MusicBrainz (~${Math.ceil(records.length * REQUEST_GAP_MS / 60000)} min at 1 req/s)...`);
 
-  const cachePath = '.cache/mb-cache.json';
+  const cachePath = args.cache;
   let mbCache = {};
   try {
     mbCache = JSON.parse(fs.readFileSync(cachePath, 'utf8'));
