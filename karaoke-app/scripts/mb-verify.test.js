@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { searchTitleFor, extractCandidates, judgeRecord } from './mb-verify.js';
+import { searchTitleFor, extractCandidates, judgeRecord, lookupCandidates, sameArtist } from './mb-verify.js';
 
 const mbResponse = (recordings) => ({ recordings });
 const credit = (name) => [{ name, joinphrase: '' }];
@@ -81,6 +81,47 @@ test('flagged: MusicBrainz has nothing for the title', () => {
   assert.equal(withProposal.verdict, 'flagged');
   const withoutProposal = judgeRecord({ filename: 'x', cardTitle: 'T' }, []);
   assert.equal(withoutProposal.verdict, 'flagged');
+});
+
+test('sameArtist tolerates dialect spelling, rejects different artists', () => {
+  assert.equal(sameArtist('Fun. feat. Janelle Monae', 'fun.'), true);
+  assert.equal(sameArtist('Black, Clint', 'Clint Black'), false); // inversion is a real difference here
+  assert.equal(sameArtist('Elvis Presley', 'The Yardbirds'), false);
+});
+
+test('lookupCandidates runs the artist-scoped second query when the title search misses the proposal artist', async () => {
+  const queries = [];
+  const fakeLookup = async (_cache, luceneQuery) => {
+    queries.push(luceneQuery);
+    if (luceneQuery.startsWith('artist:')) {
+      return mbResponse([{ title: 'Too Much Monkey Business', score: 100, 'artist-credit': credit('Elvis Presley') }]);
+    }
+    return mbResponse([{ title: 'Too Much Monkey Business', score: 100, 'artist-credit': credit('The Yardbirds') }]);
+  };
+  const record = { filename: '632206', proposal: { artist: 'Elvis Presley', title: 'Too Much Monkey Business' } };
+  const candidates = await lookupCandidates(record, 'Too Much Monkey Business', {}, fakeLookup);
+  assert.equal(queries.length, 2);
+  assert.ok(queries[1].startsWith('artist:"Elvis Presley"'));
+  assert.deepEqual(candidates.map((c) => c.artist).sort(), ['Elvis Presley', 'The Yardbirds']);
+  // And with the merged candidates, the record now confirms deterministically.
+  assert.equal(judgeRecord(record, candidates).verdict, 'confirmed');
+});
+
+test('lookupCandidates skips the second query when the artist is already found', async () => {
+  const queries = [];
+  const fakeLookup = async (_cache, luceneQuery) => {
+    queries.push(luceneQuery);
+    return mbResponse([{ title: 'Sweet Angeline', score: 98, 'artist-credit': credit('Elvis Presley') }]);
+  };
+  const record = { filename: '632204', proposal: { artist: 'Elvis Presley', title: 'Sweet Angeline' } };
+  await lookupCandidates(record, 'Sweet Angeline', {}, fakeLookup);
+  assert.equal(queries.length, 1);
+});
+
+test('lookupCandidates surfaces a failed lookup as null', async () => {
+  const failingLookup = async () => null;
+  const record = { filename: 'x', proposal: { artist: 'A', title: 'T' } };
+  assert.equal(await lookupCandidates(record, 'T', {}, failingLookup), null);
 });
 
 test('ambiguous: two rivals both backed by the filename', () => {

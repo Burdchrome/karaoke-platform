@@ -72,7 +72,7 @@ export function extractCandidates(mbResponse, searchTitle) {
   return [...seenArtists.values()].sort((a, b) => b.score - a.score);
 }
 
-const sameArtist = (a, b) =>
+export const sameArtist = (a, b) =>
   jaroWinkler(stripFeatClause(a), stripFeatClause(b)) >= ARTIST_MATCH_THRESHOLD;
 
 // The core verdict. record = { filename, cardTitle, cardArtist, proposal };
@@ -140,9 +140,8 @@ const REQUEST_GAP_MS = 2000;
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-async function fetchMbRecordings(searchTitle) {
-  const query = `recording:"${searchTitle.replace(/"/g, '')}"`;
-  const url = `${MB_ENDPOINT}?query=${encodeURIComponent(query)}&fmt=json&limit=15`;
+async function fetchMbRecordings(luceneQuery) {
+  const url = `${MB_ENDPOINT}?query=${encodeURIComponent(luceneQuery)}&fmt=json&limit=15`;
   for (let attempt = 1; attempt <= 2; attempt++) {
     try {
       const response = await fetch(url, { headers: { 'User-Agent': USER_AGENT } });
@@ -150,12 +149,44 @@ async function fetchMbRecordings(searchTitle) {
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       return await response.json();
     } catch (err) {
-      console.warn(`MB lookup failed for "${searchTitle}" (attempt ${attempt}): ${err.message}`);
+      console.warn(`MB lookup failed for ${luceneQuery} (attempt ${attempt}): ${err.message}`);
       if (attempt === 2) return null;
       await sleep(3000);
     }
   }
   return null;
+}
+
+// Cached wrapper: one MB request per distinct query per run history.
+async function cachedLookup(mbCache, luceneQuery) {
+  const cacheKey = luceneQuery.toLowerCase();
+  if (!(cacheKey in mbCache)) {
+    const result = await fetchMbRecordings(luceneQuery);
+    await sleep(REQUEST_GAP_MS);
+    if (result === null) return null; // failures are never cached (retried next run)
+    mbCache[cacheKey] = result;
+  }
+  return mbCache[cacheKey];
+}
+
+// Title-only search first; if the proposed artist isn't among the hits, run a
+// second, artist-scoped query — popular titles bury the right artist under 15
+// covers ("We Are Young" returned none of fun.'s recordings). Returns null
+// only when a needed lookup failed.
+export async function lookupCandidates(record, searchTitle, mbCache, lookup) {
+  const escaped = searchTitle.replace(/"/g, '');
+  const titleResponse = await lookup(mbCache, `recording:"${escaped}"`);
+  if (titleResponse === null) return null;
+
+  let recordings = titleResponse.recordings ?? [];
+  const candidates = extractCandidates(titleResponse, searchTitle);
+  if (record.proposal && !candidates.some((c) => sameArtist(c.artist, record.proposal.artist))) {
+    const artistEscaped = String(record.proposal.artist).replace(/"/g, '');
+    const scopedResponse = await lookup(mbCache, `artist:"${artistEscaped}" AND recording:"${escaped}"`);
+    if (scopedResponse === null) return null;
+    recordings = [...recordings, ...(scopedResponse.recordings ?? [])];
+  }
+  return extractCandidates({ recordings }, searchTitle);
 }
 
 function parseArgs(argv) {
@@ -187,8 +218,14 @@ async function main() {
     if (err.code !== 'ENOENT') console.warn(`MB cache unreadable, starting fresh: ${err.message}`);
   }
   // A cached null is a failed lookup, not an answer — retry it on rerun.
+  // Pre-2026-09-16 caches keyed by bare title; re-key to the lucene form.
   for (const [key, value] of Object.entries(mbCache)) {
-    if (value === null) delete mbCache[key];
+    if (value === null) {
+      delete mbCache[key];
+    } else if (!key.startsWith('recording:') && !key.startsWith('artist:')) {
+      delete mbCache[key];
+      mbCache[`recording:"${key.replace(/"/g, '')}"`] = value;
+    }
   }
 
   const report = {
@@ -202,17 +239,14 @@ async function main() {
   for (const record of records) {
     const searchTitle = searchTitleFor(record);
     let judgement;
+    let candidates = null;
     if (!searchTitle) {
       judgement = { verdict: 'flagged', reason: 'no card or proposal title to search with' };
     } else {
-      const cacheKey = searchTitle.toLowerCase();
-      if (!(cacheKey in mbCache)) {
-        mbCache[cacheKey] = await fetchMbRecordings(searchTitle);
-        await sleep(REQUEST_GAP_MS);
-      }
-      judgement = mbCache[cacheKey] === null
+      candidates = await lookupCandidates(record, searchTitle, mbCache, cachedLookup);
+      judgement = candidates === null
         ? { verdict: 'flagged', reason: 'MusicBrainz lookup failed twice' }
-        : judgeRecord(record, extractCandidates(mbCache[cacheKey], searchTitle));
+        : judgeRecord(record, candidates);
     }
 
     const { verdict, ...detail } = judgement;
@@ -220,8 +254,12 @@ async function main() {
       tier: record.tier,
       proposal: record.proposal,
       cardTitle: record.cardTitle ?? null,
+      cardArtist: record.cardArtist ?? null,
       searchTitle,
       ...detail,
+      // The LLM judge (llm-judge.js) needs the full candidate list, not the
+      // human-facing top-3 evidence strings.
+      ...(verdict === 'ambiguous' && candidates ? { candidates } : {}),
     };
 
     processed++;

@@ -152,7 +152,34 @@ MB lookups cached in `.cache/mb-cache.json`). Result over the 244:
 
 Ops note: MB 503-rate-limits a 1.1s gap even with a proper UA; 2s is
 clean. Failed lookups are never cached, so reruns retry only the gaps.
-Promotion into overrides.json remains Josh's manual gate — the report is
-advisory. Next: Josh skims confirmed/corrected/resolved, then decide
-whether the 101-record ambiguous pile is worth building the stage-3
-LLM judge for.
+
+**Artist-scoped second query added same day:** popular titles bury the
+right artist below MB's 15-hit page (fun.'s "We Are Young" returned only
+covers), so proposal records whose artist is missing from the title-only
+hits get a second `artist:"X" AND recording:"T"` lookup. Result: ambiguous
+101 → 67, confirmed 76 → **110** (final: 110/2/8/67/57).
+
+**Stage 3 BUILT + RUN 2026-09-16** — `scripts/llm-judge.js` (+ 9 tests).
+Qwen 27B on :8081, one record per call (~13 s, no-think via
+`chat_template_kwargs`, temp 0.2, server-side json_schema; thinking mode
+truncated outputs in the smoke test — the research's prediction held).
+Evidence-first schema, and **every verdict is receipt-validated in code**
+(`validateReceipts`): quoted evidence must actually appear in the
+filename/card, confirms need an evidence source, corrections must be
+BOTH MB-known and file-backed. Receipt failures demote to the human
+queue with the model's suggestion attached. Resume-safe rounds
+(`--limit N`); raw responses in `.cache/llm-judge-log.jsonl`.
+
+Judge run over the 67: **confirmed 5, corrected 1** (the PRESLEY, ELVIS
+"Tomorrow Night" file the matcher had given to Lonnie Johnson),
+flagged 45, receipt_failed 16. The demotions are the guardrail working —
+e.g. the model suggested "911" for `911 - Private Number` (plausibly
+right) but MB couldn't corroborate, so it went to the queue with the
+suggestion visible instead of being trusted.
+
+**Final rollup of the 244:** 126 machine-settled
+(110+2+8 deterministic, 5+1 LLM) · 118 for Josh (57 no-MB-hit,
+45 judge-flagged, 16 receipt-demoted — each with its evidence and any
+model suggestion in the reports). Remaining human steps: Josh's
+per-bucket sample pass (layer 3 of the guarantee ladder), then promotion
+via his manual gate.
