@@ -198,10 +198,15 @@ wrong confirm (`talking heads-road to nowhere` → Ozzy Osbourne); a scan
 found 24 confirms sharing the risk shape (MB-only backing + unexplained
 filename words). **CDG eyes:** `cdg-snapshot.js --scan` rendered the 24
 files' title cards; two Sonnet vision agents read them (rule: writer
-credits ≠ performer credits). Verdicts: **7 proven wrong** (incl. Lady
+credits ≠ performer credits). Verdicts: **6 proven wrong** (incl. Lady
 Gaga vs the real Rabbitt/Gayle duet, Maurice Williams vs Lisa Loeb, two
-"Traditional" cards, and an Elvis file that's likely Kiri Te Kanawa),
-2 vindicated by "in the style of" credits, 15 card-silent. Full table:
+"Traditional" cards), 2 vindicated by "in the style of" credits, 15
+card-silent, and one conviction OVERTURNED same day: "Long version In
+My Way" really is Elvis — lyric-frame transcription matched his "In My
+Way" (Weisman/Wise, 1960) verbatim; the garbled "…TE KANAWA" line is
+the NZ homemade disc's local vocalist credit, not the song artist.
+Method lesson #2: **lyric frames are a second fingerprint** — when the
+credit line is unreadable, transcribe the lyrics and search them. Full table:
 `.cache/card-audit-2026-09-17.json`. **Fix:** `judgeRecord` now demotes
 MB-only confirms whose filename carries unexplained words
 (`unexplainedFilenameWords`, unit-tested on the Talking Heads case);
