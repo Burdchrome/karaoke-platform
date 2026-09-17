@@ -192,7 +192,30 @@ replays the Alyssa Reid trap against the real :8081 — functionally
 verified in the advisor run (correct verdict, receipts passed); note the
 model may quote artist casing from filename or MB interchangeably.
 
-**Final rollup of the 244:** 126 machine-settled
+**Sample pass + CDG-card audit 2026-09-17 — the confirmed bucket
+FAILED its sample and got fixed.** Josh's 10-record sample surfaced one
+wrong confirm (`talking heads-road to nowhere` → Ozzy Osbourne); a scan
+found 24 confirms sharing the risk shape (MB-only backing + unexplained
+filename words). **CDG eyes:** `cdg-snapshot.js --scan` rendered the 24
+files' title cards; two Sonnet vision agents read them (rule: writer
+credits ≠ performer credits). Verdicts: **7 proven wrong** (incl. Lady
+Gaga vs the real Rabbitt/Gayle duet, Maurice Williams vs Lisa Loeb, two
+"Traditional" cards, and an Elvis file that's likely Kiri Te Kanawa),
+2 vindicated by "in the style of" credits, 15 card-silent. Full table:
+`.cache/card-audit-2026-09-17.json`. **Fix:** `judgeRecord` now demotes
+MB-only confirms whose filename carries unexplained words
+(`unexplainedFilenameWords`, unit-tested on the Talking Heads case);
+rerun moved 110 → 98 confirmed, all seven convicts demoted. Method
+lesson: Sound Choice cards carry performer credits ("IN THE STYLE
+OF..."); DK/Legends/Music Maestro cards are writers-only — CDG eyes
+resolve SC disputes outright but stay silent on most DK-style discs.
+
+**Final rollup of the 244 (post-fix):** 98+2+8 deterministic + 5+1 LLM
+(LLM run predates the demotion; the 12 newly-demoted records carry card
+verdicts for Josh instead of a judge rerun) — remainder to Josh's queue
+with evidence attached.
+
+**Old rollup (pre-audit, for the record):** 126 machine-settled
 (110+2+8 deterministic, 5+1 LLM) · 118 for Josh (57 no-MB-hit,
 45 judge-flagged, 16 receipt-demoted — each with its evidence and any
 model suggestion in the reports). Remaining human steps: Josh's

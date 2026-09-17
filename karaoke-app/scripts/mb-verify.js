@@ -76,6 +76,24 @@ export function extractCandidates(mbResponse, searchTitle) {
 export const sameArtist = (a, b) =>
   jaroWinkler(stripFeatClause(a), stripFeatClause(b)) >= ARTIST_MATCH_THRESHOLD;
 
+const FILENAME_NOISE = new Set(['the', 'and', 'track', 'disc']);
+
+// Filename words that neither the proposal nor the card explains. A confirm
+// resting on MusicBrainz alone is unsafe while such words exist — the
+// 2026-09-17 CDG-card audit proved 7 wrong confirms all had someone ELSE's
+// name sitting in the filename ("talking heads-road to nowhere" confirmed as
+// Ozzy Osbourne). Digit runs and disc-code shapes (dk72, sc8348) are noise.
+export function unexplainedFilenameWords(record, filenameTokens) {
+  const knownTokens = new Set([
+    ...tokens(record.proposal?.title ?? ''),
+    ...tokens(stripFeatClause(record.proposal?.artist ?? '')),
+    ...tokens(record.cardTitle ?? ''),
+  ]);
+  return filenameTokens.filter((word) =>
+    !knownTokens.has(word) && word.length > 2 && !FILENAME_NOISE.has(word) &&
+    !/^\d+$/.test(word) && !/^[a-z]{1,5}\d+$/.test(word));
+}
+
 // The core verdict. record = { filename, cardTitle, cardArtist, proposal };
 // mbCandidates = extractCandidates() output (empty array = MB has nothing).
 export function judgeRecord(record, mbCandidates) {
@@ -99,6 +117,18 @@ export function judgeRecord(record, mbCandidates) {
     const rivals = backedCandidates.filter((c) => !sameArtist(c.artist, record.proposal.artist));
 
     if (proposalInMb && (isEvidenceBacked(record.proposal.artist) || rivals.length === 0)) {
+      // MB-only confirms (no file evidence for the artist) are demoted when
+      // the filename carries words nobody accounts for — see the helper's why.
+      if (!isEvidenceBacked(record.proposal.artist)) {
+        const unexplainedWords = unexplainedFilenameWords(record, filenameTokens);
+        if (unexplainedWords.length) {
+          return {
+            verdict: 'ambiguous',
+            mbEvidence: topEvidence,
+            note: `MB knows the pairing, but the filename carries unexplained words: "${unexplainedWords.join(' ')}"`,
+          };
+        }
+      }
       return {
         verdict: 'confirmed',
         confirmedBy: isEvidenceBacked(record.proposal.artist) ? 'musicbrainz+file-evidence' : 'musicbrainz',

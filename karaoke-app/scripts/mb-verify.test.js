@@ -74,6 +74,28 @@ test('brand card artists never count as evidence', () => {
   assert.equal(result.verdict, 'ambiguous');
 });
 
+test('MB-only confirm is demoted when the filename names someone else', () => {
+  // The 2026-09-17 card-audit case: Ozzy does have "Road to Nowhere" in MB,
+  // but the filename credits Talking Heads — must NOT confirm.
+  const result = judgeRecord(
+    {
+      filename: 'talking heads-road to nowhere',
+      cardTitle: 'ROAD TO NOWHERE',
+      proposal: { artist: 'Ozzy Osbourne', title: 'Road To Nowhere' },
+    },
+    [{ artist: 'Ozzy Osbourne', title: 'Road to Nowhere', score: 100, titleSimilarity: 1 }]
+  );
+  assert.equal(result.verdict, 'ambiguous');
+  assert.match(result.note, /talking heads/);
+});
+
+test('MB-only confirm survives numeric and disc-code-only filenames', () => {
+  const candidates = [{ artist: 'Elvis Presley', title: 'Moody Blue', score: 100, titleSimilarity: 1 }];
+  const proposal = { artist: 'Elvis Presley', title: 'Moody Blue' };
+  assert.equal(judgeRecord({ filename: '632205', cardTitle: 'Moody Blue', proposal }, candidates).verdict, 'confirmed');
+  assert.equal(judgeRecord({ filename: 'dk72-09 - Moody Blue', cardTitle: 'Moody Blue', proposal }, candidates).verdict, 'confirmed');
+});
+
 test('flagged: MusicBrainz has nothing for the title', () => {
   const withProposal = judgeRecord(
     { filename: 'x', proposal: { artist: 'A', title: 'T' }, cardTitle: 'T' }, []
