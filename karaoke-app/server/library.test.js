@@ -338,6 +338,92 @@ test('empty overrides map is a no-op', () => {
   assert.equal(songs[0].artist, 'Wrong Artist');
 });
 
+// --- overrides × grouping: the seam the #30 promotions depend on ---
+// applyOverrides and groupSongs are each tested above/below in isolation;
+// these pin what the two do TOGETHER, because that is where a bad override
+// would show up as a duplicate entry or a wrongly merged song.
+
+// A parser failure: blank artist, filename-as-title, so groupSongs keys it
+// on its filename and it floats as an orphan group.
+function orphan(filename, discCode = '') {
+  return fakeSong({
+    id: `orphan-${filename.toLowerCase().replace(/\W+/g, '-')}-${discCode || 'nodisc'}`,
+    filename,
+    artist: '',
+    title: filename,
+    discCode,
+    songKey: `|${filename.toLowerCase()}`,
+  });
+}
+
+test('an override moves an orphan INTO the existing group, not beside it', () => {
+  const songs = [
+    fakeSong({ id: 'nd-1', filename: 'SC8000-01 - Neil Diamond - Red, Red Wine', artist: 'Neil Diamond', title: 'Red, Red Wine', discCode: 'SC8000-01', songKey: 'diamond neil|red red wine' }),
+    orphan('Red Red Wine', 'DK100-05'),
+  ];
+  assert.equal(groupSongs(songs).length, 2, 'before: named song + orphan are separate groups');
+
+  applyOverrides(songs, { 'Red Red Wine': { artist: 'Neil Diamond', title: 'Red, Red Wine' } });
+  const groups = groupSongs(songs);
+  assert.equal(groups.length, 1, 'after: the orphan joined the named group');
+  assert.equal(groups[0].artist, 'Neil Diamond');
+  assert.deepEqual(groups[0].versions.map((v) => v.discCode), ['DK100-05', 'SC8000-01']);
+});
+
+test('one filename-keyed override reaches every copy and yields ONE group', () => {
+  // The drive has folders copied around: the same file under three disc codes.
+  const songs = [orphan('Technologic', 'G13974'), orphan('Technologic', 'G22001'), orphan('Technologic', 'SF900-07')];
+  assert.equal(groupSongs(songs).length, 1, 'orphans sharing a filename already collapse on filename');
+
+  applyOverrides(songs, { Technologic: { artist: 'Daft Punk', title: 'Technologic' } });
+  const groups = groupSongs(songs);
+  assert.equal(groups.length, 1);
+  assert.equal(groups[0].artist, 'Daft Punk');
+  assert.equal(groups[0].versions.length, 3, 'all three copies applied, none dropped, none duplicated');
+});
+
+test('an override never merges two different songs that share a title', () => {
+  const songs = [
+    fakeSong({ id: 'q-1', filename: 'Queen - Delilah', artist: 'Queen', title: 'Delilah', discCode: 'SC1', songKey: 'queen|delilah' }),
+    orphan('delilah', 'DK72-09'),
+  ];
+  applyOverrides(songs, { delilah: { artist: 'Tom Jones', title: 'Delilah' } });
+  const groups = groupSongs(songs);
+  assert.equal(groups.length, 2, 'Tom Jones and Queen stay separate');
+  assert.deepEqual(groups.map((g) => g.artist).sort(), ['Queen', 'Tom Jones']);
+});
+
+test('applying overrides twice is the same as applying once', () => {
+  const overrides = { 'Red Red Wine': { artist: 'Neil Diamond', title: 'Red, Red Wine (Live)' } };
+  const once = applyOverrides([orphan('Red Red Wine', 'DK1')], overrides);
+  const twice = applyOverrides(applyOverrides([orphan('Red Red Wine', 'DK1')], overrides), overrides);
+  assert.deepEqual(twice, once);
+  assert.equal(once[0].versionLabel, 'Live', 'versionLabel is recomputed from the override, not stacked');
+});
+
+test('invariant: applying overrides never increases the group count', () => {
+  // An override can only move a file from "keyed on its own filename" to a
+  // real song key — so groups can merge, never split. If this ever fails,
+  // the key derivation or the override format changed underneath us.
+  const songs = [
+    fakeSong({ id: 'a', filename: 'A', artist: 'Garth Brooks', title: 'The Dance', discCode: 'S1', songKey: 'brooks garth|dance' }),
+    fakeSong({ id: 'b', filename: 'B', artist: 'Garth Brooks', title: 'That Summer', discCode: 'S2', songKey: 'brooks garth|that summer' }),
+    orphan('The Dance', 'D1'),
+    orphan('That Summer', 'D2'),
+    orphan('unmatched file', 'D3'),
+    orphan("it's your song", 'D4'),
+  ];
+  const before = groupSongs(structuredClone(songs)).length;
+  applyOverrides(songs, {
+    'The Dance': { artist: 'Garth Brooks', title: 'Dance, The' },
+    'That Summer': { artist: 'Garth Brooks', title: 'That Summer' },
+    "it's your song": { artist: 'Garth Brooks', title: "It's Your Song" },
+  });
+  const after = groupSongs(songs).length;
+  assert.ok(after <= before, `groups went ${before} -> ${after}`);
+  assert.equal(after, before - 2, 'two orphans merged into named groups, one became its own named group, one stayed orphan');
+});
+
 test('loadOverrides: missing file is a clean no-op (empty map)', async () => {
   const missing = path.join(os.tmpdir(), `no-such-overrides-${Date.now()}.json`);
   assert.deepEqual(await loadOverrides(missing), {});
