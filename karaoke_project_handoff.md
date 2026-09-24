@@ -1,6 +1,6 @@
 # Karaoke DJ Project — Master Handoff
 
-**Last updated:** 2026-09-10 (deterministic check tooling: ESLint+knip+guard hooks `db8fb25`; TEST_LOG 2026-09-10 has the session)
+**Last updated:** 2026-09-18 (triage promotion gate #28 + sample/queue views #29 on `explore/mb-verify`; TEST_LOG 2026-09-18 has the session)
 **Supersedes:** `karaoke_dj_handoff.md` (older — pre-inventory, contained open questions now answered)
 **For:** Shooter, a karaoke DJ the user knows personally
 
@@ -380,9 +380,10 @@ Implements `code-standards.md` → Repo Orientation.
 - `karaoke-app/unparsed-songs.txt` — 875 filenames the parser can't split, clustered by failure pattern (regenerated 2026-07-09, ticket #3)
 - `karaoke-app/scripts/measure-parse-coverage.js` — parse-coverage instrument (ticket #9); `npm run measure`; canonical baseline in its header; tests via `npm test`
 - `karaoke-app/library-cache.json` — auto-generated, schema v2 (songKey + versionLabel); rebuild with `npm run rescan`
-- `karaoke-app/overrides.json` — manual metadata corrections (file id or filename → artist/title); applied at startup, no rescan needed; 17 entries as of 2026-07-17 (issue #8 rescue)
+- `karaoke-app/overrides.json` — manual metadata corrections (file id or filename → artist/title); applied at startup, no rescan needed; 314 entries as of 2026-09-18 (grown via #8 rescue + #21 harvest auto-tier + card-audit promotions)
 - `karaoke-app/scripts/cdg-snapshot.js` — renders CDG title-card frames to PNG (issue #21 camera); `--scan` change-detection mode is the default choice
 - `karaoke-app/scripts/cdg-read.js` — reads those frames with local `qwen3-vl:8b` and scores them against a truth file (issue #21 reader + comparator); `--truth overrides.json` is the calibration mode; `--out` report is checkpointed after every file and resumable (rerun with the same `--out` to continue an interrupted batch). Needs Ollama up and the GPU free of llama-server
+- `karaoke-app/scripts/triage-apply.js` — triage promotion gate + evidence views (#28/#29); `--apply` promotes named verdict buckets into overrides, `--sample` deals N random records with evidence, `--queue` lists the human queue with card-audit notes. Tests: `scripts/triage-apply.test.js` + `scripts/triage-apply.e2e.test.js`
 - `karaoke-app/scripts/` rescue helpers (`extract-code-only.cjs`, `find-siblings.cjs`, `verify-overrides.cjs`) — re-run when the second drive lands to build the next rescue batch
 - `karaoke-app/README.md` — operational instructions including the Cloudflare Tunnel + auth flow
 - `karaoke_claude_design_brief.md` — design pass brief for next aesthetic iteration
@@ -442,12 +443,43 @@ All 8 questions from the now-archived `karaoke_shooter_sunday.md` got walked thr
 
 ---
 
+**Triage promotion gate + evidence views (2026-09-18, `explore/mb-verify`):**
+`scripts/triage-apply.js` built via the implement pipeline (Codex →
+Sonnet advisor → Opus /code-review, ×2 tickets). Three mutually exclusive
+modes: `--apply <buckets>` promotes named verdict buckets into
+`overrides.json` (mirrors `cdg-harvest --apply`); `--sample <bucket>
+[--n N]` deals random records with evidence for ruling; `--queue` lists
+the human queue (130 records: flagged + judge-flagged + receipt_failed +
+demoted) with card-audit notes attached. 24 tests (12 unit + 12 e2e);
+full suite 129 pass / 1 gated skip; `npm run check` clean. Commits
+`7a22d70` (#28) and `d930109` (#29). Two judgment forks pending Josh's
+ruling (posted on issue comments): (1) `--mb-report`/`--judge-report`
+seam flags vs spec's "one new seam" wording; (2) whether `--sample`
+should attach card-audit notes to confirmed-bucket records. Backlog:
+file at 315 lines → extract `triage-views.js` on next touch.
+
 **Next session can pick any of:**
-- **#21 Stage 1 harvest — auto tier LANDED 2026-08-26** (290 overrides
-  applied; hard failures 839 → 419). Remaining: Josh browse-and-rule on
-  the likely/review/unmatched tiers in `.cache/stage1-proposals.json`,
-  gate `node scripts/cdg-harvest.js --apply <tiers>`. Numbers: TEST_LOG
-  2026-08-26.
+- **#30 ratification run (paired, human-gated)** — deal Josh 10 confirmed
+  records via `--sample`, rule corrected/resolved in full, promote ratified
+  buckets, spot-check one promoted record at next server start. Requires
+  the two judgment forks above to be ruled first.
+- **#25 Sunfly dialect parse — LANDED 2026-09-13** (`59becc9` on
+  `fix/25-sunfly-dialect-parse`, not merged to main yet): peel-then-split
+  pass + joiner-aware buildIndex frequency split; failures 875→774, 63/85
+  dialect files split, CACHE_VERSION 5, cache rescanned; ID3 verdict 7/96
+  tagged → no fallback ticket, hand-promote those 7. Remaining: Josh
+  browse-and-rule on the tiers in `.cache/stage1-proposals.json` (likely
+  68 / review 80 / unmatched 96; several already parser-fixed), gate
+  `node scripts/cdg-harvest.js --apply <tiers>`, then merge the branch.
+  Full results on issue #25.
+- **Lens-pass leftovers (unratified, from the 08-31 ch.4 pass):** deepen
+  `loadLibrary()` to return `{groups, byId}`; optional dep cuts
+  (winston→console, nodemon→`node --watch`, double-walk→`fs.readdir
+  recursive`).
+- **Deferred-with-triggers:** feat-clause dedupe (~47 dupes, marker in
+  makeSongKey); hyphen-variant artists; second-drive batch.
+- **Watch:** 3 list stragglers in #20's close comment; share-URL box on
+  next real launch (TEST_LOG 2026-09-01 follow-up).
 - **Venue settings flag** — `enableKeyChange` (ADR 0002) next time the UI gets touched.
 - **Tier 2 Cloudflare upgrade** — named tunnel + persistent URL. ~10 min one-time setup, free, removes the "URL changes every restart" friction.
 - **Phase 3 metadata pipeline: DONE 2026-07-13** — all tickets #9–#15 closed-or-passed; acceptance numbers in the Phase 3 section are the new baseline. Remaining metadata work is issue #8 (~41 files) + issue #21. (Lookup pipeline and fingerprinting were both rejected by the map — don't resurrect them.)

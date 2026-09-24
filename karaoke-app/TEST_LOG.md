@@ -4,6 +4,65 @@ A running record of manual test sessions against the karaoke server. Each sessio
 
 ---
 
+## Session: 2026-09-18 (triage promotion gate #28 + sample/queue views #29)
+
+### What changed
+
+1. **Triage apply gate** (`7a22d70`, #28) — `scripts/triage-apply.js
+   --apply <buckets>` merges named verdict buckets from mb-verify and
+   llm-judge reports into `overrides.json`. Mirrors `cdg-harvest --apply`:
+   explicit bucket names only, existing overrides win on collision,
+   idempotent, unknown/human-queue buckets refused before any file I/O.
+   Exports pure `planApply()` for unit testing. Review ladder: Codex →
+   Sonnet advisor (deduped validation, added error-path tests) → fresh
+   /code-review (stopped message-regex dispatch, added loud missing-value
+   errors).
+2. **Sample + queue views** (`d930109`, #29) — two read-only modes on the
+   same tool. `--sample <bucket> --n N` deals random records with evidence
+   for ruling; `--queue` lists all 130 human-queue records (57 flagged +
+   45 judge:flagged + 16 receipt_failed + 12 demoted) with card-audit
+   notes attached. Tolerant trailing-comma parse on the hand-written audit
+   cache; missing cache warns and continues. Review ladder caught:
+   `convictionOverturned` printed raw JSON (fixed, `resolution` field now
+   preferred), bidirectional cardSilent prefix match (dropped reverse
+   direction), vacuous e2e assertion (fixed to count occurrences), stale
+   file header (updated to document all three modes).
+
+### Test cases
+
+| # | What | Expected | Pass/Fail | Notes |
+|---|------|----------|-----------|-------|
+| 1 | Unit: planApply promotes proposal/suggestion per bucket, skips collisions, throws on bad names | 7 assertions | ✅ | |
+| 2 | E2E: --apply on fixture reports + temp overrides, idempotent rerun, unknown bucket = non-zero, real files untouched | 5 assertions | ✅ | child-process seam |
+| 3 | Unit: sampleBucket deals N, reaches judge/queue buckets, throws on unknown | 2 assertions | ✅ | |
+| 4 | Unit: buildQueue lists 4 groups, attaches audit notes incl. resolution text, works without audit | 4 assertions | ✅ | |
+| 5 | E2E: --sample deals N with evidence, read-only proven by hash | 1 assertion | ✅ | |
+| 6 | E2E: --queue lists all groups with audit notes, cardSilent prefix, convictionOverturned resolution text, read-only | 1 assertion | ✅ | |
+| 7 | E2E: missing card-audit → warn + queue runs; corrupt card-audit → loud failure | 2 assertions | ✅ | |
+| 8 | E2E: modes mutually exclusive | 1 assertion | ✅ | |
+| 9 | Full suite `npm test` | 129 pass / 1 gated skip / 0 fail | ✅ | |
+| 10 | `npm run check` (eslint + knip) | clean | ✅ | |
+| 11 | Live smoke: `--sample confirmed --n 2` against real reports | 2 records with evidence, real files untouched | ✅ | hash-verified |
+| 12 | Live smoke: `--queue` against real reports | 130 records, audit notes on demoted, "In My Way" shows resolution text | ✅ | hash-verified |
+
+**Tier:** **verified-in-test** — deliberate controlled runs + live
+read-only smoke against real `.cache/` reports (real overrides.json and
+library-cache.json proven untouched by sha256 hash). Graduates to
+verified-in-use when #30's ratification run promotes real buckets and
+Josh spot-checks a promoted record in the loaded library.
+
+### Follow-ups
+
+- [ ] Two judgment forks pending Josh (posted on #28 and #29 issue
+  comments): (1) bless --mb-report/--judge-report seam flags; (2) whether
+  --sample should attach card-audit notes to confirmed-bucket records.
+- [ ] File at 315 lines with 3 modes — extract `triage-views.js` on next
+  touch (standards 200-line checkpoint).
+- [ ] `usage()` lists only promotable buckets; sample mode accepts 9 — a
+  user who typos a view-only bucket sees a misleading footer. Nit.
+
+---
+
 ## Session: 2026-09-10 (deterministic check tooling: ESLint + knip + workspace guard hooks)
 
 ### What changed
