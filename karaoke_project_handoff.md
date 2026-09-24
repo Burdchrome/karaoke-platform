@@ -1,6 +1,6 @@
 # Karaoke DJ Project — Master Handoff
 
-**Last updated:** 2026-09-18 (triage promotion gate #28 + sample/queue views #29 on `explore/mb-verify`; TEST_LOG 2026-09-18 has the session)
+**Last updated:** 2026-09-24 (#30 ratification run promoted 113 records; `explore/mb-verify` merged to main (#31); TEST_LOG 2026-09-24 has the session)
 **Supersedes:** `karaoke_dj_handoff.md` (older — pre-inventory, contained open questions now answered)
 **For:** Shooter, a karaoke DJ the user knows personally
 
@@ -380,7 +380,7 @@ Implements `code-standards.md` → Repo Orientation.
 - `karaoke-app/unparsed-songs.txt` — 875 filenames the parser can't split, clustered by failure pattern (regenerated 2026-07-09, ticket #3)
 - `karaoke-app/scripts/measure-parse-coverage.js` — parse-coverage instrument (ticket #9); `npm run measure`; canonical baseline in its header; tests via `npm test`
 - `karaoke-app/library-cache.json` — auto-generated, schema v2 (songKey + versionLabel); rebuild with `npm run rescan`
-- `karaoke-app/overrides.json` — manual metadata corrections (file id or filename → artist/title); applied at startup, no rescan needed; 314 entries as of 2026-09-18 (grown via #8 rescue + #21 harvest auto-tier + card-audit promotions)
+- `karaoke-app/overrides.json` — manual metadata corrections (file id or filename → artist/title); applied at startup, no rescan needed; 427 entries as of 2026-09-24 (grown via #8 rescue + #21 harvest auto-tier + card-audit promotions + #30 triage ratification)
 - `karaoke-app/scripts/cdg-snapshot.js` — renders CDG title-card frames to PNG (issue #21 camera); `--scan` change-detection mode is the default choice
 - `karaoke-app/scripts/cdg-read.js` — reads those frames with local `qwen3-vl:8b` and scores them against a truth file (issue #21 reader + comparator); `--truth overrides.json` is the calibration mode; `--out` report is checkpointed after every file and resumable (rerun with the same `--out` to continue an interrupted batch). Needs Ollama up and the GPU free of llama-server
 - `karaoke-app/scripts/triage-apply.js` — triage promotion gate + evidence views (#28/#29); `--apply` promotes named verdict buckets into overrides, `--sample` deals N random records with evidence, `--queue` lists the human queue with card-audit notes. Tests: `scripts/triage-apply.test.js` + `scripts/triage-apply.e2e.test.js`
@@ -452,17 +452,20 @@ modes: `--apply <buckets>` promotes named verdict buckets into
 the human queue (130 records: flagged + judge-flagged + receipt_failed +
 demoted) with card-audit notes attached. 24 tests (12 unit + 12 e2e);
 full suite 129 pass / 1 gated skip; `npm run check` clean. Commits
-`7a22d70` (#28) and `d930109` (#29). Two judgment forks pending Josh's
-ruling (posted on issue comments): (1) `--mb-report`/`--judge-report`
-seam flags vs spec's "one new seam" wording; (2) whether `--sample`
-should attach card-audit notes to confirmed-bucket records. Backlog:
-file at 315 lines → extract `triage-views.js` on next touch.
+`7a22d70` (#28) and `d930109` (#29). Josh ruled both judgment forks
+2026-09-24: `--mb-report`/`--judge-report` blessed as read-path seams;
+`--sample` attaches card-audit notes to every dealt record (`a4dbb79`).
+**#30 ratification run 2026-09-24:** 26 records (10 confirmed sampled +
+corrected/resolved/judge buckets in full) reviewed on a claude.ai artifact
+page with CDG title-card frames + audio clips, rulings read back from the
+page's db — 26/26 pass, 113 promoted (`189d046`), spot-checked through
+`loadLibrary()`. Branch merged to main (#31). Research doc:
+`docs/research/llm-assisted-stage1-triage.md`. Backlog: file at 315
+lines → extract `triage-views.js` on next touch; U+2010 hyphens in
+MB-sourced names (TEST_LOG 2026-09-24 follow-up); 130 human-queue records
+still await ruling via `--queue`.
 
 **Next session can pick any of:**
-- **#30 ratification run (paired, human-gated)** — deal Josh 10 confirmed
-  records via `--sample`, rule corrected/resolved in full, promote ratified
-  buckets, spot-check one promoted record at next server start. Requires
-  the two judgment forks above to be ruled first.
 - **#25 Sunfly dialect parse — LANDED 2026-09-13** (`59becc9` on
   `fix/25-sunfly-dialect-parse`, not merged to main yet): peel-then-split
   pass + joiner-aware buildIndex frequency split; failures 875→774, 63/85

@@ -72,7 +72,7 @@ Karaoke Project/
 - **[karaoke_inventory.txt](karaoke_inventory.txt)** — raw library scan report (2026-05-15). Answers "what's actually on the drive?"
 - **[docs/adr/](docs/adr/)** — one file per hard-to-reverse decision. Answers "why is it built this way?"
 - **[docs/specs/](docs/specs/)** — feature specs for upcoming work (metadata pipeline).
-- **[docs/research/](docs/research/)** — investigation results feeding those specs.
+- **[docs/research/](docs/research/)** — investigation results feeding those specs. Start with [llm-assisted-stage1-triage.md](docs/research/llm-assisted-stage1-triage.md): how the MusicBrainz verify + local-LLM judge pipeline turns parser proposals into ruled overrides (the `explore/mb-verify` arc, #27–#31).
 - **[docs/agents/](docs/agents/)** — workflow config for AI agents working in this repo: coding standards, issue tracker, triage labels, domain glossary.
 
 **Historical** (kept for context, not current):

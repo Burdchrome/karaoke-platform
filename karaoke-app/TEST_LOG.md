@@ -4,6 +4,51 @@ A running record of manual test sessions against the karaoke server. Each sessio
 
 ---
 
+## Session: 2026-09-24 (#30 ratification run + #29 fork ruling + #31 merge)
+
+### What changed
+
+1. **Fork rulings** (issue comments on #28/#29) — (1) `--mb-report` /
+   `--judge-report` blessed as read-path seams; (2) `--sample` attaches
+   card-audit notes to any dealt record, confirmed bucket included.
+2. **Sample view carries audit notes** (`a4dbb79`) — `sampleBucket()`
+   takes an optional `cardAudit`; `main` passes `readCardAudit()` through.
+   Test-first: unit + e2e went red, then green. 8 real cardSilent notes
+   now surface on confirmed records before `--apply`.
+3. **Ratification run** (`189d046`, #30) — 26 records reviewed on a
+   claude.ai artifact page (evidence + CDG title-card frames via
+   `cdg-snapshot --scan` + 60s mono clip per record; rulings stored in
+   the page's db and read back). 26/26 pass. `--apply
+   confirmed,corrected,resolved,judge:confirmed,judge:corrected` → added
+   113, skipped 1 (already present). overrides.json 314 → 427.
+
+### Test cases
+
+| # | What | Expected | Pass/Fail | Notes |
+|---|------|----------|-----------|-------|
+| 1 | Unit: sampleBucket attaches note to '632202', none to '632204', none without audit | red before change, green after | ✅ | |
+| 2 | E2E: --sample confirmed shows `auditNote:` on exactly the audited record | red before, green after | ✅ | |
+| 3 | Live: --sample confirmed --n 400 against real reports | audit notes appear on confirmed records | ✅ | 5+ notes seen, writers-only cautions |
+| 4 | --apply five buckets | 98+2+8+5+1 = 114 minus collisions | ✅ | 113 added, 1 skipped |
+| 5 | Spot-check via `loadLibrary()` (real server load path) | Technologic→Daft Punk; PSJT201 Tomorrow Night→Elvis; That Summer→Garth Brooks; all 4 one→All‐4‐One | ✅ | "Applied 612 manual overrides" (entries match multiple copies) |
+| 6 | Full suite `npm test` | 131 pass / 1 gated skip | ✅ | |
+| 7 | `npm run check` | clean | ✅ | |
+
+**Tier:** **verified-in-test** for the code change; the 113 promotions are
+**verified-in-test** via the real loader, not yet in-use. Graduates to
+verified-in-use at the next real gig launch when a DJ search lands on a
+promoted record (e.g. "Technologic" → Daft Punk).
+
+### Follow-ups
+
+- [ ] Unicode hyphens (U+2010) from MusicBrainz in "All‐4‐One" — check DJ
+  search for "all-4-one" still hits at next launch; if not, normalise
+  hyphens in the search index, not the override.
+- [ ] Rerun `--queue` view work for the 130 human-queue records — the run
+  covered promotable buckets only; the queue is untouched by design.
+
+---
+
 ## Session: 2026-09-18 (triage promotion gate #28 + sample/queue views #29)
 
 ### What changed
@@ -53,9 +98,8 @@ Josh spot-checks a promoted record in the loaded library.
 
 ### Follow-ups
 
-- [ ] Two judgment forks pending Josh (posted on #28 and #29 issue
-  comments): (1) bless --mb-report/--judge-report seam flags; (2) whether
-  --sample should attach card-audit notes to confirmed-bucket records.
+- [x] Two judgment forks — ruled 2026-09-24: flags blessed, notes
+  attached (see 2026-09-24 entry).
 - [ ] File at 315 lines with 3 modes — extract `triage-views.js` on next
   touch (standards 200-line checkpoint).
 - [ ] `usage()` lists only promotable buckets; sample mode accepts 9 — a
