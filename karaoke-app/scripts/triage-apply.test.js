@@ -182,6 +182,19 @@ test('buildQueue attaches card-audit notes where the audit covers a record', () 
   assert.equal(judged.auditNote, undefined);
 });
 
+test('sampleBucket attaches card-audit notes to dealt records, confirmed bucket included (#29 ruling)', () => {
+  // 8 real cardSilent entries point at MB-confirmed records — the caution has
+  // to surface before --apply confirmed, so the sample view carries it.
+  const cardAudit = { cardSilent: ['632202 (writers only on the card, no performer line)'] };
+  const dealt = sampleBucket('confirmed', reports, 10, cardAudit);
+  const noted = dealt.find((entry) => entry.filename === '632202');
+  assert.match(noted.auditNote, /writers only/);
+  const clean = dealt.find((entry) => entry.filename === '632204');
+  assert.equal(clean.auditNote, undefined);
+  // No audit at all still deals cleanly.
+  assert.ok(sampleBucket('confirmed', reports, 10).every((entry) => entry.auditNote === undefined));
+});
+
 test('buildQueue works without a card audit (gitignored cache may be absent)', () => {
   const queue = buildQueue({ mbReport: queueMbReport, judgeReport: queueJudgeReport }, null);
   assert.equal(queue.length, 5);

@@ -218,6 +218,7 @@ const CARD_AUDIT_FIXTURE = `{
   },
   "cardSilent": [
     "ambiguous-record (writers only, no performer)",
+    "632202 (writers only on the card, no performer line)",
   ]
 }`;
 
@@ -278,6 +279,14 @@ describe('triage-apply.js sample and queue views', () => {
     assert.match(wholeRun.stdout, /Clint Black with Lisa Hartman Black/);
 
     assert.equal(hashAllFixtures(fixtures), before, 'sample mode must write nothing');
+  });
+
+  test('sample mode attaches card-audit notes to confirmed records (#29 ruling: evidence before promotion)', async () => {
+    const fixtures = setUpViewFixtures();
+    const run = await runScript(viewArgs(fixtures, ['--sample', 'confirmed', '--n', '50']));
+    assert.equal(run.status, 0, run.stderr);
+    assert.match(run.stdout, /\[confirmed\] 632202\r?\n(?: {2}.*\r?\n)*? {2}auditNote: 632202 \(writers only on the card/);
+    assert.equal((run.stdout.match(/auditNote:/g) ?? []).length, 1, 'only the audited record carries a note');
   });
 
   test('sample mode refuses an unknown bucket name loudly', async () => {

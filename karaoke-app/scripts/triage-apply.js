@@ -9,7 +9,7 @@
 //
 // Usage:
 //   node scripts/triage-apply.js --apply confirmed,corrected
-//   node scripts/triage-apply.js --sample confirmed [--n 10]
+//   node scripts/triage-apply.js --sample confirmed [--n 10] [--card-audit ...]
 //   node scripts/triage-apply.js --queue [--card-audit .cache/card-audit-2026-09-17.json]
 //       [--mb-report .cache/mb-verify.json] [--judge-report .cache/llm-judge.json]
 //       [--overrides overrides.json]
@@ -17,7 +17,8 @@
 // Three modes, mutually exclusive:
 //   --apply   Promote named buckets into overrides (write). Confirmed buckets
 //             promote the proposal; corrected/resolved promote the suggestion.
-//   --sample  Deal N random records from any bucket with evidence (read-only).
+//   --sample  Deal N random records from any bucket with evidence and any
+//             card-audit note attached (read-only).
 //   --queue   List the human queue: flagged + judge-flagged + receipt-failed +
 //             demoted records, with card-audit notes attached (read-only).
 //
@@ -92,10 +93,16 @@ function resolveViewBucket(bucketName) {
   return bucket;
 }
 
-export function sampleBucket(bucketName, reports, n) {
+// cardAudit is optional: when present, dealt records carry their card-audit
+// note (Josh's #29 ruling — the caution has to be visible before --apply
+// confirmed, since 8 real cardSilent entries point at confirmed records).
+export function sampleBucket(bucketName, reports, n, cardAudit) {
   const { report, bucket } = resolveViewBucket(bucketName);
   const entries = Object.entries(reports[report]?.[bucket] ?? {})
-    .map(([filename, record]) => ({ filename, record }));
+    .map(([filename, record]) => {
+      const auditNote = findAuditNote(filename, cardAudit);
+      return { filename, record, ...(auditNote ? { auditNote } : {}) };
+    });
   if (n >= entries.length) return entries;
 
   const shuffled = [...entries];
@@ -223,7 +230,7 @@ function readCardAudit(filePath) {
     return JSON.parse(text.replace(/,\s*([}\]])/g, '$1'));
   } catch (err) {
     if (err.code === 'ENOENT') {
-      console.warn(`Card audit file ${filePath} not found; queue will omit audit notes.`);
+      console.warn(`Card audit file ${filePath} not found; audit notes will be omitted.`);
       return null;
     }
     throw new Error(`Failed while reading card audit from ${filePath}: ${err.message}`, { cause: err });
@@ -287,8 +294,9 @@ async function main() {
     const judgeReport = readJson(args.judgeReport, 'reading LLM judge triage report');
 
     if (args.sample) {
-      for (const { filename, record } of sampleBucket(args.sample, { mbReport, judgeReport }, parseSampleSize(args.n))) {
-        printRecordBlock(args.sample, filename, record);
+      const dealt = sampleBucket(args.sample, { mbReport, judgeReport }, parseSampleSize(args.n), readCardAudit(args.cardAudit));
+      for (const { filename, record, auditNote } of dealt) {
+        printRecordBlock(args.sample, filename, record, auditNote);
       }
       return;
     }
