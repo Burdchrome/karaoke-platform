@@ -7,6 +7,42 @@
     "artist": "Jim Reeves",
     "title": "Old Christmas Card"
   },
+  "632202": {
+    "artist": "Tony Bennett",
+    "title": "Rags To Riches"
+  },
+  "632204": {
+    "artist": "Elvis Presley",
+    "title": "Sweet Angeline"
+  },
+  "632205": {
+    "artist": "Elvis Presley",
+    "title": "Moody Blue"
+  },
+  "632206": {
+    "artist": "Elvis Presley",
+    "title": "Too Much Monkey Business"
+  },
+  "632207": {
+    "artist": "Elvis Presley",
+    "title": "It's Your Baby You Rock It"
+  },
+  "632209": {
+    "artist": "Elvis Presley",
+    "title": "Talk About The Good Times"
+  },
+  "632210": {
+    "artist": "Elvis Presley",
+    "title": "Something Blue"
+  },
+  "632214": {
+    "artist": "Elvis Presley",
+    "title": "Summer Kisses Winter Tears"
+  },
+  "632215": {
+    "artist": "Elvis Presley",
+    "title": "I've Got A Thing About You Baby"
+  },
   "826201": {
     "artist": "George Jones",
     "title": "Walk Through This World With Me"
@@ -1254,5 +1290,421 @@
   "Long version In My Way": {
     "artist": "Elvis Presley",
     "title": "In My Way"
+  },
+  "13.-Fun.-Feat.-Janelle-Monáe-We-Are-Young-(SF314-13)": {
+    "artist": "Fun. feat. Janelle Monae",
+    "title": "We Are Young"
+  },
+  "BOSTON": {
+    "artist": "Augustana",
+    "title": "Boston"
+  },
+  "Callin' Baton Rouge": {
+    "artist": "Garth Brooks",
+    "title": "Callin' Baton Rouge"
+  },
+  "DK72-09-delilah": {
+    "artist": "Tom Jones",
+    "title": "Delilah"
+  },
+  "do what you gotta do": {
+    "artist": "Garth Brooks",
+    "title": "Do What You Gotta Do"
+  },
+  "Friends In Low Places": {
+    "artist": "Garth Brooks",
+    "title": "Friends In Low Places"
+  },
+  "G13376 Dragostea Din Tei": {
+    "artist": "O-Zone",
+    "title": "Dragostea Din Tei"
+  },
+  "how you ever gonna know": {
+    "artist": "Garth Brooks",
+    "title": "How You Ever Gonna Know"
+  },
+  "I Am I Said": {
+    "artist": "Neil Diamond",
+    "title": "I Am, I Said"
+  },
+  "it's midnight cinderella": {
+    "artist": "Garth Brooks",
+    "title": "It's Midnight Cinderella"
+  },
+  "it's your song": {
+    "artist": "Garth Brooks",
+    "title": "It's Your Song"
+  },
+  "Learning To Live Again": {
+    "artist": "Garth Brooks",
+    "title": "Learning To Live Again"
+  },
+  "Longfellow Serenade": {
+    "artist": "Neil Diamond",
+    "title": "Longfellow Serenade"
+  },
+  "love her madly": {
+    "artist": "Doors",
+    "title": "Love Her Madly"
+  },
+  "Love On The Rocks": {
+    "artist": "Neil Diamond",
+    "title": "Love On The Rocks"
+  },
+  "Not Counting You": {
+    "artist": "Garth Brooks",
+    "title": "Not Counting You"
+  },
+  "one night a day": {
+    "artist": "Garth Brooks",
+    "title": "One Night A Day"
+  },
+  "rb01403": {
+    "artist": "Laverne Baker",
+    "title": "I Cried A Tear"
+  },
+  "riders on the storm": {
+    "artist": "Doors",
+    "title": "Riders On The Storm"
+  },
+  "roadhouse blues": {
+    "artist": "Doors",
+    "title": "Roadhouse Blues"
+  },
+  "Say_Hey__I_Love_You__No_Vocal": {
+    "artist": "Michael Franti & Spearhead",
+    "title": "Say Hey (I Love You)"
+  },
+  "SC_7582_01_This_Is_How_We_Do_It_Montel_Jordan": {
+    "artist": "Montell Jordan",
+    "title": "This Is How We Do It"
+  },
+  "she's every woman": {
+    "artist": "Garth Brooks",
+    "title": "She's Every Woman"
+  },
+  "DK003-14 - do ya think i'm sexy": {
+    "artist": "Rod Stewart",
+    "title": "Da Ya Think I'm Sexy"
+  },
+  "she's gonna make it": {
+    "artist": "Garth Brooks",
+    "title": "She's Gonna Make It"
+  },
+  "Springsteen-LG050-02": {
+    "artist": "Bruce Springsteen",
+    "title": "Dancing In The Dark"
+  },
+  "standing outside the fire": {
+    "artist": "Garth Brooks",
+    "title": "Standing Outside The Fire"
+  },
+  "that ol' wind": {
+    "artist": "Garth Brooks",
+    "title": "That Ol' Wind"
+  },
+  "That Summer": {
+    "artist": "Garth Brooks",
+    "title": "That Summer"
+  },
+  "That's Someone You Never Forget +0": {
+    "artist": "Elvis Presley",
+    "title": "That's Someone You Never Forget"
+  },
+  "the beaches of cheyenne": {
+    "artist": "Garth Brooks",
+    "title": "Beaches Of Cheyenne, The"
+  },
+  "Thunder Rolls": {
+    "artist": "Garth Brooks",
+    "title": "Thunder Rolls, The"
+  },
+  "track08": {
+    "artist": "Charly McClain",
+    "title": "Surround Me With Love"
+  },
+  "Unanswered Prayers": {
+    "artist": "Garth Brooks",
+    "title": "Unanswered Prayers"
+  },
+  "We Shall Be Free": {
+    "artist": "Garth Brooks",
+    "title": "We Shall Be Free"
+  },
+  "What She's Doing Now": {
+    "artist": "Garth Brooks",
+    "title": "What She's Doing Now"
+  },
+  "You belong to my heart": {
+    "artist": "Engelbert Humperdinck",
+    "title": "You Belong To My Heart"
+  },
+  "you move me": {
+    "artist": "Garth Brooks",
+    "title": "You Move Me"
+  },
+  "You're My Angel": {
+    "artist": "BROOKS AND DUNN",
+    "title": "YOURE MY ANGEL"
+  },
+  "07.-Cher-Lloyd-Feat.-Astro-Want-U-Back-(SF314-07)": {
+    "artist": "Cher Lloyd & Astro",
+    "title": "Want U Back"
+  },
+  "15.-Alexandra-Burke-Feat.-Erick-Morillo-Elephant-(SF314-15)": {
+    "artist": "Alexandra Burke",
+    "title": "Elephant ft. Erick Morillo"
+  },
+  "17.-Gym-Class-Heroes-Feat.-Neon-Hitch-Get-Yourself-Back-Home-(SF314-17)": {
+    "artist": "Gym Class Heroes",
+    "title": "Ass Back Home ft. Neon Hitch"
+  },
+  "alabama song": {
+    "artist": "Allison Moorer",
+    "title": "Alabama Song"
+  },
+  "America": {
+    "artist": "Simon And Garfunkel",
+    "title": "America"
+  },
+  "B04": {
+    "artist": "Cliff Richard",
+    "title": "Wind Me Up Let Me Go"
+  },
+  "beach boys-california girls": {
+    "artist": "The Beach Boys",
+    "title": "California Girls"
+  },
+  "DK067-15": {
+    "artist": "Earl Grant",
+    "title": "Ol' Man River"
+  },
+  "dk3049-03-And_When_I_Die": {
+    "artist": "Blood, Sweat & Tears",
+    "title": "And When I Die"
+  },
+  "dk67-15": {
+    "artist": "Earl Grant",
+    "title": "Ol' Man River"
+  },
+  "DKK002_08": {
+    "artist": "Conway Twitty",
+    "title": "It's Only Make Believe"
+  },
+  "dk_05-16": {
+    "artist": "Hank Williams",
+    "title": "I Can't Help It If I'm Still In Love With You"
+  },
+  "estelle(american boy mrh)": {
+    "artist": "Estelle feat Kanye West",
+    "title": "American Boy"
+  },
+  "If Tomorrow Never Comes": {
+    "artist": "Joose",
+    "title": "If Tomorrow Never Comes"
+  },
+  "light my fire": {
+    "artist": "Will Young",
+    "title": "Light My Fire"
+  },
+  "Red Red Wine": {
+    "artist": "Neil Diamond",
+    "title": "Red, Red Wine"
+  },
+  "Rodeo": {
+    "artist": "Juvenile",
+    "title": "Rodeo"
+  },
+  "Sc 2128-02 - Let There Be Peace On Earth": {
+    "artist": "Vince Gill",
+    "title": "Let There Be Peace On Earth"
+  },
+  "SC7516_15_D_Frizzell_S_West_You_re_The_Reason_God_Ma": {
+    "artist": "Shelley West & David Frizzell",
+    "title": "You're The Reason God Made Oklahoma"
+  },
+  "SC7518_04_Morris_Albert_Feelings": {
+    "artist": "Morris Albert",
+    "title": "Feelings"
+  },
+  "SC7518_05_Engelbert_Humperdinck_Release_Me": {
+    "artist": "Engelbert Humperdinck",
+    "title": "Release Me"
+  },
+  "SC7518_07_Perry_Como_Catch_A_Falling_Star": {
+    "artist": "PERRY COMO",
+    "title": "CATCH A FALLING STAR"
+  },
+  "SC7518_08_Andy_Williams_Can_t_Get_Used_To_Losing_You": {
+    "artist": "Andy Williams",
+    "title": "Can't Get Used To Losing You"
+  },
+  "SC7518_12_Andy_Williams_Moon_River": {
+    "artist": "Andy Williams",
+    "title": "Moon River"
+  },
+  "SC7518_15_Paul_Anka_Put_Your_Head_On_My_Shoulder": {
+    "artist": "Paul Anka",
+    "title": "Put Your Head On My Shoulder"
+  },
+  "SC7519_08_Gladys_Knight_The_Pips_Midnight_Train_To_G": {
+    "artist": "Gladys Knight",
+    "title": "Midnight Train To Georgia"
+  },
+  "SC7524_09_Wynonna_Judd_My_Strongest_Weakness": {
+    "artist": "Wynonna Judd",
+    "title": "My Strongest Weakness"
+  },
+  "SC7525_10_Dion_The_Belmonts_The_Wanderer": {
+    "artist": "Dion",
+    "title": "Wanderer, The"
+  },
+  "SC7529_10_Billy_Vera_The_Beaters_At_This_Moment": {
+    "artist": "Vera, Billy & The Beaters",
+    "title": "At This Moment"
+  },
+  "sc8793_07_rowland_kelly_stole_radio_version_": {
+    "artist": "Kelly Rowland",
+    "title": "Stole"
+  },
+  "SC_7572_12_Good_Lovin_Young_Rascals": {
+    "artist": "The Rascals",
+    "title": "Good Lovin'"
+  },
+  "SC_7572_14_Lil_Red_Riding_Hood_Sam_The_Sham": {
+    "artist": "Sam The Sham & The Pharaohs",
+    "title": "Lil Red Riding Hood"
+  },
+  "SC_7572_15_Devil_With_A_Blue_Dress_On_Mitch_Rider_The_De": {
+    "artist": "Ryder, Mitch & The Detroit Wheels",
+    "title": "Devil With A Blue Dress On"
+  },
+  "SC_7576_05_Layla_DEREK_THE_DOMINOS": {
+    "artist": "Derek & The Dominos",
+    "title": "Layla"
+  },
+  "SC_7576_06_Free_Ride_Edgar_Winter_Group": {
+    "artist": "The Edgar Winter Group",
+    "title": "Free Ride"
+  },
+  "SC_7577_05_Jack_Diane_John_Cougar": {
+    "artist": "John Cougar Mellencamp",
+    "title": "Jack & Diane"
+  },
+  "SC_7577_14_Heartbreaker_PAT_BENETAR": {
+    "artist": "Pat Benatar",
+    "title": "Heartbreaker"
+  },
+  "SC_7580_11_Centerforld_J_GEILS_BAND": {
+    "artist": "The J. Geils Band",
+    "title": "Centerfold"
+  },
+  "SC_7581_11_True_Colors_Cyndi_Lauper": {
+    "artist": "Cyndi Lauper",
+    "title": "True Colors"
+  },
+  "SC_7581_13_Bette_Davis_Eyes_Kim_Carnes": {
+    "artist": "Kim Carnes",
+    "title": "Bette Davis Eyes"
+  },
+  "SC_7582_02_Nobody_Knows_Tony_Rich_Project": {
+    "artist": "The Tony Rich Project",
+    "title": "Nobody Knows"
+  },
+  "SC_7582_13_No_Diggity_Blacksteet_Duet_": {
+    "artist": "Blackstreet",
+    "title": "No Diggity"
+  },
+  "Shameless": {
+    "artist": "Garth Brooks",
+    "title": "Shameless"
+  },
+  "SC_7574_01_Best_Thing_That_Ever_Happened_To_Me_Gladys_Knight_The_Pips": {
+    "artist": "Gladys Knight",
+    "title": "Best Thing That Ever Happened To Me"
+  },
+  "The Dance": {
+    "artist": "Garth Brooks",
+    "title": "Dance, The"
+  },
+  "to make you feel my love": {
+    "artist": "Garth Brooks",
+    "title": "To Make You Feel My Love"
+  },
+  "touch me": {
+    "artist": "Samantha Fox",
+    "title": "Touch Me"
+  },
+  "track14": {
+    "artist": "Sevendust",
+    "title": "Going Back To Cali"
+  },
+  "What Now, What Next, Where To": {
+    "artist": "Elvis Presley",
+    "title": "What Now, What Next, Where To"
+  },
+  "609814 ~ Easy For Me To Say - Clint Black & Lisa Hartman Black": {
+    "artist": "Clint Black with Lisa Hartman Black",
+    "title": "Easy for Me to Say"
+  },
+  "all 4 one-i swear": {
+    "artist": "All‐4‐One",
+    "title": "I Swear"
+  },
+  "01.-Christina-Aguilera-(Burlesque)-Bound-To-You-(SFKK057-04)": {
+    "artist": "Christina Aguilera",
+    "title": "Bound to You"
+  },
+  "10,000 Maniacs - These Are The Days": {
+    "artist": "10,000 Maniacs",
+    "title": "These Are Days"
+  },
+  "G13974 Technologic": {
+    "artist": "Daft Punk",
+    "title": "Technologic"
+  },
+  "Lorrie Morgan-A Picture Of You Without Me(MM6017-02)": {
+    "artist": "Lorrie Morgan",
+    "title": "A Picture of Me (Without You)"
+  },
+  "PHM0612-06 - 44 - When Your Heart Stops Beating": {
+    "artist": "+44",
+    "title": "When Your Heart Stops Beating"
+  },
+  "SC7526_08_J_Rivers_Rocking_Pneumonia_The_Boogie_Woog": {
+    "artist": "Johnny Rivers",
+    "title": "Rockin' Pneumonia and the Boogie Woogie Flu"
+  },
+  "sc8793_11_jimmy_eat_world_praise_chorus_a": {
+    "artist": "Jimmy Eat World",
+    "title": "A Praise Chorus"
+  },
+  "SC_7577_08_All_I_Wanna_Do_Is_Make_Love_To_You_Heart": {
+    "artist": "Heart",
+    "title": "All I Wanna Do Is Make Love to You"
+  },
+  "SC7514_12_M_Carey_T_Lorenz_I_ll_Be_There": {
+    "artist": "Carey & Lorenz",
+    "title": "I'll Be There"
+  },
+  "SC7517_09_P_Collins_M_Martin_Separate_Lives": {
+    "artist": "Collins & Martin",
+    "title": "Separate Lives"
+  },
+  "SC7527_04_Otis_Day_And_The_Knights_Shout": {
+    "artist": "Day, Otis & The Knights",
+    "title": "Shout"
+  },
+  "SC7583-14 - Stay_I_Missed_You_Lisa_Loeb_Nine_Stories.": {
+    "artist": "Loeb, Lisa & Nine Stories",
+    "title": "Stay (I Missed You)"
+  },
+  "SC_7573_13_Band_On_The_Run_Paul_Mccartney_Wings": {
+    "artist": "McCartney, Paul & Wings",
+    "title": "Band On The Run"
+  },
+  "PSJT201~6-02-PRESLEY, ELVIS-TOMORROW NIGHT": {
+    "artist": "Elvis Presley",
+    "title": "Tomorrow Night"
   }
 }
