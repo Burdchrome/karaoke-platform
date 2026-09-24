@@ -21,6 +21,11 @@ A running record of manual test sessions against the karaoke server. Each sessio
    the page's db and read back). 26/26 pass. `--apply
    confirmed,corrected,resolved,judge:confirmed,judge:corrected` → added
    113, skipped 1 (already present). overrides.json 314 → 427.
+4. **Overrides × grouping seam tests** (`ddb5c0e`) — five tests in
+   `server/library.test.js` on what `applyOverrides` and `groupSongs` do
+   together: orphan joins the named group; one filename key reaches every
+   copy → one group; no merge of two songs sharing a title; idempotent;
+   invariant that overrides never increase the group count.
 
 ### Test cases
 
@@ -33,6 +38,8 @@ A running record of manual test sessions against the karaoke server. Each sessio
 | 5 | Spot-check via `loadLibrary()` (real server load path) | Technologic→Daft Punk; PSJT201 Tomorrow Night→Elvis; That Summer→Garth Brooks; all 4 one→All‐4‐One | ✅ | "Applied 612 manual overrides" (entries match multiple copies) |
 | 6 | Full suite `npm test` | 131 pass / 1 gated skip | ✅ | |
 | 7 | `npm run check` | clean | ✅ | |
+| 8 | Blast radius: `applyOverrides` on the real cache with old vs new overrides.json | only blank-artist files change; group count falls | ✅ | 177 files changed, all 177 previously blank artist, 0 named songs altered; groups 37,789 → 37,687 |
+| 9 | Seam tests green, then mutation check (skip songKey recompute in `applyOverrides`) | 5 pass; mutant fails ≥ 3 of them | ✅ | mutant failed 6 (3 new + 3 existing); restored, 68 pass |
 
 **Tier:** **verified-in-test** for the code change; the 113 promotions are
 **verified-in-test** via the real loader, not yet in-use. Graduates to

@@ -1,6 +1,6 @@
 # Karaoke DJ Project — Master Handoff
 
-**Last updated:** 2026-09-24 (#30 ratification run promoted 113 records; `explore/mb-verify` merged to main (#31); TEST_LOG 2026-09-24 has the session)
+**Last updated:** 2026-09-24 (#30 ratification run promoted 113 records; `explore/mb-verify` merged to main (#31) + overrides×grouping seam tests, pushed; TEST_LOG 2026-09-24 has the session)
 **Supersedes:** `karaoke_dj_handoff.md` (older — pre-inventory, contained open questions now answered)
 **For:** Shooter, a karaoke DJ the user knows personally
 
@@ -459,7 +459,10 @@ full suite 129 pass / 1 gated skip; `npm run check` clean. Commits
 corrected/resolved/judge buckets in full) reviewed on a claude.ai artifact
 page with CDG title-card frames + audio clips, rulings read back from the
 page's db — 26/26 pass, 113 promoted (`189d046`), spot-checked through
-`loadLibrary()`. Branch merged to main (#31). Research doc:
+`loadLibrary()`. Blast radius measured: 177 files changed, all previously
+blank-artist, groups 37,789 → 37,687 (orphans merging in). Branch merged
+to main (#31); seam tests for overrides × grouping (`ddb5c0e`) now guard
+the next batch. Research doc:
 `docs/research/llm-assisted-stage1-triage.md`. Backlog: file at 315
 lines → extract `triage-views.js` on next touch; U+2010 hyphens in
 MB-sourced names (TEST_LOG 2026-09-24 follow-up); 130 human-queue records
