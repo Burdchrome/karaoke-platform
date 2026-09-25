@@ -4,6 +4,56 @@ A running record of manual test sessions against the karaoke server. Each sessio
 
 ---
 
+## Session: 2026-09-25 (#25 rebase + tiers regenerated + Residual Run 25 review page)
+
+### What changed
+
+1. **`fix/25-sunfly-dialect-parse` rebased onto main** (`aebbf6d` parser,
+   `8b1efe4` docs). Parser commit applied clean; only TEST_LOG/handoff
+   conflicted (append-style, both sessions kept in date order). Branch is
+   local-only, so no force-push was needed.
+2. **Cache rescanned (v5) + `cdg-harvest.js` re-run** against the 427
+   post-#30 overrides. Tiers fell 68/80/96 → **likely 18 / review 18 /
+   unmatched 88** (skipped 303 → 423). 10 of the unmatched are files the
+   Sunfly pass now parses on its own.
+3. **Finding:** those 124 tier files are exactly the #30 human queue
+   (`triage-apply.js --queue` = 130; 6 queue-only extras are card-audit
+   overturns). One review, not two.
+4. **Residual Run 25 review page** built + published (artifact
+   `6rsDqTEP3oTSjvrpaoUzqK`): 130 cards, editable artist/title prefilled
+   from proposal → card audit → judge → ID3 → parser → card/filename;
+   Pass/Doubt into page db `rulings/{id}`. Build kit + manifest kept in
+   `.cache/residual-run-25/` (gitignored).
+
+### Test cases
+
+| # | What | Expected | Pass/Fail | Notes |
+|---|------|----------|-----------|-------|
+| 1 | `npm test` after rebase | all green | ✅ | 143 pass, 1 skipped (pre-existing) |
+| 2 | `npm run check` after rebase | eslint + knip clean | ✅ | |
+| 3 | Tier ∩ human queue by filename | large overlap expected | ✅ | 124/124 tier files in queue; 6 queue-only |
+| 4 | Page JSON blocks parse, 130 records, 130 frame sets | ✅ | ✅ | checked with a node script, not a render |
+| 5 | Page db reachable (`ArtifactData list rulings`) | empty | ✅ | correct before Josh starts |
+
+**Tier reached:** verified-in-test (suite + page db readback). The page
+itself was not rendered on this machine ([[browser-pane-capture-hang]]).
+
+### Follow-ups
+
+- [ ] Josh rules the 130 (start with "Parser handles" — that's the #25
+  verification). Then: read `rulings` back, write passes into
+  `overrides.json` (edited fields = the value), rescan, merge branch,
+  close #25.
+- [ ] `npm run rescan` rebuilds the cache and then **keeps serving** —
+  a scripted call never returns. Either kill the server after the cache
+  timestamp moves, or give `--rescan` an exit. Small ticket.
+- [ ] Artifact publish cap is 255 files/version: 8 frames × 130 records
+  had to be inlined as lossless WebP data URIs (~1.7 KB each; ffmpeg
+  `-pix_fmt pal8` PNG is a trap — 9× bigger). Audio stayed as files
+  (45 s, 48 kbps mono, 33.5 MB).
+
+---
+
 ## Session: 2026-09-24 (#30 ratification run + #29 fork ruling + #31 merge)
 
 ### What changed

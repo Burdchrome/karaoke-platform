@@ -1,6 +1,6 @@
 # Karaoke DJ Project — Master Handoff
 
-**Last updated:** 2026-09-24 (#30 ratification run promoted 113 records; `explore/mb-verify` merged to main (#31) + overrides×grouping seam tests, pushed; TEST_LOG 2026-09-24 has the session)
+**Last updated:** 2026-09-25 (#25 branch rebased onto main; Sunfly tiers regenerated = the #30 human queue; Residual Run 25 review page live, waiting on Josh's rulings; TEST_LOG 2026-09-25 has the session)
 **Supersedes:** `karaoke_dj_handoff.md` (older — pre-inventory, contained open questions now answered)
 **For:** Shooter, a karaoke DJ the user knows personally
 
@@ -465,19 +465,24 @@ to main (#31); seam tests for overrides × grouping (`ddb5c0e`) now guard
 the next batch. Research doc:
 `docs/research/llm-assisted-stage1-triage.md`. Backlog: file at 315
 lines → extract `triage-views.js` on next touch; U+2010 hyphens in
-MB-sourced names (TEST_LOG 2026-09-24 follow-up); 130 human-queue records
-still await ruling via `--queue`.
+MB-sourced names (TEST_LOG 2026-09-24 follow-up); the 130 human-queue
+records are the #25 tiers — ruled on the Residual Run 25 page (see #25).
 
 **Next session can pick any of:**
-- **#25 Sunfly dialect parse — LANDED 2026-09-13** (`59becc9` on
-  `fix/25-sunfly-dialect-parse`, not merged to main yet): peel-then-split
-  pass + joiner-aware buildIndex frequency split; failures 875→774, 63/85
-  dialect files split, CACHE_VERSION 5, cache rescanned; ID3 verdict 7/96
-  tagged → no fallback ticket, hand-promote those 7. Remaining: Josh
-  browse-and-rule on the tiers in `.cache/stage1-proposals.json` (likely
-  68 / review 80 / unmatched 96; several already parser-fixed), gate
-  `node scripts/cdg-harvest.js --apply <tiers>`, then merge the branch.
-  Full results on issue #25.
+- **#25 Sunfly dialect parse — WAITING ON JOSH (rebased 2026-09-25)**:
+  parser LANDED 09-13 (`aebbf6d` on `fix/25-sunfly-dialect-parse`, now
+  rebased onto post-#31 main, local-only, suite green). Tiers regenerated
+  against the 427 overrides: likely 18 / review 18 / unmatched 88 — and
+  those are the #30 human queue (124/130 overlap; 6 extras are card-audit
+  overturns). **Review page:** Residual Run 25
+  (`https://claude.ai/artifact/6rsDqTEP3oTSjvrpaoUzqK`), 130 cards,
+  editable artist/title, Pass/Doubt → page db `rulings/{id}`
+  ({verdict, artist, title, note, filename, bucket, tier, at}). Build
+  kit + `manifest.json` (id → filename/paths) in
+  `karaoke-app/.cache/residual-run-25/`. **Remaining:** Josh rules →
+  read `rulings` back → passes into `overrides.json` (fields as edited)
+  → rescan → merge branch → close #25 + the queue item. Numbers:
+  TEST_LOG 2026-09-25; parser receipt on issue #25.
 - **Lens-pass leftovers (unratified, from the 08-31 ch.4 pass):** deepen
   `loadLibrary()` to return `{groups, byId}`; optional dep cuts
   (winston→console, nodemon→`node --watch`, double-walk→`fs.readdir
