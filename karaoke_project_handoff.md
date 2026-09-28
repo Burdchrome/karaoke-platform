@@ -1,6 +1,6 @@
 # Karaoke DJ Project — Master Handoff
 
-**Last updated:** 2026-09-25 (#25 branch rebased onto main; Sunfly tiers regenerated = the #30 human queue; Residual Run 25 review page live, waiting on Josh's rulings; TEST_LOG 2026-09-25 has the session)
+**Last updated:** 2026-09-28 (first public run through the tunnel 2026-09-27 — audience joined by QR via new `make-qr.cmd`; feedback review pending; TEST_LOG 2026-09-27 has the session. Residual Run 25 still waits on Josh's rulings — TEST_LOG 2026-09-25b)
 **Supersedes:** `karaoke_dj_handoff.md` (older — pre-inventory, contained open questions now answered)
 **For:** Shooter, a karaoke DJ the user knows personally
 
@@ -264,7 +264,7 @@ From CLAUDE.md, restated for any agent continuing this work:
 
 ---
 
-## Current state (running log — updated 2026-08-26)
+## Current state (running log — newest work is in "Next session can pick any of" below and TEST_LOG.md)
 
 **#21 Stage 1 harvest landed (2026-08-26):** the overnight CDG batch read
 (launched 2026-07-18, silently stopped ~485/554) was finished — 554/554
@@ -347,7 +347,8 @@ Implements `code-standards.md` → Repo Orientation.
 - Server now supports HTTP Basic Auth on the DJ surfaces (`/dj`, `/api/queue*`, `/api/events`) via `DJ_USER` and `DJ_PASS` env vars. If `DJ_PASS` is unset, auth is disabled (local-dev default; server logs a warning).
 - Audience pages remain unauthenticated by design (Shooter wants the audience flow to be a frictionless catalog).
 - Workflow for sharing (since 2026-07-12): double-click `karaoke-app/start-sharing.cmd` — starts the server (auth on) and the tunnel in their own windows, prints the `trycloudflare.com` URL + DJ login when ready. `stop-sharing.cmd` tears both down. Runs standalone — survives any Claude session. Send URL + creds in separate messages.
-- Full instructions in `karaoke-app/README.md` under "Sharing a remote preview".
+- `karaoke-app/make-qr.cmd` (2026-09-27): reads the URL from `tunnel.log`, writes `tunnel-qr.png`, opens it — the audience joins by scanning the laptop screen. Re-run after any tunnel restart. Needs the `qrcode` devDependency (`npm install` once).
+- Full instructions in `karaoke-app/README.md` under "Sharing a remote preview" → "Fast path (gig night)".
 - Ephemeral mode chosen (no Cloudflare account needed). URL changes on every tunnel restart.
 
 **Phase 3b (not yet started — future work):**
@@ -403,11 +404,10 @@ Implements `code-standards.md` → Repo Orientation.
 - Audience preview: 30-second soft cap. At 30s the audio **pauses** and the hint swaps to *"Preview ended (30s sample). Press Esc to close."* — leaves the last lyric frame on screen instead of yanking the player closed (which felt jarring). User closes with Esc or the close button when ready.
 
 **Known issues (not blockers, tracked for later phases):**
-- ~1.3% of files (839) have no parseable artist — the #8 manual-rescue pile;
-  17 rescued via overrides so far. **#21 Stage 1 batch read launched
-  2026-07-18 overnight** — 554 unique filenames (285 of the 839 are
-  cross-folder duplicate copies; overrides key on filename, so one read
-  covers all copies) → `.cache/stage1-reads.json`
+- Blank-artist residue: 774 files in the v5 cache before overrides
+  (2026-09-24 scan); 427 overrides now cover the #8 rescue + #21 harvest
+  auto tier + #30 ratification. What's left to rule is the 130-card
+  Residual Run 25 queue (see #25 under "Next session").
 - 52 CDG orphans (matched MP3 missing) and 6 MP4 video karaoke files unaddressed
 - Queue state is lost on server restart (in-memory) — fine for a 4-hour gig
 - No play history yet
@@ -426,11 +426,11 @@ All 8 questions from the now-archived `karaoke_shooter_sunday.md` got walked thr
 | 1 | Phone-submitted requests? | **No, not in plan.** Stays pen-and-paper. Endpoint exists if it ever flips. |
 | 2 | Track who's singing? | **DJ-side input is right** (already shipped). No audience-facing name capture. |
 | 3 | "Now playing" display anywhere? | **DJ laptop only for now.** No `/display` screen, no audience-side now-playing. |
-| 4 | Audience-page extras? | **Eventually a QR code** next to him for joining the audience page. Parked. No tip jar / branding. |
+| 4 | Audience-page extras? | **QR code — done in its cheapest form 2026-09-27:** `make-qr.cmd` renders the tunnel URL to a PNG shown on the laptop screen. An in-app QR is still unbuilt. No tip jar / branding. |
 | 5 | Auto-advance vs manual? | **Manual.** He wants to talk between songs and click into each one himself. **⚠️ This is a behavior change — we shipped auto-advance ON. Needs to flip off (or become a toggle).** |
 | 6 | Filter adult / parody packs? | **No. Leave everything visible.** Full catalog stays exposed in audience search. |
 | 7 | Import existing setlists? | **No.** Building each night on the fly, against this database. |
-| 8 | Network setup at gigs? | **Home Wi-Fi, prototype phase.** Laptop's not at live gigs yet — current PC is the prototype rig. Gig-network checklist not urgent. |
+| 8 | Network setup at gigs? | **First public run 2026-09-27** went through the ephemeral Cloudflare tunnel + QR rather than venue Wi-Fi, so the "same Wi-Fi" model was never exercised in the room. Gig-network checklist still not urgent; the tunnel path is the proven one. |
 
 ### Resulting action items
 
@@ -479,20 +479,33 @@ records are the #25 tiers — ruled on the Residual Run 25 page (see #25).
   editable artist/title, Pass/Doubt → page db `rulings/{id}`
   ({verdict, artist, title, note, filename, bucket, tier, at}). Build
   kit + `manifest.json` (id → filename/paths) in
-  `karaoke-app/.cache/residual-run-25/`. **Remaining:** Josh rules →
-  read `rulings` back → passes into `overrides.json` (fields as edited)
-  → rescan → merge branch → close #25 + the queue item. Numbers:
-  TEST_LOG 2026-09-25; parser receipt on issue #25.
+  `karaoke-app/.cache/residual-run-25/`. **Agent layers added 09-25:**
+  prefill-order bug fixed (judge correction now outranks the MB
+  title-lookup proposal — it had prefilled the famous performer instead
+  of the file's own on 4 cards); every card carries an "agent says"
+  verdict from a Sonnet text gate (102 pass / 28 doubt), and the 91
+  Fill-in/doubt cards were re-read from the CDG frames by a vision gate
+  ("agent (read frames)", doubts 28 → 16 on that set). Kits in
+  `.cache/residual-run-25/gate/` and `vision/`; the vision PROMPT.md is
+  the spec for fixing the stage-1 card reader (it grabs cue frames on
+  Music Maestro/Zoom discs). **Remaining:** Josh rules (8/130 saved;
+  "Traditional as artist?" policy call clears 9 at once) → read
+  `rulings` back → passes into `overrides.json` (fields as edited) →
+  rescan → merge branch → close #25 + the queue item. Numbers +
+  eyeball list: TEST_LOG 2026-09-25b; parser receipt on issue #25.
 - **Lens-pass leftovers (unratified, from the 08-31 ch.4 pass):** deepen
   `loadLibrary()` to return `{groups, byId}`; optional dep cuts
   (winston→console, nodemon→`node --watch`, double-walk→`fs.readdir
   recursive`).
 - **Deferred-with-triggers:** feat-clause dedupe (~47 dupes, marker in
   makeSongKey); hyphen-variant artists; second-drive batch.
-- **Watch:** 3 list stragglers in #20's close comment; share-URL box on
-  next real launch (TEST_LOG 2026-09-01 follow-up).
+- **Feedback review of the 2026-09-27 public run** — first thing at pickup;
+  then `npm audit fix` + suite (README step 0 was skipped that night).
+- **Watch:** 3 list stragglers in #20's close comment; share-URL box by
+  eye on next launch (TEST_LOG 2026-09-01 follow-up — URL path proven
+  09-27, the printed box itself not confirmed).
 - **Venue settings flag** — `enableKeyChange` (ADR 0002) next time the UI gets touched.
 - **Tier 2 Cloudflare upgrade** — named tunnel + persistent URL. ~10 min one-time setup, free, removes the "URL changes every restart" friction.
-- **Phase 3 metadata pipeline: DONE 2026-07-13** — all tickets #9–#15 closed-or-passed; acceptance numbers in the Phase 3 section are the new baseline. Remaining metadata work is issue #8 (~41 files) + issue #21. (Lookup pipeline and fingerprinting were both rejected by the map — don't resurrect them.)
+- **Phase 3 metadata pipeline: DONE 2026-07-13** — all tickets #9–#15 closed-or-passed; acceptance numbers in the Phase 3 section are the new baseline. #21 (card harvest) and the #27–#31 triage arc are done too; the only open metadata thread is #25's 130-card human queue above. (Lookup pipeline and fingerprinting were both rejected by the map — don't resurrect them.)
 - **Polish items** — favicon, queue persistence, play history.
-- **Stop and let it bake** — v1 is now real enough to share with one or two trusted people via the ephemeral tunnel. Use it, find what's broken in practice, *then* decide what to build.
+- **Stop and let it bake** — v1 has now had one real public night (2026-09-27). Harvest what broke in practice at the feedback review, *then* decide what to build.

@@ -4,6 +4,139 @@ A running record of manual test sessions against the karaoke server. Each sessio
 
 ---
 
+## Session: 2026-09-27 (first public run through the tunnel + QR join)
+
+### What changed
+
+1. **`make-qr.cmd`** (new, next to `start-sharing.cmd`): reads the
+   `trycloudflare.com` URL out of `tunnel.log` (Node regex one-liner —
+   cloudflared pads the line with `|` characters that trip the batch
+   parser) and renders it to `tunnel-qr.png` via the `qrcode` package
+   (new devDependency), then opens the image. Re-run after every tunnel
+   restart; the PNG is gitignored. Answers open question #4 ("eventually a
+   QR code") in the cheapest form: a picture on the laptop screen.
+2. Nothing else — v1 launched as-is from the `fix/25-sunfly-dialect-parse`
+   checkout using the 09-24 `library-cache.json`, no rescan (the branch's
+   unmerged parser never touched the served library).
+
+### Test cases
+
+| # | What | Expected | Pass/Fail | Notes |
+|---|------|----------|-----------|-------|
+| 1 | Pre-gig: drive + cache + suite | `E:\karaoke` present, cache dated 09-24, tests green | ✅ | 143 pass / 0 fail / 1 skipped |
+| 2 | `make-qr.cmd` vs fake log line with `\|` padding | PNG written, no parser noise | ✅ | first draft failed twice: UTF-8 em-dashes + LF endings, then `\|` in the log line — see Issues |
+| 3 | `make-qr.cmd` with no `tunnel.log` | plain message, exit 1 | ✅ | |
+| 4 | `start-sharing.cmd` real launch | local 200, tunnel 200 | ✅ | URL registered at 20:42 via ewr11; blank Cloudflare window is expected (stderr → `tunnel.log`) |
+| 5 | QR in the room | phones join off the laptop screen | ✅ | Josh: "QR worked, showing it on the laptop now" |
+| 6 | The gig itself | audience + DJ flows hold for the night | ✅ | no failures reported; detail deferred to the feedback review |
+
+**Tier reached:** verified-in-use for `make-qr.cmd` and for the v1 app
+(a real public night through the ephemeral tunnel; audience joined by QR).
+The 09-01 follow-up "share-URL box on next real launch" reached the same
+tier only halfway: the URL landed in `tunnel.log` and the QR script read it,
+but nobody confirmed the launcher's printed box by eye — ask at the
+feedback review.
+
+### Issues found
+
+- **Batch files must be ASCII + CRLF.** A `.cmd` written with UTF-8
+  em-dashes and LF endings is misparsed by `cmd.exe` into word salad
+  ("'lper:' is not recognized"). JS one-liners inside `for /f` need
+  `usebackq` so the single quotes survive. Banked in memory
+  ([[windows-command-gotchas]]).
+- **README step 0 (`npm audit`) was skipped tonight.** 4 pre-existing
+  advisories (body-parser, qs moderate; brace-expansion high — all express
+  transitive, none from `qrcode`), all with `npm audit fix` available. Run it
+  before the next tunnel.
+
+### Follow-ups
+
+- **Feedback review** with Josh at pickup: what broke or dragged in the
+  room, search misses (watch for U+2010 hyphen artists), queue behavior.
+- `npm audit fix` + re-run the suite (Josh's hand — sandbox has no network).
+- Confirm the `start-sharing.cmd` URL box by eye next launch, then close the
+  09-01 follow-up.
+
+---
+
+## Session: 2026-09-25b (Residual Run 25: prefill-order fix, Sonnet text gate, vision gate)
+
+### What changed
+
+1. **Prefill-order bug fixed** in `.cache/residual-run-25/build-manifest.cjs`:
+   the raw MusicBrainz proposal (a title-only catalog lookup) outranked a
+   high-confidence judge correction, so 4 cards (r001/r021/r031/r088)
+   prefilled the famous performer of the title instead of the performer the
+   file itself names. Josh had already caught 3 of them in his first 33
+   rulings and passed one (r001) on the wrong prefill. Judge-correct/high now
+   comes first; page patched in place (Version 2) and r001 flipped to
+   Alyssa Reid Feat. Jump Smokers with Josh's OK.
+2. **Sonnet text gate** over all 130 cards (7 agents, evidence-only, web
+   search per card): pass 102 / doubt 28 / fields changed 60. Verdicts
+   embedded in the page as an "agent says" row + chip + reasoning/sources
+   (Version 3). Kit: `.cache/residual-run-25/gate/` (PROMPT.md,
+   batches, results, `merge-and-patch.cjs`).
+3. **Vision gate** over the 91 cards the text gate was blind on (Fill-in
+   bucket + every text doubt): agents read the CDG frames (extracted from
+   the page, WebP → PNG) with the rules "first text frame = title card",
+   "Written by ≠ performer", "cue frames are not titles", "folder name is
+   the performer hint". 12 verdicts flipped, 27 field sets moved; doubts
+   28 → 16 on that set. Page Version 4 labels these "agent (read frames)".
+   Kit: `.cache/residual-run-25/vision/` (`prep.cjs`, PROMPT.md,
+   `merge-vision.cjs`, `merged-verdicts.json`).
+
+### Test cases
+
+| # | What | Expected | Pass/Fail | Notes |
+|---|------|----------|-----------|-------|
+| 1 | Prefill rule vs manifest | only cards with judge correct/high move | ✅ | exactly 4 moved |
+| 2 | Page JSON blocks after each patch | 130 records / 130 frame sets / 130 agent ids, no placeholders | ✅ | `gate/check-page.cjs` |
+| 3 | Published files intact after republish | 130 audio + index.html | ✅ | 131 files listed |
+| 4 | Text gate vs Josh's 8 saved rulings | agree | ✅ | 8/8 (911 + Marty Robbins = same artist Josh named in his doubt notes) |
+| 5 | Vision gate vs Josh's screenshot finding (r018/r019) | reads the 6 s title card, ignores "Written by" | ✅ | r019 → Elvis "Change of Habit"; r018 → one title "Susan When She Tried", still doubt (Music Maestro names no performer) |
+| 6 | Text-gate self-blindness | vision must move things text could not | ✅ | r045 (title card = "Forever In Blue Jeans", text pass had AC/DC), r118, r065, r077, r099 |
+
+**Tier reached:** verified-in-test. The page renders were checked by
+JSON-parse scripts, not a browser ([[browser-pane-capture-hang]]); the
+gate's accuracy is calibrated only against Josh's 8 rulings + the 2 cards
+he flagged.
+
+### Issues found
+
+- **Sonnet subagents die on the content filter when they transcribe lyric
+  frames** (`400 Output blocked by content filtering policy`, nothing
+  written). Batch 7 died 3×, vision batch 8 twice, single card r122 once
+  (frames were an Avril Lavigne chorus — Claude identified it directly).
+  Fix that held: "never quote lyrics, say 'lyric frame'", ≤10 cards per
+  agent, rewrite the result file after every record. Now in memory
+  ([[cdg-cards-ground-truth]]).
+- Judge suggestion for r088 misspelled "Smoky"; card spelling used.
+- `build-manifest.cjs` trips the workspace eslint hook on node globals
+  (`__dirname`, `process`, `console`) — pre-existing, `.cache/` script,
+  left alone.
+
+### Follow-ups
+
+- [ ] **Josh finishes ruling the 130** (8 saved as of this entry) — cards
+  with an "agent (read frames)" row are the trust-on-first-click ones.
+  Then: read `rulings` back → passes into `overrides.json` → rescan →
+  merge `fix/25-sunfly-dialect-parse` → close #25.
+- [ ] **Policy call: is "Traditional" an acceptable artist?** 9 Sound
+  Choice traditionals (r089–r096 + Dixie) stay doubt only because no
+  performer is named. One answer clears them as a group.
+- [ ] Gate calls worth an eyeball, not a rubber stamp: r057 (Glen Campbell
+  → Elvis on filename suffix), r032 (title "Just You And I" → "You And I"),
+  r038/r046 (performer inferred from a title-only card), r034 (drops
+  Trisha Yearwood — Chartbuster card says Josh Turner only).
+- [ ] The OCR card reader (stage-1 harvest) picks the wrong frame on Music
+  Maestro / Zoom discs — grabs "(Introduction)" or a lyric line instead of
+  the first text frame, and splits two-line titles into artist/title.
+  Ticket candidate for the next harvest run; the vision PROMPT.md rules
+  are the spec.
+- [ ] (carried) `npm run rescan` keeps serving after the rebuild.
+
+---
+
 ## Session: 2026-09-25 (#25 rebase + tiers regenerated + Residual Run 25 review page)
 
 ### What changed

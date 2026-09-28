@@ -4,3 +4,4 @@ node_modules/
 .cache/
 library-cache.json
 dj-creds.cmd
+tunnel-qr.png

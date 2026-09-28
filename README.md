@@ -2,9 +2,9 @@
 
 A self-hosted karaoke platform built for Shooter, a working karaoke DJ.
 His laptop runs a small web server at gigs; audience phones on the same
-Wi-Fi browse and preview a **43,335-song library** (65,832 CDG+MP3 file
-pairs, ~330 GB, on an external drive), and the DJ view adds a private
-queue. Plain Node/Express + vanilla HTML/CSS/JS — no framework, no build
+Wi-Fi browse and preview a **~37,700-song library** (65,818 CDG+MP3 file
+pairs collapsed by artist+title, ~330 GB, on an external drive; counts
+as of the 2026-09-24 scan), and the DJ view adds a private queue. Plain Node/Express + vanilla HTML/CSS/JS — no framework, no build
 step.
 
 **Two views:** audience at `/` (search + preview), DJ at `/dj` (same plus

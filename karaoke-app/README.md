@@ -3,9 +3,11 @@
 Local karaoke platform for Shooter's DJ gigs. Serves CDG+MP3 pairs from
 `E:\karaoke` to any browser on the local Wi-Fi.
 
-**Library:** 43,335 unique songs (from 65,832 files on disk — duplicate
-artist+title copies are collapsed at load; each song carries a `versions`
-count). All zips extracted except 4 corrupt ones — see `extract-zips.log`.
+**Library:** ~37,700 unique songs (from 65,818 files on disk — duplicate
+artist+title copies are collapsed at load by `songKey`; each song carries a
+`versions` count; the exact group count moves as `overrides.json` grows —
+37,687 measured 2026-09-24). All zips extracted except 4 corrupt ones — see
+`extract-zips.log`.
 **Two roles:** audience at `/`, DJ at `/dj`.
 
 ---
@@ -76,6 +78,26 @@ See `karaoke_project_handoff.md` (in the parent folder) for the full roadmap.
 When you want someone outside your local network (e.g. Shooter for a Sunday
 demo) to hit the app, you can expose `localhost:3000` through a temporary
 public HTTPS URL via **Cloudflare Tunnel**.
+
+### Fast path (gig night) — the three scripts
+
+The manual two-terminal flow below still works, but since 2026-07-12 the
+normal way is three double-clicks in this folder:
+
+1. **`start-sharing.cmd`** — starts the server *with* DJ auth (reads
+   `dj-creds.cmd`, gitignored) and the tunnel, each in its own window, and
+   prints the `trycloudflare.com` URL when it's up. The Cloudflare window
+   stays blank on purpose: its output goes to `tunnel.log` so the scripts
+   can read the URL. Never share from a bare `npm start` — that has no DJ
+   password.
+2. **`make-qr.cmd`** — turns the URL in `tunnel.log` into `tunnel-qr.png`
+   and opens it. Show it on the laptop screen; phones join by scanning.
+   Re-run after any tunnel restart (new tunnel = new URL = new QR). Needs
+   the `qrcode` devDependency, so `npm install` once; works offline after.
+3. **`stop-sharing.cmd`** — kills the tunnel and whatever is on port 3000.
+
+Still do Step 0 (`npm audit`) below before the first launch of the night.
+First real public run this way: 2026-09-27 (TEST_LOG).
 
 ### One-time setup
 
