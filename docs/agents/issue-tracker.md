@@ -17,6 +17,17 @@ Infer the repo from `git remote -v` — `gh` does this automatically when run in
 
 Every commit and PR that implements an issue references it by number (`#22`) in the message/body — GitHub threads the history so the *why* is traceable from the issue without reading code, and future debugging can walk from a commit to its intent. Work not born from an issue (doc touch-ups, tiny fixes) is exempt.
 
+## Branches, commits and merging (since 2026-10-05)
+
+`main` is protected: pull request required, linear history, no force-push. The merge button offers **rebase and merge** only, and branches delete themselves on merge. Forward-only — history before 2026-10-05 is left as it was.
+
+- **Branch** off `main` as `<type>/<issue>-<slug>` (`fix/25-sunfly-dialect-parse`, `docs/26-repo-hygiene`); types: `fix/`, `feat/`, `docs/`, `explore/`.
+- **Commit** atomically — one working state to the next, smallest change; message `#NN area: imperative summary`, the *why* in the body when it helps. `git add -p`, not `add -A`. Rebase onto `main` and force-push the branch freely; never `main`.
+- **Open the PR early**, `WIP:` in the title until it's ready. Every change goes through a PR, doc close-outs included. The repo owner merges.
+- **Verification evidence** lives in the PR body or the issue's close comment, same as before.
+
+The rule text and its *why* are in the workspace `code-standards.md` → "Version Control" (ADR 0017); this section is the GitHub-facing mechanics.
+
 ## Pull requests as a triage surface
 
 **PRs as a request surface: no.** _(Set to `yes` if this repo treats external PRs as feature requests; `/triage` reads this flag.)_
