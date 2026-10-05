@@ -266,6 +266,15 @@ Restated for any agent continuing this work:
 
 ## Current state (running log — newest work is in "Next session can pick any of" below and TEST_LOG.md)
 
+**Sensitive-text scrub (2026-10-05):** after the flip, a surname and four
+ADHD mentions were removed from the handoff + design brief and rewritten
+out of git history (`git filter-repo --replace-text`, list in workspace
+`.scratch/public-scrub/`), force-pushed, and the three merged PR branches
+deleted. Verified anonymously: 0 hits on main, old initial-commit URL
+404. Ruled: TEST_LOG stays in the public repo. On hold: the first-name
+sweep and the neutral actor word for recorded rulings. Enforcement point
+(sensitive-word grep before push) not built yet.
+
 **Repo went public (2026-10-04 → 05):** Josh wants a professional public
 portfolio. Pass: gitleaks over all 80 commits (clean), MIT `LICENSE`, root
 README gained a stack line + "How it was built" + license section, the
