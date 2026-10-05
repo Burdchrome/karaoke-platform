@@ -14,13 +14,9 @@ drag-to-reorder queue, live-synced across devices).
 CDG lyric rendering, SSE for live queue sync, Cloudflare tunnel for off-network
 demos. Tests run on `node --test`; `npm run check` is ESLint + knip.
 
-**How it was built:** I'm the architect and quality bar, not the typist. Every
-line was written by AI coding agents (Claude, Codex) working from specs,
-tickets, and tests I directed. What I own is the structure: the decisions in
+**How it was built:** I'm the architect and quality bar, not the typist. The decisions in
 [`docs/adr/`](docs/adr/), the specs in [`docs/specs/`](docs/specs/), and the
-test log that proves each change did what it was predicted to do. If you want
-to see how a non-programmer ships real software, the ADRs are the place to
-start.
+test log that proves each change did what it was predicted to do. 
 
 ---
 
