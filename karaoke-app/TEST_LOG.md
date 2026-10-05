@@ -4,7 +4,41 @@ A running record of manual test sessions against the karaoke server. Each sessio
 
 ---
 
-## Session: 2026-09-27 (first public run through the tunnel + QR join)
+## Session: 2026-10-04 (repo public: scan, license, README, merge, flip)
+
+### What changed
+
+1. **`LICENSE`** (new, MIT) + root **`README.md`** (stack line, "How it was
+   built", license section) — commit `1dfc691`.
+2. **`.gitignore`** now ignores `.claude/skills/impeccable/`; the 102 tracked
+   skill files were removed from the index (still on disk, untracked).
+3. **`fix/25-sunfly-dialect-parse` fast-forwarded into `main`** (4 commits:
+   parser fix, make-qr, two doc close-outs) and pushed. Josh's ruling.
+4. GitHub: description + topics set; visibility PRIVATE → PUBLIC (10-05).
+   No app code changed.
+
+### Test cases
+
+| # | What | Expected | Pass/Fail | Notes |
+|---|------|----------|-----------|-------|
+| 1 | gitleaks 8.24.3 over full git history | no leaks | ✅ | 80 commits, 0 findings; `dj-creds.cmd` / `tunnel-qr.png` never in history |
+| 2 | Suite on the branch before merge | green | ✅ | 143 pass / 0 fail / 1 skipped |
+| 3 | `npm run check` | clean | ❌ | 43 ESLint errors, all in untracked `.cache/residual-run-25/*.cjs` scratch — not repo code; ESLint doesn't ignore `.cache/` |
+| 4 | Skill folder after merge | still usable locally, not tracked | ✅ | merge deleted it from disk (main still tracked it); restored from `cd8694d` worktree-only, `git check-ignore` confirms ignored |
+| 5 | Anonymous fetch of the repo URL | HTTP 200 | ✅ | curl without auth |
+
+**Tier reached:** verified-live for the visibility flip (anonymous fetch of
+the real URL). The merged parser fix is only verified-in-test on main —
+promotion to in-use needs a rescan + a gig on the merged library.
+
+### Follow-ups
+
+- Add `.cache/` to the ESLint ignore list so `npm run check` is honest
+  with scratch kits present.
+- README screenshot of the audience view (needs `E:` plugged in).
+- Issue #26 item 1 (unpushed main) resolved by this session; items 2–3 open.
+
+ (first public run through the tunnel + QR join)
 
 ### What changed
 

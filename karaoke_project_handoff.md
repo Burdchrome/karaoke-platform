@@ -1,6 +1,6 @@
 # Karaoke DJ Project — Master Handoff
 
-**Last updated:** 2026-09-28 (first public run through the tunnel 2026-09-27 — audience joined by QR via new `make-qr.cmd`; feedback review pending; TEST_LOG 2026-09-27 has the session. Residual Run 25 still waits on Josh's rulings — TEST_LOG 2026-09-25b)
+**Last updated:** 2026-10-05 (repo PUBLIC since 2026-10-05 — `fix/25-sunfly-dialect-parse` fast-forwarded into main ahead of the Residual Run rulings as part of the flip; feedback review of the 09-27 gig still pending; Residual Run 25 still waits on Josh's rulings — TEST_LOG 2026-09-25b)
 **Supersedes:** `karaoke_dj_handoff.md` (older — pre-inventory, contained open questions now answered)
 **For:** Shooter, a karaoke DJ the user knows personally
 
@@ -266,6 +266,20 @@ From CLAUDE.md, restated for any agent continuing this work:
 
 ## Current state (running log — newest work is in "Next session can pick any of" below and TEST_LOG.md)
 
+**Repo went public (2026-10-04 → 05):** Josh wants a professional public
+portfolio. Pass: gitleaks over all 80 commits (clean), MIT `LICENSE`, root
+README gained a stack line + "How it was built" + license section, the
+vendored impeccable skill untracked (tracked files ~180 → 80), repo
+description + 6 topics set, then visibility flipped and confirmed with an
+anonymous fetch. **Side effect:** `fix/25-sunfly-dialect-parse` (parser fix
++ make-qr + doc close-outs) was fast-forwarded into main *before* the
+Residual Run 25 rulings — Josh's ruling 10-04 ("merge first"); suite was
+143/144 green at merge. #25 stays open: the remaining work (rulings →
+overrides → rescan) now happens on main. Ruling kept as-is: the DJ's
+stage name stays in the repo "for now". Still owed by Josh: a screenshot
+for the README, profile name/bio, pin the repo. Verification: TEST_LOG
+2026-10-04.
+
 **#21 Stage 1 harvest landed (2026-08-26):** the overnight CDG batch read
 (launched 2026-07-18, silently stopped ~485/554) was finished — 554/554
 files, 542 title cards read. New `scripts/cdg-harvest.js` matches card
@@ -366,7 +380,8 @@ Implements `code-standards.md` → Repo Orientation.
 - Git repo root is `Karaoke Project/` (the parent of `karaoke-app/`), not `karaoke-app/`.
   Both the app code *and* the root-level docs (this handoff, design brief, inventory,
   architecture diagram) are tracked in one repo.
-- Remote: `github.com/Burdchrome/karaoke-platform` (private), default branch `main`.
+- Remote: `github.com/Burdchrome/karaoke-platform` — **PUBLIC since 2026-10-05** (MIT `LICENSE`, topics set; full-history gitleaks scan clean, see TEST_LOG 2026-10-04). Default branch `main`.
+- `.claude/skills/impeccable/` is **untracked + gitignored** since 10-04 (102 files live on disk only — a fresh clone has no copy; reinstall from the global skill if a session needs it there). Only `.claude/settings.local.json` is tracked.
   Mostly direct-to-main; occasional PRs for review-worthy changes (#16, #17 —
   both merged). Issues are the tracker (docs/agents config, PR #7).
 - Conventions (2026-07-18): commits/PRs reference their issue number
@@ -491,7 +506,7 @@ records are the #25 tiers — ruled on the Residual Run 25 page (see #25).
   Music Maestro/Zoom discs). **Remaining:** Josh rules (8/130 saved;
   "Traditional as artist?" policy call clears 9 at once) → read
   `rulings` back → passes into `overrides.json` (fields as edited) →
-  rescan → merge branch → close #25 + the queue item. Numbers +
+  rescan → close #25 + the queue item (branch already on main since 10-04). Numbers +
   eyeball list: TEST_LOG 2026-09-25b; parser receipt on issue #25.
 - **Lens-pass leftovers (unratified, from the 08-31 ch.4 pass):** deepen
   `loadLibrary()` to return `{groups, byId}`; optional dep cuts
@@ -499,6 +514,10 @@ records are the #25 tiers — ruled on the Residual Run 25 page (see #25).
   recursive`).
 - **Deferred-with-triggers:** feat-clause dedupe (~47 dupes, marker in
   makeSongKey); hyphen-variant artists; second-drive batch.
+- **Public-repo leftovers (Josh's hand):** audience-view screenshot for
+  the README (needs the drive), GitHub profile name/bio + pin, and a
+  ruling on whether the DJ's surname in this handoff's "For:" line stays
+  now that the file is public.
 - **Feedback review of the 2026-09-27 public run** — first thing at pickup;
   then `npm audit fix` + suite (README step 0 was skipped that night).
 - **Watch:** 3 list stragglers in #20's close comment; share-URL box by
