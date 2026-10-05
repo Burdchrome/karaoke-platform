@@ -19,3 +19,6 @@ Thumbs.db
 .impeccable/live/*
 !.impeccable/live/config.json
 !.impeccable/critique/
+
+# third-party Claude skill, installed locally (not part of the project)
+.claude/skills/impeccable/
