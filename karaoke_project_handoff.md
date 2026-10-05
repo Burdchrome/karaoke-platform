@@ -254,7 +254,7 @@ Plus duplicates: same song appears under multiple disc codes (e.g. "Can't Hold U
 
 ## Working agreement
 
-From CLAUDE.md, restated for any agent continuing this work:
+Restated for any agent continuing this work:
 
 - Interest-driven; needs a clear, small first step, not a staircase
 - Iteration is the method — ship v0 fast, then refine
